@@ -103,8 +103,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -290,13 +304,13 @@ How the model chapters work
 </div>
 <section id="specification" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="specification"><span class="header-section-number">4.1</span> Specification</h2>
-<p>Utility of alternative <span class="math inline">\(j\)</span> in choice situation <span class="math inline">\(i\)</span>: <span class="math display">\[
+<p>Utility of alternative <span class="math inline">j</span> in choice situation <span class="math inline">i</span>: <span class="math display">
 V_{ij} = \beta_j + \alpha_j P_{ij}, \qquad j \in \{\text{GEN, GT, NAT, CHO, CAB}\},
 \quad V_{i,\text{NONE}} \equiv 0 .
-\]</span> There are <strong>5 alternative-specific constants</strong> <span class="math inline">\(\beta_j\)</span> and <strong>5 own-price coefficients</strong> <span class="math inline">\(\alpha_j\)</span> (10 taste parameters). The <strong>joint model</strong> stacks both treatments, holds taste parameters equal, and scales the nonhypothetical utilities by <span class="math inline">\(\mu\)</span>: <span class="math display">\[
+</span> There are <strong>5 alternative-specific constants</strong> <span class="math inline">\beta_j</span> and <strong>5 own-price coefficients</strong> <span class="math inline">\alpha_j</span> (10 taste parameters). The <strong>joint model</strong> stacks both treatments, holds taste parameters equal, and scales the nonhypothetical utilities by <span class="math inline">\mu</span>: <span class="math display">
 V^{\text{NH}}_{ij} = \mu\,(\beta_j + \alpha_j P_{ij}), \qquad
 V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij},
-\]</span> so <span class="math inline">\(\mu\)</span> is the relative error scale (precision) of the real-payment group. The <strong>Swait–Louviere LR test</strong> compares the joint model against the two separate models.</p>
+</span> so <span class="math inline">\mu</span> is the relative error scale (precision) of the real-payment group. The <strong>Swait–Louviere LR test</strong> compares the joint model against the two separate models.</p>
 </section>
 <section id="estimation-code-r03_table3_mnl.r" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="estimation-code-r03_table3_mnl.r"><span class="header-section-number">4.2</span> Estimation code (<code>R/03_table3_mnl.R</code>)</h2>
@@ -531,12 +545,12 @@ V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij},
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Discrepancy — scale <span class="math inline">\(\mu\)</span> and test df
+Discrepancy — scale <span class="math inline">\mu</span> and test df
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>My estimated scale is <span class="math inline">\(\hat\mu = 0.804\)</span> (SE <span class="math inline">\(0.056\)</span>), versus the paper’s <span class="math inline">\(0.90\)</span> (SE <span class="math inline">\(0.06\)</span>). Both are statistically distinguishable from 1 and point the same way (the two treatments have <em>different</em> error scales), but the point estimates differ. My scale test gives <span class="math inline">\(\chi^2 = 105.9\)</span> on 9 df versus the paper’s <span class="math inline">\(106.8\)</span> on <span class="math inline">\(4\)</span> df. The <span class="math inline">\(\chi^2\)</span> magnitudes are close; the <strong>df differ because of how the joint restriction is counted</strong> (I restrict 10 taste parameters to be equal and free 1 scale: <span class="math inline">\(df = (10+10) - 11 = 9\)</span>; the paper’s “4” suggests different bookkeeping). The substantive conclusion — <em>reject pooling</em> — is unchanged.</p>
-<p>Note also that my model <strong>log-likelihoods sit below the paper’s</strong> (nonhyp <span class="math inline">\(-1400.3\)</span> vs <span class="math inline">\(-1261.4\)</span>; hyp <span class="math inline">\(-677.9\)</span> vs <span class="math inline">\(-627.4\)</span>). This level offset recurs in the <a href="./05-iia.html">IIA test</a> and is the main open question of the replication — most plausibly a difference in how price enters utility. See <a href="./08-discrepancies.html">Discrepancies</a>.</p>
+<p>My estimated scale is <span class="math inline">\hat\mu = 0.804</span> (SE <span class="math inline">0.056</span>), versus the paper’s <span class="math inline">0.90</span> (SE <span class="math inline">0.06</span>). Both are statistically distinguishable from 1 and point the same way (the two treatments have <em>different</em> error scales), but the point estimates differ. My scale test gives <span class="math inline">\chi^2 = 105.9</span> on 9 df versus the paper’s <span class="math inline">106.8</span> on <span class="math inline">4</span> df. The <span class="math inline">\chi^2</span> magnitudes are close; the <strong>df differ because of how the joint restriction is counted</strong> (I restrict 10 taste parameters to be equal and free 1 scale: <span class="math inline">df = (10+10) - 11 = 9</span>; the paper’s “4” suggests different bookkeeping). The substantive conclusion — <em>reject pooling</em> — is unchanged.</p>
+<p>Note also that my model <strong>log-likelihoods sit below the paper’s</strong> (nonhyp <span class="math inline">-1400.3</span> vs <span class="math inline">-1261.4</span>; hyp <span class="math inline">-677.9</span> vs <span class="math inline">-627.4</span>). This level offset recurs in the <a href="./05-iia.html">IIA test</a> and is the main open question of the replication — most plausibly a difference in how price enters utility. See <a href="./08-discrepancies.html">Discrepancies</a>.</p>
 </div>
 </div>
 

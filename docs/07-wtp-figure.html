@@ -103,8 +103,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -278,9 +292,9 @@ window.Quarto = {
 
 <section id="specification" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="specification"><span class="header-section-number">7.1</span> Specification</h2>
-<p>Total WTP for steak <span class="math inline">\(j\)</span> relative to buying nothing: <span class="math display">\[
+<p>Total WTP for steak <span class="math inline">j</span> relative to buying nothing: <span class="math display">
 \text{WTP}_j = -\,\frac{\beta_j}{\alpha_j}.
-\]</span> The <strong>Poe combinatorial test</strong> asks whether nonhypothetical WTP is <em>lower</em> than hypothetical WTP (the hypothetical-bias hypothesis). I draw <span class="math inline">\(B=1000\)</span> coefficient vectors per treatment from <span class="math inline">\(\mathcal{N}(\hat\theta, \widehat{\text{Var}})\)</span>, compute all <span class="math inline">\(1000\times1000\)</span> WTP differences, and take the one-tailed p-value as the share of differences below zero.</p>
+</span> The <strong>Poe combinatorial test</strong> asks whether nonhypothetical WTP is <em>lower</em> than hypothetical WTP (the hypothetical-bias hypothesis). I draw <span class="math inline">B=1000</span> coefficient vectors per treatment from <span class="math inline">\mathcal{N}(\hat\theta, \widehat{\text{Var}})</span>, compute all <span class="math inline">1000\times1000</span> WTP differences, and take the one-tailed p-value as the share of differences below zero.</p>
 </section>
 <section id="estimation-code-r05_table5_wtp.r" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="estimation-code-r05_table5_wtp.r"><span class="header-section-number">7.2</span> Estimation code (<code>R/05_table5_wtp.R</code>)</h2>
@@ -408,7 +422,7 @@ Result — hypothetical bias confirmed
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Across <strong>all three models and all five steaks</strong>, hypothetical WTP exceeds nonhypothetical WTP, and the Poe p-values are ~1 (i.e., the probability that <span class="math inline">\(\text{WTP}_{\text{NH}} &lt; \text{WTP}_{\text{HY}}\)</span> is essentially certain). This is the paper’s central finding: stated (hypothetical) WTP overstates real WTP. The HEV Choice values are inflated by the <span class="math inline">\(\sigma_{\text{CHO}}\)</span> issue from the <a href="./06-advanced-models.html">previous chapter</a> and should be read with that caveat.</p>
+<p>Across <strong>all three models and all five steaks</strong>, hypothetical WTP exceeds nonhypothetical WTP, and the Poe p-values are ~1 (i.e., the probability that <span class="math inline">\text{WTP}_{\text{NH}} &lt; \text{WTP}_{\text{HY}}</span> is essentially certain). This is the paper’s central finding: stated (hypothetical) WTP overstates real WTP. The HEV Choice values are inflated by the <span class="math inline">\sigma_{\text{CHO}}</span> issue from the <a href="./06-advanced-models.html">previous chapter</a> and should be read with that caveat.</p>
 </div>
 </div>
 </section>

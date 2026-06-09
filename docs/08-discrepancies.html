@@ -103,8 +103,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -287,7 +301,7 @@ window.Quarto = {
 <h2 data-number="8.2" class="anchored" data-anchor-id="translating-limdep-r"><span class="header-section-number">8.2</span> Translating LIMDEP → R</h2>
 <ul>
 <li><strong>No turn-key joint-scale or HEV command in <code>mlogit</code>.</strong> The Swait–Louviere scaled joint MNL and the HEV model were written as <strong>custom log-likelihoods maximised with <code>optim(BFGS)</code></strong>, including the log-sum-exp trick for numerical stability and trapezoidal quadrature for the HEV Gumbel integral. LIMDEP exposes these as canned estimators; R made the mechanics explicit, which was pedagogically useful but is where small numerical differences enter.</li>
-<li><strong>Identification choices must be stated explicitly.</strong> Base alternative (<code>NONE</code>), the fixed scale (<span class="math inline">\(\mu_{\text{H}}=1\)</span>), and the fixed HEV scale (<span class="math inline">\(\sigma_{\text{NONE}}=1\)</span>) are defaults in LIMDEP but hand-coded here.</li>
+<li><strong>Identification choices must be stated explicitly.</strong> Base alternative (<code>NONE</code>), the fixed scale (<span class="math inline">\mu_{\text{H}}=1</span>), and the fixed HEV scale (<span class="math inline">\sigma_{\text{NONE}}=1</span>) are defaults in LIMDEP but hand-coded here.</li>
 <li><strong>A package-version landmine.</strong> <code>dfidx</code> 0.2.0 + <code>vctrs</code> triggers a node-stack overflow; I fell back to <code>mlogit.data()</code> to build the choice data.</li>
 </ul>
 </section>
@@ -358,7 +372,7 @@ window.Quarto = {
 </table>
 </div>
 </div>
-<p><strong>Bottom line.</strong> Every <em>qualitative</em> conclusion of Lusk &amp; Schroeder (2004) replicates: demographics balance across treatments; the real-payment group chooses “None” more; IIA is rejected for the pooled/hypothetical data; and hypothetical WTP exceeds real WTP for every steak under every model. The <em>quantitative</em> gaps are confined to (a) the log-likelihood level (and the IIA <span class="math inline">\(\chi^2\)</span> it inflates), (b) the scale point estimate and test-df bookkeeping, and (c) one weakly-identified HEV scale — all attributable to optimiser defaults and software-specific identification conventions rather than to a substantive disagreement with the paper.</p>
+<p><strong>Bottom line.</strong> Every <em>qualitative</em> conclusion of Lusk &amp; Schroeder (2004) replicates: demographics balance across treatments; the real-payment group chooses “None” more; IIA is rejected for the pooled/hypothetical data; and hypothetical WTP exceeds real WTP for every steak under every model. The <em>quantitative</em> gaps are confined to (a) the log-likelihood level (and the IIA <span class="math inline">\chi^2</span> it inflates), (b) the scale point estimate and test-df bookkeeping, and (c) one weakly-identified HEV scale — all attributable to optimiser defaults and software-specific identification conventions rather than to a substantive disagreement with the paper.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -369,7 +383,7 @@ The one thing I would chase next
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The constant log-likelihood offset is the thread worth pulling. The prime suspect is the <strong>price specification</strong>: this replication uses five alternative-specific own-price coefficients <span class="math inline">\(\alpha_j\)</span>, whereas a single generic price coefficient (or a different normalisation of price) would change the attainable likelihood while leaving the qualitative story intact. Confirming this against the paper’s Table 3 specification and footnote 13 would likely close most of the remaining gap.</p>
+<p>The constant log-likelihood offset is the thread worth pulling. The prime suspect is the <strong>price specification</strong>: this replication uses five alternative-specific own-price coefficients <span class="math inline">\alpha_j</span>, whereas a single generic price coefficient (or a different normalisation of price) would change the attainable likelihood while leaving the qualitative story intact. Confirming this against the paper’s Table 3 specification and footnote 13 would likely close most of the remaining gap.</p>
 </div>
 </div>
 

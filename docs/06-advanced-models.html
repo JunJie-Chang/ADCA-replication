@@ -103,8 +103,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css">
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -278,7 +292,7 @@ window.Quarto = {
 <section id="specifications" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="specifications"><span class="header-section-number">6.1</span> Specifications</h2>
 <ul>
-<li><strong>HEV (heteroscedastic extreme value).</strong> Like MNL but each alternative has its own Gumbel scale <span class="math inline">\(\sigma_j\)</span> (with <span class="math inline">\(\sigma_{\text{NONE}} = 1\)</span> fixed for identification). It relaxes IIA by allowing alternative-specific error variances. I estimate it with a <strong>custom log-likelihood</strong> that integrates the choice probability over the Gumbel density by trapezoidal quadrature.</li>
+<li><strong>HEV (heteroscedastic extreme value).</strong> Like MNL but each alternative has its own Gumbel scale <span class="math inline">\sigma_j</span> (with <span class="math inline">\sigma_{\text{NONE}} = 1</span> fixed for identification). It relaxes IIA by allowing alternative-specific error variances. I estimate it with a <strong>custom log-likelihood</strong> that integrates the choice probability over the Gumbel density by trapezoidal quadrature.</li>
 <li><strong>RPL (random parameters logit).</strong> ASCs are random-normal across respondents (mean + SD); price coefficients are held fixed for convergence. Estimated by simulated ML (500 draws) in <code>mlogit</code>.</li>
 <li><strong>MNP (multinomial probit).</strong> Off-diagonal correlations set to 0, two SDs fixed to 1. <em>Not estimated here</em> — it needs the <code>apollo</code> package and a GHK simulator over a 5-dimensional normal; I document the intended setup instead.</li>
 </ul>
@@ -505,11 +519,11 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Convergence issue — HEV <span class="math inline">\(\sigma_{\text{CHO}}\)</span>
+Convergence issue — HEV <span class="math inline">\sigma_{\text{CHO}}</span>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The estimated scale for USDA Choice is implausibly large (<span class="math inline">\(\hat\sigma_{\text{CHO}} \approx 161\)</span> nonhyp). This signals weak identification of that alternative’s variance given the price design, and it inflates the HEV WTP for Choice in the <a href="./07-wtp-figure.html">next chapter</a> and makes the HEV covariance matrix near-singular (I repair it with <code>Matrix::nearPD</code> before the Poe bootstrap). Better starting values or bounded reparameterisation (<span class="math inline">\(\log\sigma\)</span> already used) would be the next step. This is the single largest numerical fragility in my replication.</p>
+<p>The estimated scale for USDA Choice is implausibly large (<span class="math inline">\hat\sigma_{\text{CHO}} \approx 161</span> nonhyp). This signals weak identification of that alternative’s variance given the price design, and it inflates the HEV WTP for Choice in the <a href="./07-wtp-figure.html">next chapter</a> and makes the HEV covariance matrix near-singular (I repair it with <code>Matrix::nearPD</code> before the Poe bootstrap). Better starting values or bounded reparameterisation (<span class="math inline">\log\sigma</span> already used) would be the next step. This is the single largest numerical fragility in my replication.</p>
 </div>
 </div>
 
