@@ -5,7 +5,7 @@ project:
 book:
   title: "Are Choice Experiments Incentive Compatible?"
   subtitle: "A Replication of Lusk & Schroeder (2004) in R"
-  author: "張鈞傑 (Chang Jun-Jie) — AGEC 5045 Applied Discrete Choice Analysis, NTU 114-2"
+  author: "Jun-Jie (Justin) Chang · B12607021 — AGEC 5045 Applied Discrete Choice Analysis, NTU 114-2"
   date: "2026-06-12"
   reader-mode: true
   search: true
