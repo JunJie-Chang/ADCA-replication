@@ -7,8 +7,9 @@ source("_common.R")
 
 ## Table 1 — demographics by treatment
 
-The paper's Table 1 shows that randomisation worked: means are statistically
-indistinguishable across treatments. I reproduce the means, SDs, and t-tests.
+Table 1 in the paper is a randomisation check: it shows that the two treatment
+groups look alike on observables. I reproduce the means, standard deviations, and
+the t-tests for equality of means.
 
 ```{r table1}
 mean_sd <- function(data, var) {
@@ -33,10 +34,11 @@ kable(table1,
 
 ::: {.callout-tip}
 ## Result
-Every t-test p-value exceeds 0.05 — as in the paper, we cannot reject equality
-of demographic means across treatments. Randomisation is validated, so any
-behavioural difference later is attributable to the hypothetical/real
-manipulation, not to sample composition.
+None of the t-tests is significant at 5%, so I cannot reject equality of the
+demographic means across treatments, just as in the paper. Because the groups are
+balanced, any difference in behaviour later on can be read as coming from the
+hypothetical-versus-real manipulation rather than from who happened to be in each
+group.
 :::
 
 ## Table 2 — choice frequencies and the "None" gap
@@ -72,9 +74,9 @@ cat("Paper: smallest = scenario 4 (8.31 pp), largest = scenario 7 (32.84 pp)\n")
 ```
 
 ::: {.callout-tip}
-## Result — the core stylised fact
-Nonhypothetical subjects pick **"None"** much more often than hypothetical
-subjects (a positive gap in every scenario). This is hypothetical bias in its
-rawest form: when payment is real, more people walk away. The gap reproduces the
-paper's reported extremes at scenarios 4 and 7 almost exactly.
+## Result: the basic pattern
+In every scenario, the nonhypothetical group picks "None" more often than the
+hypothetical group. When the payment is real, more people simply walk away. The
+size of that gap lines up with the paper, which is largest at scenario 7 and
+smallest at scenario 4.
 :::

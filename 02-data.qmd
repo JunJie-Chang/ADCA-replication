@@ -5,15 +5,16 @@
 source("_common.R")
 ```
 
-This chapter runs **live**: it reads the raw spreadsheet and builds the
-estimation dataset, exactly the data-preparation workflow demonstrated in class.
+This chapter actually runs when the book is built. It reads the raw spreadsheet
+and builds the estimation dataset, following the same data-preparation steps we
+used in class.
 
 ## The raw file
 
-The authors provided `harrison.xls`. The relevant sheet, `trt 10&11`, is a
-*wide* spreadsheet — one row per respondent — with a two-row header, label rows
-separating the two treatments, and summary rows at the bottom. Treatment 10 is
-the nonhypothetical group; Treatment 11 is the hypothetical group.
+The data came as `harrison.xls`. The sheet I need, `trt 10&11`, is in wide form:
+one row per respondent, with a two-row header, label rows that separate the two
+treatments, and a few summary rows at the bottom. Treatment 10 is the
+nonhypothetical group and Treatment 11 is the hypothetical group.
 
 ```{r raw-peek}
 raw_dims <- dim(readxl::read_excel("harrison.xls", sheet = "trt 10&11",
@@ -22,23 +23,23 @@ cat("Raw sheet (after skipping 3 header rows):",
     raw_dims[1], "rows ×", raw_dims[2], "columns\n")
 ```
 
-**Key variables.**
+The columns fall into a few groups:
 
 | Block | Columns | Contents |
 |---|---|---|
 | Identifiers | `subject`, `session` | Subject ID (1001–1099 = nonhyp; 1100–1199 = hyp) |
 | Demographics | `gender`, `age`, `education`, `student`, `income`, … | Used for Table 1 |
 | Attitudes | `color`, `tenderness`, `flavor`, … | Survey Likert items (not used in estimation) |
-| **Choices** | `sc1`–`sc17` | Chosen alternative per scenario, coded 1–6 |
+| Choices | `sc1`–`sc17` | Chosen alternative per scenario, coded 1–6 |
 
-Choice codes: `1 = Generic (GEN)`, `2 = Guaranteed Tender (GT)`,
+The choice codes are `1 = Generic (GEN)`, `2 = Guaranteed Tender (GT)`,
 `3 = Natural (NAT)`, `4 = USDA Choice (CHO)`, `5 = CAB`, `6 = None (NONE)`.
 
 ## The price design (paper appendix)
 
-The 17 × 5 price matrix is the experimental design; it is the same for both
-treatments and is the bridge between a chosen *code* and the *prices* the
-respondent faced.
+The 17 × 5 price matrix is the experimental design. It is the same for both
+treatments, and it is what connects a stored choice *code* to the *prices* the
+respondent was actually looking at.
 
 ```{r price-matrix}
 price_matrix <- tibble::tribble(
@@ -58,10 +59,11 @@ kable(price_matrix, caption = "Price design: 17 scenarios × 5 steaks (USD).")
 
 ## Cleaning: from spreadsheet to respondents
 
-I keep only valid subject-ID rows (1001–1199), which automatically drops the
-treatment-label rows and the trailing summary rows. **One subject (ID 1060) has
-all 17 scenarios missing and is excluded** — this reconciles the 68 rows in the
-file with the 67 nonhypothetical subjects the paper reports.
+I keep only the rows whose subject ID is between 1001 and 1199. That filter alone
+drops the treatment-label rows and the summary rows at the bottom. One more case
+needs handling: subject 1060 has no answers for any of the 17 scenarios, so I drop
+it. Doing this brings the file's 68 rows down to the 67 nonhypothetical subjects
+the paper reports.
 
 ```{r clean-wide}
 demo_names <- c(
@@ -92,13 +94,12 @@ cat("Hypothetical  subjects:",  sum(df_wide$treatment == "hyp"),    "(paper: 37)
 
 ## Reshape: wide → long → choice format
 
-Two reshapes turn the respondent-level table into the estimation data:
-
-1. **Long** — one row per *respondent × scenario*; merge in the five prices.
-2. **Choice (mlogit) format** — one row per *respondent × scenario ×
-   alternative*, with a logical `chosen` flag and the alternative's own price.
-   **Scenario 17 is excluded from estimation** (it is the all-equal-price binding
-   scenario), leaving scenarios 1–16.
+Two reshapes turn the respondent table into something the choice models can use.
+First I go to long form, one row per respondent and scenario, and merge in the
+five prices. Then I expand to choice (mlogit) form, one row per respondent,
+scenario, and alternative, with a logical `chosen` flag and the alternative's own
+price. Scenario 17 is dropped at this stage, since it is the all-equal-price
+binding scenario, which leaves scenarios 1 to 16 for estimation.
 
 ```{r reshape}
 df_long <- df_wide |>
@@ -135,10 +136,12 @@ df_mlogit |> filter(chid == "1001_1") |>
 ```
 
 ::: {.callout-note}
-## Data-prep lessons
-* The "68 vs 67" gap is the first thing a replicator hits. Rather than guess, I
-  searched for the structural reason — subject 1060 is empty — which is exactly
-  the kind of provenance note the original LIMDEP file does not carry.
-* `NONE` has **no price**; encoding its `price_alt` as `NA`/0 (and never giving
-  it an own-price coefficient) is what makes it the natural base alternative.
+## Two things I learned here
+The "68 vs 67" mismatch is the first thing you run into. Instead of guessing
+which subject to drop, I looked for a reason and found that subject 1060 is empty,
+which is the kind of note the original LIMDEP file simply does not carry.
+
+The other point is that `NONE` has no price. Coding its `price_alt` as `NA` or 0,
+and never giving it an own-price coefficient, is what makes it the natural base
+alternative.
 :::

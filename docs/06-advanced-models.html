@@ -291,11 +291,10 @@ window.Quarto = {
 
 <section id="specifications" class="level2" data-number="6.1">
 <h2 data-number="6.1" class="anchored" data-anchor-id="specifications"><span class="header-section-number">6.1</span> Specifications</h2>
-<ul>
-<li><strong>HEV (heteroscedastic extreme value).</strong> Like MNL but each alternative has its own Gumbel scale <span class="math inline">\sigma_j</span> (with <span class="math inline">\sigma_{\text{NONE}} = 1</span> fixed for identification). It relaxes IIA by allowing alternative-specific error variances. I estimate it with a <strong>custom log-likelihood</strong> that integrates the choice probability over the Gumbel density by trapezoidal quadrature.</li>
-<li><strong>RPL (random parameters logit).</strong> ASCs are random-normal across respondents (mean + SD); price coefficients are held fixed for convergence. Estimated by simulated ML (500 draws) in <code>mlogit</code>.</li>
-<li><strong>MNP (multinomial probit).</strong> Off-diagonal correlations set to 0, two SDs fixed to 1. <em>Not estimated here</em> — it needs the <code>apollo</code> package and a GHK simulator over a 5-dimensional normal; I document the intended setup instead.</li>
-</ul>
+<p>Three models go into Table 4, and I fit two of them.</p>
+<p>HEV (heteroscedastic extreme value) is like MNL except that each alternative has its own Gumbel scale <span class="math inline">\sigma_j</span>, with <span class="math inline">\sigma_{\text{NONE}} = 1</span> fixed for identification. Letting the error variances differ by alternative is how it relaxes IIA. I fit it with a hand-written log-likelihood that integrates the choice probability over the Gumbel density using trapezoidal quadrature.</p>
+<p>RPL (random parameters logit) lets the constants vary across respondents as normal draws (a mean and a standard deviation each), while the price coefficients stay fixed so the model converges. I estimate it by simulated maximum likelihood with 500 draws in <code>mlogit</code>.</p>
+<p>MNP (multinomial probit) sets the off-diagonal correlations to zero and fixes two standard deviations to 1. I do not fit it here. It needs the <code>apollo</code> package and a GHK simulator over a five-dimensional normal, which is more than this project took on, so I describe the intended setup rather than report estimates.</p>
 </section>
 <section id="estimation-code-r04_table4_adv.r" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="estimation-code-r04_table4_adv.r"><span class="header-section-number">6.2</span> Estimation code (<code>R/04_table4_adv.R</code>)</h2>
@@ -519,11 +518,11 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Convergence issue — HEV <span class="math inline">\sigma_{\text{CHO}}</span>
+A convergence problem with HEV
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The estimated scale for USDA Choice is implausibly large (<span class="math inline">\hat\sigma_{\text{CHO}} \approx 161</span> nonhyp). This signals weak identification of that alternative’s variance given the price design, and it inflates the HEV WTP for Choice in the <a href="./07-wtp-figure.html">next chapter</a> and makes the HEV covariance matrix near-singular (I repair it with <code>Matrix::nearPD</code> before the Poe bootstrap). Better starting values or bounded reparameterisation (<span class="math inline">\log\sigma</span> already used) would be the next step. This is the single largest numerical fragility in my replication.</p>
+<p>The HEV scale for USDA Choice comes out far too large (<span class="math inline">\hat\sigma_{\text{CHO}} \approx 161</span> in the nonhyp model). That is a sign the variance of this alternative is only weakly identified given the price design. It feeds through to an inflated HEV WTP for Choice in the <a href="./07-wtp-figure.html">next chapter</a>, and it leaves the HEV covariance matrix close to singular, which is why I run it through <code>Matrix::nearPD</code> before the Poe bootstrap. Better starting values or tighter bounds (I already estimate <span class="math inline">\log\sigma</span> rather than <span class="math inline">\sigma</span>) would be the next thing to try. This is the shakiest number in the whole replication.</p>
 </div>
 </div>
 
@@ -1014,62 +1013,69 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## Specifications</span></span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**HEV (heteroscedastic extreme value).** Like MNL but each alternative has its</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  own Gumbel scale $\sigma_j$ (with $\sigma_{\text{NONE}} = 1$ fixed for</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  identification). It relaxes IIA by allowing alternative-specific error</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  variances. I estimate it with a **custom log-likelihood** that integrates the</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  choice probability over the Gumbel density by trapezoidal quadrature.</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**RPL (random parameters logit).** ASCs are random-normal across respondents</span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  (mean + SD); price coefficients are held fixed for convergence. Estimated by</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  simulated ML (500 draws) in <span class="in">`mlogit`</span>.</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**MNP (multinomial probit).** Off-diagonal correlations set to 0, two SDs fixed</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  to 1. *Not estimated here* — it needs the <span class="in">`apollo`</span> package and a GHK simulator</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  over a 5-dimensional normal; I document the intended setup instead.</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimation code (`R/04_table4_adv.R`)</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="in">```{r t4-code, eval=FALSE}</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="in">## RPL: ASCs random normal, prices fixed; simulated ML with 500 draws</span></span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="in">rpar_spec &lt;- setNames(rep("n", 5), asc_names)</span></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="in">rpl_nh  &lt;- mlogit(f_mnl, mdata_nh,  reflevel="NONE", rpar=rpar_spec, R=500, halton=NA, panel=TRUE)</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="in">rpl_hyp &lt;- mlogit(f_mnl, mdata_hyp, reflevel="NONE", rpar=rpar_spec, R=500, halton=NA, panel=TRUE)</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>Three models go into Table 4, and I fit two of them.</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>HEV (heteroscedastic extreme value) is like MNL except that each alternative has</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>its own Gumbel scale $\sigma_j$, with $\sigma_{\text{NONE}} = 1$ fixed for</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>identification. Letting the error variances differ by alternative is how it</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>relaxes IIA. I fit it with a hand-written log-likelihood that integrates the</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>choice probability over the Gumbel density using trapezoidal quadrature.</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>RPL (random parameters logit) lets the constants vary across respondents as</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>normal draws (a mean and a standard deviation each), while the price coefficients</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>stay fixed so the model converges. I estimate it by simulated maximum likelihood</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>with 500 draws in <span class="in">`mlogit`</span>.</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>MNP (multinomial probit) sets the off-diagonal correlations to zero and fixes two</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>standard deviations to 1. I do not fit it here. It needs the <span class="in">`apollo`</span> package and</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>a GHK simulator over a five-dimensional normal, which is more than this project</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>took on, so I describe the intended setup rather than report estimates.</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimation code (`R/04_table4_adv.R`)</span></span>
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="in">## HEV: per-alternative scale sigma_j (sigma_NONE = 1). The probability that j is</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="in">## chosen is the integral over the Gumbel density of alternative j of the product</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="in">## of the other alternatives' CDFs; evaluated on a trapezoidal grid w in [-8, 45]</span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="in">## and maximised by optim(BFGS).</span></span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="in">opt_hev_nh  &lt;- optim(theta0_nh,  hev_ll, df_s=df_nh,  method="BFGS",</span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="in">                     control=list(fnscale=-1, reltol=1e-10), hessian=TRUE)</span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="in">opt_hev_hyp &lt;- optim(theta0_hyp, hev_ll, df_s=df_hyp, method="BFGS",</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="in">                     control=list(fnscale=-1, reltol=1e-10), hessian=TRUE)</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="fu">## Results</span></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="in">```{r t4-rpl}</span></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="in">rpl_fit &lt;- tibble(</span></span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="in">  Model = c("RPL Nonhypothetical (R=500)", "RPL Hypothetical (R=500)"),</span></span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a><span class="in">  `Log-likelihood` = c(fmt(t4r$ll_nh, 1), fmt(t4r$ll_hyp, 1)))</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="in">kable(rpl_fit, caption = "Table 4a. Random parameters logit fit.")</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{r t4-code, eval=FALSE}</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="in">## RPL: ASCs random normal, prices fixed; simulated ML with 500 draws</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="in">rpar_spec &lt;- setNames(rep("n", 5), asc_names)</span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="in">rpl_nh  &lt;- mlogit(f_mnl, mdata_nh,  reflevel="NONE", rpar=rpar_spec, R=500, halton=NA, panel=TRUE)</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="in">rpl_hyp &lt;- mlogit(f_mnl, mdata_hyp, reflevel="NONE", rpar=rpar_spec, R=500, halton=NA, panel=TRUE)</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="in">## HEV: per-alternative scale sigma_j (sigma_NONE = 1). The probability that j is</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="in">## chosen is the integral over the Gumbel density of alternative j of the product</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="in">## of the other alternatives' CDFs; evaluated on a trapezoidal grid w in [-8, 45]</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="in">## and maximised by optim(BFGS).</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="in">opt_hev_nh  &lt;- optim(theta0_nh,  hev_ll, df_s=df_nh,  method="BFGS",</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="in">                     control=list(fnscale=-1, reltol=1e-10), hessian=TRUE)</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="in">opt_hev_hyp &lt;- optim(theta0_hyp, hev_ll, df_s=df_hyp, method="BFGS",</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a><span class="in">                     control=list(fnscale=-1, reltol=1e-10), hessian=TRUE)</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="fu">## Results</span></span>
 <span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="in">kable(t4h$table4_hev |&gt; mutate(Parameter = gk(Parameter)),</span></span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="in">      col.names = c("Parameter","NH Est","NH (SE)","HY Est","HY (SE)","JT Est","JT (SE)"),</span></span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="in">      caption = "Table 4b. HEV estimates — taste (beta, alpha) and scale (sigma) parameters. sigma(NONE) = 1 fixed.")</span></span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="in">cat(sprintf("HEV log-likelihood — NH: %.1f | HY: %.1f | Joint: %.1f\n",</span></span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="in">            t4h$ll_nh, t4h$ll_hyp, t4h$ll_joint))</span></span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="fu">## Convergence issue — HEV $\sigma_{\text{CHO}}$</span></span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>The estimated scale for USDA Choice is implausibly large</span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>($\hat\sigma_{\text{CHO}} \approx <span class="in">`r fmt(t4h$table4_hev$NH_Est[14],0)`</span>$ nonhyp).</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>This signals weak identification of that alternative's variance given the price</span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a>design, and it inflates the HEV WTP for Choice in the <span class="co">[</span><span class="ot">next chapter</span><span class="co">](07-wtp-figure.qmd)</span></span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>and makes the HEV covariance matrix near-singular (I repair it with</span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="in">`Matrix::nearPD`</span> before the Poe bootstrap). Better starting values or bounded</span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>reparameterisation ($\log\sigma$ already used) would be the next step. This is the</span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>single largest numerical fragility in my replication.</span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a><span class="in">```{r t4-rpl}</span></span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a><span class="in">rpl_fit &lt;- tibble(</span></span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a><span class="in">  Model = c("RPL Nonhypothetical (R=500)", "RPL Hypothetical (R=500)"),</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a><span class="in">  `Log-likelihood` = c(fmt(t4r$ll_nh, 1), fmt(t4r$ll_hyp, 1)))</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a><span class="in">kable(rpl_fit, caption = "Table 4a. Random parameters logit fit.")</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a><span class="in">kable(t4h$table4_hev |&gt; mutate(Parameter = gk(Parameter)),</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="in">      col.names = c("Parameter","NH Est","NH (SE)","HY Est","HY (SE)","JT Est","JT (SE)"),</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a><span class="in">      caption = "Table 4b. HEV estimates — taste (beta, alpha) and scale (sigma) parameters. sigma(NONE) = 1 fixed.")</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a><span class="in">cat(sprintf("HEV log-likelihood — NH: %.1f | HY: %.1f | Joint: %.1f\n",</span></span>
+<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a><span class="in">            t4h$ll_nh, t4h$ll_hyp, t4h$ll_joint))</span></span>
+<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
+<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## A convergence problem with HEV</span></span>
+<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a>The HEV scale for USDA Choice comes out far too large</span>
+<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a>($\hat\sigma_{\text{CHO}} \approx <span class="in">`r fmt(t4h$table4_hev$NH_Est[14],0)`</span>$ in the</span>
+<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>nonhyp model). That is a sign the variance of this alternative is only weakly</span>
+<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>identified given the price design. It feeds through to an inflated HEV WTP for</span>
+<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>Choice in the <span class="co">[</span><span class="ot">next chapter</span><span class="co">](07-wtp-figure.qmd)</span>, and it leaves the HEV covariance</span>
+<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a>matrix close to singular, which is why I run it through <span class="in">`Matrix::nearPD`</span> before</span>
+<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a>the Poe bootstrap. Better starting values or tighter bounds (I already estimate</span>
+<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>$\log\sigma$ rather than $\sigma$) would be the next thing to try. This is the</span>
+<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>shakiest number in the whole replication.</span>
+<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

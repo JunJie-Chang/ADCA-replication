@@ -292,9 +292,11 @@ window.Quarto = {
 
 <section id="specification" class="level2" data-number="7.1">
 <h2 data-number="7.1" class="anchored" data-anchor-id="specification"><span class="header-section-number">7.1</span> Specification</h2>
-<p>Total WTP for steak <span class="math inline">j</span> relative to buying nothing: <span class="math display">
+<p>Total WTP for steak <span class="math inline">j</span>, relative to buying nothing, is</p>
+<p><span class="math display">
 \text{WTP}_j = -\,\frac{\beta_j}{\alpha_j}.
-</span> The <strong>Poe combinatorial test</strong> asks whether nonhypothetical WTP is <em>lower</em> than hypothetical WTP (the hypothetical-bias hypothesis). I draw <span class="math inline">B=1000</span> coefficient vectors per treatment from <span class="math inline">\mathcal{N}(\hat\theta, \widehat{\text{Var}})</span>, compute all <span class="math inline">1000\times1000</span> WTP differences, and take the one-tailed p-value as the share of differences below zero.</p>
+</span></p>
+<p>To compare treatments I use the Poe combinatorial test, which asks whether nonhypothetical WTP is lower than hypothetical WTP (the hypothetical-bias hypothesis). For each treatment I draw 1000 coefficient vectors from <span class="math inline">\mathcal{N}(\hat\theta, \widehat{\text{Var}})</span>, form all <span class="math inline">1000\times1000</span> differences in WTP, and take the one-tailed p-value as the share of those differences that fall below zero.</p>
 </section>
 <section id="estimation-code-r05_table5_wtp.r" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="estimation-code-r05_table5_wtp.r"><span class="header-section-number">7.2</span> Estimation code (<code>R/05_table5_wtp.R</code>)</h2>
@@ -418,17 +420,17 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Result — hypothetical bias confirmed
+Result: the main finding
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Across <strong>all three models and all five steaks</strong>, hypothetical WTP exceeds nonhypothetical WTP, and the Poe p-values are ~1 (i.e., the probability that <span class="math inline">\text{WTP}_{\text{NH}} &lt; \text{WTP}_{\text{HY}}</span> is essentially certain). This is the paper’s central finding: stated (hypothetical) WTP overstates real WTP. The HEV Choice values are inflated by the <span class="math inline">\sigma_{\text{CHO}}</span> issue from the <a href="./06-advanced-models.html">previous chapter</a> and should be read with that caveat.</p>
+<p>For all three models and all five steaks, hypothetical WTP is higher than nonhypothetical WTP, and the Poe p-values sit at about 1, meaning it is essentially certain that <span class="math inline">\text{WTP}_{\text{NH}} &lt; \text{WTP}_{\text{HY}}</span>. That is the paper’s central result: stated WTP overstates real WTP. The HEV numbers for Choice are inflated by the <span class="math inline">\sigma_{\text{CHO}}</span> problem from the <a href="./06-advanced-models.html">previous chapter</a>, so read those with that caveat.</p>
 </div>
 </div>
 </section>
 <section id="figure-2-predicted-market-shares-hev" class="level2" data-number="7.4">
 <h2 data-number="7.4" class="anchored" data-anchor-id="figure-2-predicted-market-shares-hev"><span class="header-section-number">7.4</span> Figure 2 — predicted market shares (HEV)</h2>
-<p>I regenerate Figure 2 <em>live</em> from the saved HEV parameters: for each scenario I compute the HEV choice probabilities and plot them across scenarios 1–16 for both treatments.</p>
+<p>I rebuild Figure 2 here from the saved HEV parameters. For each scenario I work out the HEV choice probabilities and plot them across scenarios 1 to 16 for both treatments.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n_q <span class="ot">&lt;-</span> <span class="dv">200</span>; w_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">8</span>, <span class="dv">45</span>, <span class="at">length.out =</span> n_q)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>wt_trap <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fu">rep</span>(<span class="dv">1</span>, n_q <span class="sc">-</span> <span class="dv">2</span>), <span class="fl">0.5</span>) <span class="sc">*</span> <span class="fu">diff</span>(w_grid)[<span class="dv">1</span>]; ev_base <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>w_grid)</span>
@@ -964,96 +966,99 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## Specification</span></span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>Total WTP for steak $j$ relative to buying nothing:</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>\text{WTP}_j = -\,\frac{\beta_j}{\alpha_j}.</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>The **Poe combinatorial test** asks whether nonhypothetical WTP is *lower* than</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>hypothetical WTP (the hypothetical-bias hypothesis). I draw $B=1000$ coefficient</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>vectors per treatment from $\mathcal{N}(\hat\theta, \widehat{\text{Var}})$,</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>compute all $1000\times1000$ WTP differences, and take the one-tailed p-value as</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>the share of differences below zero.</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimation code (`R/05_table5_wtp.R`)</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{r t5-code, eval=FALSE}</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="in">compute_wtp &lt;- function(theta) -theta[1:5] / theta[6:10]   # -beta_j / alpha_j</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>Total WTP for steak $j$, relative to buying nothing, is</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>\text{WTP}_j = -\,\frac{\beta_j}{\alpha_j}.</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>To compare treatments I use the Poe combinatorial test, which asks whether</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>nonhypothetical WTP is lower than hypothetical WTP (the hypothetical-bias</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>hypothesis). For each treatment I draw 1000 coefficient vectors from</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>$\mathcal{N}(\hat\theta, \widehat{\text{Var}})$, form all $1000\times1000$</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>differences in WTP, and take the one-tailed p-value as the share of those</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>differences that fall below zero.</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimation code (`R/05_table5_wtp.R`)</span></span>
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="in">poe_test &lt;- function(vcov_nh, vcov_hyp, theta_nh, theta_hyp, B = 1000) {</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="in">  draws_nh  &lt;- MASS::mvrnorm(B, theta_nh,  make_pd(vcov_nh))   # PD repair if needed</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="in">  draws_hyp &lt;- MASS::mvrnorm(B, theta_hyp, make_pd(vcov_hyp))</span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="in">  wtp_nh  &lt;- t(apply(draws_nh,  1, compute_wtp))</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="in">  wtp_hyp &lt;- t(apply(draws_hyp, 1, compute_wtp))</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="in">  sapply(1:5, function(j)                                       # P(WTP_NH &lt; WTP_HY)</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="in">    mean(sapply(wtp_nh[,j], function(w) mean(w &lt; wtp_hyp[,j]))))</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="fu">## Table 5 — WTP and the Poe test</span></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a><span class="in">```{r t5-results}</span></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="in">kable(t5$table5,</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="in">      col.names = c("Steak", "MNL NH","MNL HY","MNL p",</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="in">                    "HEV NH","HEV HY","HEV p", "RPL NH","RPL HY","RPL p"),</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="in">      caption = "Table 5. WTP vs. None (USD) and Poe one-tailed p-values, by model.")</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Result — hypothetical bias confirmed</span></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>Across **all three models and all five steaks**, hypothetical WTP exceeds</span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>nonhypothetical WTP, and the Poe p-values are ~1 (i.e., the probability that</span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>$\text{WTP}_{\text{NH}} &lt; \text{WTP}_{\text{HY}}$ is essentially certain). This is</span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>the paper's central finding: stated (hypothetical) WTP overstates real WTP. The</span>
-<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>HEV Choice values are inflated by the $\sigma_{\text{CHO}}$ issue from the</span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">previous chapter</span><span class="co">](06-advanced-models.qmd)</span> and should be read with that caveat.</span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure 2 — predicted market shares (HEV)</span></span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a>I regenerate Figure 2 *live* from the saved HEV parameters: for each scenario I</span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a>compute the HEV choice probabilities and plot them across scenarios 1–16 for both</span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>treatments.</span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig2, fig.width=9, fig.height=7}</span></span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a><span class="in">#| fig-cap: "Figure 2. HEV-predicted market shares across scenarios, by treatment."</span></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="in">n_q &lt;- 200; w_grid &lt;- seq(-8, 45, length.out = n_q)</span></span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="in">wt_trap &lt;- c(0.5, rep(1, n_q - 2), 0.5) * diff(w_grid)[1]; ev_base &lt;- exp(-w_grid)</span></span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="in">hev_probs_single &lt;- function(V, sigma) {</span></span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="in">  J &lt;- length(V); lp &lt;- numeric(J)</span></span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="in">  for (j in seq_len(J)) {</span></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="in">    oth &lt;- seq_len(J)[-j]; r &lt;- sigma[oth] / sigma[j]; d &lt;- V[j] - V[oth]</span></span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="in">    inner &lt;- as.vector(exp(-sigma[oth] * d) %*% exp(outer(-r, w_grid)))</span></span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="in">    li &lt;- -w_grid - (ev_base + inner); m &lt;- max(li)</span></span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="in">    lp[j] &lt;- m + log(max(sum(exp(li - m) * wt_trap), 1e-300))</span></span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="in">  exp(lp - max(lp)) / sum(exp(lp - max(lp)))</span></span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="in">shares_of &lt;- function(par15, label) {</span></span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a><span class="in">  asc &lt;- c(par15[1:5], 0); alpha &lt;- c(par15[6:10], 0); sigma &lt;- c(exp(par15[11:15]), 1)</span></span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a><span class="in">  do.call(rbind, lapply(1:16, function(s) {</span></span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a><span class="in">    prices &lt;- c(as.numeric(price_matrix[s, c("GEN","GT","NAT","CHO","CAB")]), 0)</span></span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a><span class="in">    data.frame(scenario = s, alternative = alt_labels,</span></span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a><span class="in">               share = hev_probs_single(asc + alpha * prices, sigma), treatment = label)</span></span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="in">  }))</span></span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="in">shares &lt;- bind_rows(shares_of(t4h$par_nh,  "Nonhypothetical"),</span></span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="in">                    shares_of(t4h$par_hyp, "Hypothetical")) |&gt;</span></span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(alternative = factor(alternative, levels = alt_labels),</span></span>
-<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="in">         treatment   = factor(treatment, levels = c("Nonhypothetical","Hypothetical")))</span></span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="in">ggplot(shares, aes(scenario, share, colour = alternative)) +</span></span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_line(linewidth = 0.8) + geom_point(size = 1.3) +</span></span>
-<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="in">  facet_wrap(~treatment, ncol = 1) +</span></span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="in">  scale_x_continuous(breaks = 1:16) +</span></span>
-<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="in">  scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +</span></span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="in">  scale_colour_brewer(palette = "Dark2", name = "Alternative") +</span></span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="in">  labs(x = "Scenario", y = "Predicted choice probability",</span></span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="in">       title = "Predicted market shares — HEV model (scenarios 1–16)") +</span></span>
-<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="in">  theme_bw(base_size = 11) +</span></span>
-<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(panel.grid.minor = element_blank(),</span></span>
-<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a><span class="in">        strip.background = element_rect(fill = "grey90"))</span></span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="in">```{r t5-code, eval=FALSE}</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="in">compute_wtp &lt;- function(theta) -theta[1:5] / theta[6:10]   # -beta_j / alpha_j</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="in">poe_test &lt;- function(vcov_nh, vcov_hyp, theta_nh, theta_hyp, B = 1000) {</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="in">  draws_nh  &lt;- MASS::mvrnorm(B, theta_nh,  make_pd(vcov_nh))   # PD repair if needed</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="in">  draws_hyp &lt;- MASS::mvrnorm(B, theta_hyp, make_pd(vcov_hyp))</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="in">  wtp_nh  &lt;- t(apply(draws_nh,  1, compute_wtp))</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="in">  wtp_hyp &lt;- t(apply(draws_hyp, 1, compute_wtp))</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="in">  sapply(1:5, function(j)                                       # P(WTP_NH &lt; WTP_HY)</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a><span class="in">    mean(sapply(wtp_nh[,j], function(w) mean(w &lt; wtp_hyp[,j]))))</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="fu">## Table 5 — WTP and the Poe test</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{r t5-results}</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="in">kable(t5$table5,</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="in">      col.names = c("Steak", "MNL NH","MNL HY","MNL p",</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="in">                    "HEV NH","HEV HY","HEV p", "RPL NH","RPL HY","RPL p"),</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="in">      caption = "Table 5. WTP vs. None (USD) and Poe one-tailed p-values, by model.")</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## Result: the main finding</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>For all three models and all five steaks, hypothetical WTP is higher than</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>nonhypothetical WTP, and the Poe p-values sit at about 1, meaning it is essentially</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>certain that $\text{WTP}_{\text{NH}} &lt; \text{WTP}_{\text{HY}}$. That is the</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>paper's central result: stated WTP overstates real WTP. The HEV numbers for Choice</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>are inflated by the $\sigma_{\text{CHO}}$ problem from the</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">previous chapter</span><span class="co">](06-advanced-models.qmd)</span>, so read those with that caveat.</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure 2 — predicted market shares (HEV)</span></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a>I rebuild Figure 2 here from the saved HEV parameters. For each scenario I work</span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>out the HEV choice probabilities and plot them across scenarios 1 to 16 for both</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a>treatments.</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r fig2, fig.width=9, fig.height=7}</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="in">#| fig-cap: "Figure 2. HEV-predicted market shares across scenarios, by treatment."</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="in">n_q &lt;- 200; w_grid &lt;- seq(-8, 45, length.out = n_q)</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="in">wt_trap &lt;- c(0.5, rep(1, n_q - 2), 0.5) * diff(w_grid)[1]; ev_base &lt;- exp(-w_grid)</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="in">hev_probs_single &lt;- function(V, sigma) {</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="in">  J &lt;- length(V); lp &lt;- numeric(J)</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="in">  for (j in seq_len(J)) {</span></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="in">    oth &lt;- seq_len(J)[-j]; r &lt;- sigma[oth] / sigma[j]; d &lt;- V[j] - V[oth]</span></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="in">    inner &lt;- as.vector(exp(-sigma[oth] * d) %*% exp(outer(-r, w_grid)))</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="in">    li &lt;- -w_grid - (ev_base + inner); m &lt;- max(li)</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="in">    lp[j] &lt;- m + log(max(sum(exp(li - m) * wt_trap), 1e-300))</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="in">  }</span></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a><span class="in">  exp(lp - max(lp)) / sum(exp(lp - max(lp)))</span></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a><span class="in">shares_of &lt;- function(par15, label) {</span></span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a><span class="in">  asc &lt;- c(par15[1:5], 0); alpha &lt;- c(par15[6:10], 0); sigma &lt;- c(exp(par15[11:15]), 1)</span></span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a><span class="in">  do.call(rbind, lapply(1:16, function(s) {</span></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="in">    prices &lt;- c(as.numeric(price_matrix[s, c("GEN","GT","NAT","CHO","CAB")]), 0)</span></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a><span class="in">    data.frame(scenario = s, alternative = alt_labels,</span></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="in">               share = hev_probs_single(asc + alpha * prices, sigma), treatment = label)</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="in">  }))</span></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="in">shares &lt;- bind_rows(shares_of(t4h$par_nh,  "Nonhypothetical"),</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a><span class="in">                    shares_of(t4h$par_hyp, "Hypothetical")) |&gt;</span></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(alternative = factor(alternative, levels = alt_labels),</span></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="in">         treatment   = factor(treatment, levels = c("Nonhypothetical","Hypothetical")))</span></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="in">ggplot(shares, aes(scenario, share, colour = alternative)) +</span></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="in">  geom_line(linewidth = 0.8) + geom_point(size = 1.3) +</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="in">  facet_wrap(~treatment, ncol = 1) +</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="in">  scale_x_continuous(breaks = 1:16) +</span></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="in">  scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +</span></span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="in">  scale_colour_brewer(palette = "Dark2", name = "Alternative") +</span></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a><span class="in">  labs(x = "Scenario", y = "Predicted choice probability",</span></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a><span class="in">       title = "Predicted market shares — HEV model (scenarios 1–16)") +</span></span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="in">  theme_bw(base_size = 11) +</span></span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a><span class="in">  theme(panel.grid.minor = element_blank(),</span></span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a><span class="in">        strip.background = element_rect(fill = "grey90"))</span></span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

@@ -5,34 +5,41 @@
 source("_common.R")
 ```
 
-This chapter is the reflective core of the project: what was hard, what I had to
-translate from LIMDEP to R, and how I interpret the gaps.
+This chapter is the part the project asks for directly: what was hard, what I had
+to port from LIMDEP to R, and how I read the gaps between my numbers and the
+paper's.
 
 ## Locating data and documentation
 
-- The dataset (`harrison.xls`) and questionnaire (`harrison.doc`) were available,
-  but **undocumented**: a two-row header, embedded label rows, and trailing
-  summary rows that masquerade as data. The single most consequential cleaning
-  decision — dropping subject **1060** — is invisible unless you check for
-  all-missing choice rows. This alone resolves the "68 vs 67 subjects" puzzle.
-- The **price design** lives only in the paper's appendix, not in the data file.
-  Re-keying it by hand is the bridge between a stored choice *code* and the prices
-  a respondent actually saw; a single transcription error here would corrupt every
-  downstream estimate, so I cross-checked it against the appendix twice.
+The data file (`harrison.xls`) and the questionnaire (`harrison.doc`) were both
+available, but neither was documented. The spreadsheet has a two-row header,
+label rows embedded in the middle, and summary rows at the bottom that look like
+data until you check them. The cleaning decision that mattered most, dropping
+subject 1060, is not obvious unless you go looking for rows with no choice
+answers, and that one step is what resolves the 68-versus-67 subject count.
+
+The price design is another example. It lives only in the paper's appendix, not
+in the data file. It is the link between a stored choice code and the prices a
+respondent actually saw, so a single typo there would corrupt every estimate
+downstream. I keyed it in by hand and checked it against the appendix twice.
 
 ## Translating LIMDEP → R
 
-- **No turn-key joint-scale or HEV command in `mlogit`.** The Swait–Louviere
-  scaled joint MNL and the HEV model were written as **custom log-likelihoods
-  maximised with `optim(BFGS)`**, including the log-sum-exp trick for numerical
-  stability and trapezoidal quadrature for the HEV Gumbel integral. LIMDEP exposes
-  these as canned estimators; R made the mechanics explicit, which was
-  pedagogically useful but is where small numerical differences enter.
-- **Identification choices must be stated explicitly.** Base alternative
-  (`NONE`), the fixed scale ($\mu_{\text{H}}=1$), and the fixed HEV scale
-  ($\sigma_{\text{NONE}}=1$) are defaults in LIMDEP but hand-coded here.
-- **A package-version landmine.** `dfidx` 0.2.0 + `vctrs` triggers a node-stack
-  overflow; I fell back to `mlogit.data()` to build the choice data.
+`mlogit` has no ready-made command for the scaled joint MNL or for HEV, so I wrote
+both as custom log-likelihoods and maximised them with `optim` (BFGS), using the
+log-sum-exp trick for stability and trapezoidal quadrature for the HEV Gumbel
+integral. In LIMDEP these are canned estimators. Writing them out by hand was
+useful for understanding, but it is also where small numerical differences creep
+in.
+
+A second point is that the identification choices have to be made explicit in R.
+The base alternative (`NONE`), the fixed scale ($\mu_{\text{H}}=1$), and the fixed
+HEV scale ($\sigma_{\text{NONE}}=1$) are defaults in LIMDEP but have to be coded
+by hand here.
+
+There was also one practical snag worth recording: `dfidx` 0.2.0 together with
+`vctrs` triggers a node-stack overflow, so I built the choice data with
+`mlogit.data()` instead.
 
 ## Interpreting the discrepancies
 
@@ -60,22 +67,22 @@ disc <- tibble(
 kable(disc, caption = "Documented discrepancies and interpretation.")
 ```
 
-**Bottom line.** Every *qualitative* conclusion of Lusk & Schroeder (2004)
-replicates: demographics balance across treatments; the real-payment group
-chooses "None" more; IIA is rejected for the pooled/hypothetical data; and
-hypothetical WTP exceeds real WTP for every steak under every model. The
-*quantitative* gaps are confined to (a) the log-likelihood level (and the IIA
-$\chi^2$ it inflates), (b) the scale point estimate and test-df bookkeeping, and
-(c) one weakly-identified HEV scale — all attributable to optimiser defaults and
-software-specific identification conventions rather than to a substantive
-disagreement with the paper.
+Taking stock, the qualitative side of the paper replicates cleanly. The two
+treatment groups are balanced on demographics; the real-payment group chooses
+"None" more often; IIA is rejected for the pooled and hypothetical data; and
+hypothetical WTP is above real WTP for every steak under every model. The numbers
+that do not match are limited to a few things: the log-likelihood level (and the
+IIA $\chi^2$ that it inflates), the scale point estimate and the test degrees of
+freedom, and the one weakly identified HEV scale. None of these reflects a real
+disagreement with the paper; they come from optimiser defaults and from
+identification conventions that differ between LIMDEP and R.
 
 ::: {.callout-note}
-## The one thing I would chase next
-The constant log-likelihood offset is the thread worth pulling. The prime suspect
-is the **price specification**: this replication uses five alternative-specific
-own-price coefficients $\alpha_j$, whereas a single generic price coefficient (or
-a different normalisation of price) would change the attainable likelihood while
-leaving the qualitative story intact. Confirming this against the paper's Table 3
-specification and footnote 13 would likely close most of the remaining gap.
+## What I would chase next
+The constant log-likelihood gap is the thread I would pull on with more time. The
+most likely cause is the price specification. I use five alternative-specific
+own-price coefficients $\alpha_j$, but a single generic price coefficient, or a
+different way of scaling price, would change the likelihood I can reach while
+leaving the qualitative story untouched. Checking this against the paper's Table 3
+specification and its footnote 13 would probably close most of the remaining gap.
 :::

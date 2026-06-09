@@ -299,18 +299,22 @@ How the model chapters work
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>From here on, the <strong>estimation code is shown but not re-evaluated</strong> when the book builds (it is the code in <code>R/03</code>–<code>R/06</code>); the <strong>saved model objects are loaded</strong> from <code>output/</code> and the <strong>results recomputed for display</strong>. Each model follows the same template: <em>(i)</em> specification, <em>(ii)</em> estimation code, <em>(iii)</em> results, <em>(iv)</em> commentary.</p>
+<p>From here on the estimation code is shown but not re-run when the book builds. It is the code in <code>R/03</code>–<code>R/06</code>. The fitted objects are loaded from <code>output/</code>, and the results are recomputed for display. Each chapter follows the same order: specification, estimation code, results, then my comments.</p>
 </div>
 </div>
 <section id="specification" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="specification"><span class="header-section-number">4.1</span> Specification</h2>
-<p>Utility of alternative <span class="math inline">j</span> in choice situation <span class="math inline">i</span>: <span class="math display">
+<p>The utility of alternative <span class="math inline">j</span> in choice situation <span class="math inline">i</span> is</p>
+<p><span class="math display">
 V_{ij} = \beta_j + \alpha_j P_{ij}, \qquad j \in \{\text{GEN, GT, NAT, CHO, CAB}\},
 \quad V_{i,\text{NONE}} \equiv 0 .
-</span> There are <strong>5 alternative-specific constants</strong> <span class="math inline">\beta_j</span> and <strong>5 own-price coefficients</strong> <span class="math inline">\alpha_j</span> (10 taste parameters). The <strong>joint model</strong> stacks both treatments, holds taste parameters equal, and scales the nonhypothetical utilities by <span class="math inline">\mu</span>: <span class="math display">
+</span></p>
+<p>So there are five alternative-specific constants <span class="math inline">\beta_j</span> and five own-price coefficients <span class="math inline">\alpha_j</span>, ten taste parameters in all. The joint model stacks both treatments, forces the taste parameters to be equal, and scales the nonhypothetical utilities by <span class="math inline">\mu</span>:</p>
+<p><span class="math display">
 V^{\text{NH}}_{ij} = \mu\,(\beta_j + \alpha_j P_{ij}), \qquad
-V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij},
-</span> so <span class="math inline">\mu</span> is the relative error scale (precision) of the real-payment group. The <strong>Swait–Louviere LR test</strong> compares the joint model against the two separate models.</p>
+V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij}.
+</span></p>
+<p>Here <span class="math inline">\mu</span> is the error scale of the real-payment group relative to the hypothetical group. The Swait–Louviere LR test compares this joint model with the two separate models.</p>
 </section>
 <section id="estimation-code-r03_table3_mnl.r" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="estimation-code-r03_table3_mnl.r"><span class="header-section-number">4.2</span> Estimation code (<code>R/03_table3_mnl.R</code>)</h2>
@@ -348,6 +352,7 @@ V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij},
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Swait–Louviere LR scale test: chi2 = -2(LL_joint - LL_nh - LL_hyp)</span></span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>lr_stat <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">2</span> <span class="sc">*</span> (opt<span class="sc">$</span>value <span class="sc">-</span> <span class="fu">logLik</span>(mnl_nh) <span class="sc">-</span> <span class="fu">logLik</span>(mnl_hyp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>There is no off-the-shelf <code>mlogit</code> command for the scaled joint model, so I wrote the log-likelihood by hand and maximised it with <code>optim</code>. The <code>exp(V - max(V))</code> inside the probability is just the log-sum-exp trick to keep things numerically stable.</p>
 </section>
 <section id="results" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="results"><span class="header-section-number">4.3</span> Results</h2>
@@ -545,12 +550,12 @@ V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij},
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Discrepancy — scale <span class="math inline">\mu</span> and test df
+Where this differs from the paper
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>My estimated scale is <span class="math inline">\hat\mu = 0.804</span> (SE <span class="math inline">0.056</span>), versus the paper’s <span class="math inline">0.90</span> (SE <span class="math inline">0.06</span>). Both are statistically distinguishable from 1 and point the same way (the two treatments have <em>different</em> error scales), but the point estimates differ. My scale test gives <span class="math inline">\chi^2 = 105.9</span> on 9 df versus the paper’s <span class="math inline">106.8</span> on <span class="math inline">4</span> df. The <span class="math inline">\chi^2</span> magnitudes are close; the <strong>df differ because of how the joint restriction is counted</strong> (I restrict 10 taste parameters to be equal and free 1 scale: <span class="math inline">df = (10+10) - 11 = 9</span>; the paper’s “4” suggests different bookkeeping). The substantive conclusion — <em>reject pooling</em> — is unchanged.</p>
-<p>Note also that my model <strong>log-likelihoods sit below the paper’s</strong> (nonhyp <span class="math inline">-1400.3</span> vs <span class="math inline">-1261.4</span>; hyp <span class="math inline">-677.9</span> vs <span class="math inline">-627.4</span>). This level offset recurs in the <a href="./05-iia.html">IIA test</a> and is the main open question of the replication — most plausibly a difference in how price enters utility. See <a href="./08-discrepancies.html">Discrepancies</a>.</p>
+<p>My scale estimate is <span class="math inline">\hat\mu = 0.804</span> (SE <span class="math inline">0.056</span>), against the paper’s <span class="math inline">0.90</span> (SE <span class="math inline">0.06</span>). Both are far enough from 1 to be significant, and both say the two treatments have different error scales, but the point estimates are not the same. My scale test is <span class="math inline">\chi^2 = 105.9</span> on 9 df, while the paper reports <span class="math inline">106.8</span> on <span class="math inline">4</span> df. The <span class="math inline">\chi^2</span> values are close. The degrees of freedom differ because of how the joint restriction is counted: I restrict 10 taste parameters and free 1 scale, which gives <span class="math inline">(10+10) - 11 = 9</span>, whereas the paper’s “4” implies a different count. Either way the conclusion is the same, the pooling is rejected.</p>
+<p>One more thing is worth flagging. My log-likelihoods are a bit lower than the paper’s (nonhyp <span class="math inline">-1400.3</span> against <span class="math inline">-1261.4</span>; hyp <span class="math inline">-677.9</span> against <span class="math inline">-627.4</span>). The same offset shows up again in the <a href="./05-iia.html">IIA test</a>, and it is the one loose end I could not fully tie off. My best guess is that the price enters utility a little differently than in the original; I come back to this in <a href="./08-discrepancies.html">Discrepancies</a>.</p>
 </div>
 </div>
 
@@ -1041,104 +1046,113 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">## How the model chapters work</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>From here on, the **estimation code is shown but not re-evaluated** when the book</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>builds (it is the code in <span class="in">`R/03`</span>–<span class="in">`R/06`</span>); the **saved model objects are loaded**</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>from <span class="in">`output/`</span> and the **results recomputed for display**. Each model follows the</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>same template: *(i)* specification, *(ii)* estimation code, *(iii)* results,</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>*(iv)* commentary.</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Specification</span></span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>Utility of alternative $j$ in choice situation $i$:</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>From here on the estimation code is shown but not re-run when the book builds. It</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>is the code in <span class="in">`R/03`</span>–<span class="in">`R/06`</span>. The fitted objects are loaded from <span class="in">`output/`</span>, and</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>the results are recomputed for display. Each chapter follows the same order:</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>specification, estimation code, results, then my comments.</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="fu">## Specification</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>The utility of alternative $j$ in choice situation $i$ is</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>$$</span>
 <span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>V_{ij} = \beta_j + \alpha_j P_{ij}, \qquad j \in <span class="sc">\{</span>\text{GEN, GT, NAT, CHO, CAB}<span class="sc">\}</span>,</span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>\quad V_{i,\text{NONE}} \equiv 0 .</span>
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>There are **5 alternative-specific constants** $\beta_j$ and **5 own-price</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>coefficients** $\alpha_j$ (10 taste parameters). The **joint model** stacks both</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>treatments, holds taste parameters equal, and scales the nonhypothetical</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>utilities by $\mu$:</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>V^{\text{NH}}_{ij} = \mu\,(\beta_j + \alpha_j P_{ij}), \qquad</span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij},</span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>$$</span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>so $\mu$ is the relative error scale (precision) of the real-payment group. The</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>**Swait–Louviere LR test** compares the joint model against the two separate</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>models.</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimation code (`R/03_table3_mnl.R`)</span></span>
-<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a><span class="in">```{r mnl-code, eval=FALSE}</span></span>
-<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="in"># Alternative-specific price variables: p_j = price × 1{alt = j}</span></span>
-<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a><span class="in">df0 &lt;- df_mlogit |&gt;</span></span>
-<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(price_alt = tidyr::replace_na(price_alt, 0),</span></span>
-<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="in">         p_GEN = if_else(alt=="GEN", price_alt, 0),</span></span>
-<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="in">         p_GT  = if_else(alt=="GT",  price_alt, 0),</span></span>
-<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="in">         p_NAT = if_else(alt=="NAT", price_alt, 0),</span></span>
-<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="in">         p_CHO = if_else(alt=="CHO", price_alt, 0),</span></span>
-<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="in">         p_CAB = if_else(alt=="CAB", price_alt, 0))</span></span>
-<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="in">make_mdata &lt;- function(d) mlogit.data(d, choice="chosen", shape="long",</span></span>
-<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a><span class="in">  alt.var="alt", chid.var="chid", id.var="subject", alt.levels=alts)</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>So there are five alternative-specific constants $\beta_j$ and five own-price</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>coefficients $\alpha_j$, ten taste parameters in all. The joint model stacks both</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>treatments, forces the taste parameters to be equal, and scales the</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>nonhypothetical utilities by $\mu$:</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>V^{\text{NH}}_{ij} = \mu\,(\beta_j + \alpha_j P_{ij}), \qquad</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij}.</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>Here $\mu$ is the error scale of the real-payment group relative to the</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>hypothetical group. The Swait–Louviere LR test compares this joint model with the</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>two separate models.</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Estimation code (`R/03_table3_mnl.R`)</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a><span class="in">```{r mnl-code, eval=FALSE}</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a><span class="in"># Alternative-specific price variables: p_j = price × 1{alt = j}</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a><span class="in">df0 &lt;- df_mlogit |&gt;</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(price_alt = tidyr::replace_na(price_alt, 0),</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a><span class="in">         p_GEN = if_else(alt=="GEN", price_alt, 0),</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a><span class="in">         p_GT  = if_else(alt=="GT",  price_alt, 0),</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a><span class="in">         p_NAT = if_else(alt=="NAT", price_alt, 0),</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a><span class="in">         p_CHO = if_else(alt=="CHO", price_alt, 0),</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a><span class="in">         p_CAB = if_else(alt=="CAB", price_alt, 0))</span></span>
 <span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="in">f_mnl &lt;- chosen ~ p_GEN + p_GT + p_NAT + p_CHO + p_CAB | 1   # 5 prices + 5 ASCs</span></span>
-<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="in">mnl_nh  &lt;- mlogit(f_mnl, make_mdata(filter(df0, treatment=="nonhyp")), reflevel="NONE")</span></span>
-<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a><span class="in">mnl_hyp &lt;- mlogit(f_mnl, make_mdata(filter(df0, treatment=="hyp")),    reflevel="NONE")</span></span>
-<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="in"># Joint model with scale mu: custom log-likelihood maximised by optim(BFGS).</span></span>
-<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="in"># theta = (beta[1:5], alpha[6:10], log_mu[11]); V_NH scaled by exp(log_mu).</span></span>
-<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a><span class="in">ll_joint_fn &lt;- function(theta, df) {</span></span>
-<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="in">  beta  &lt;- c(theta[1:5], 0); alpha &lt;- c(theta[6:10], 0); mu &lt;- exp(theta[11])</span></span>
-<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="in">  k &lt;- match(as.character(df$alt), alts)</span></span>
-<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="in">  V &lt;- beta[k] + alpha[k]*df$price_alt</span></span>
-<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a><span class="in">  V[df$treatment=="nonhyp"] &lt;- mu * V[df$treatment=="nonhyp"]</span></span>
-<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="in">  df |&gt; mutate(V=V) |&gt; group_by(chid) |&gt;</span></span>
-<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="in">    mutate(p = exp(V-max(V))/sum(exp(V-max(V)))) |&gt; ungroup() |&gt;</span></span>
-<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(ll = sum(log(pmax(p[chosen], 1e-300)))) |&gt; pull(ll)</span></span>
-<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
-<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="in">opt &lt;- optim(theta0, ll_joint_fn, df=df0, method="BFGS",</span></span>
-<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="in">             control=list(fnscale=-1, maxit=1e4, reltol=1e-12), hessian=TRUE)</span></span>
-<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="in"># Swait–Louviere LR scale test: chi2 = -2(LL_joint - LL_nh - LL_hyp)</span></span>
-<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="in">lr_stat &lt;- -2 * (opt$value - logLik(mnl_nh) - logLik(mnl_hyp))</span></span>
-<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="fu">## Results</span></span>
-<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a><span class="in">```{r mnl-results}</span></span>
-<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a><span class="in">kable(t3$table3 |&gt; mutate(Parameter = gk(Parameter)),</span></span>
-<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a><span class="in">      col.names = c("Parameter","NH Est","NH (SE)","HY Est","HY (SE)","JT Est","JT (SE)"),</span></span>
-<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a><span class="in">      caption = "Table 3. MNL estimates — Nonhyp | Hyp | Joint (with scale).")</span></span>
-<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a><span class="in">mnl_summary &lt;- tibble(</span></span>
-<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="in">  Statistic = c("Log-likelihood", "Observations", "Scale (mu)", "SE(mu)",</span></span>
-<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a><span class="in">                "Scale-test Chi-sq", "df", "p-value"),</span></span>
-<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="in">  Nonhyp = c(fmt(t3$ll_nh,1), "1072", "—", "—", "—", "—", "—"),</span></span>
-<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="in">  Hyp    = c(fmt(t3$ll_hyp,1), "592", "—", "—", "—", "—", "—"),</span></span>
-<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="in">  Joint  = c(fmt(t3$ll_joint,1), "1664", fmt(t3$mu_hat,3), fmt(t3$se_mu,3),</span></span>
-<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="in">             fmt(t3$lr_stat,1), as.character(t3$df_test), formatC(t3$p_lr, format="e", digits=1)))</span></span>
-<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a><span class="in">kable(mnl_summary, caption = "Table 3 fit statistics.")</span></span>
-<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
-<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## Discrepancy — scale $\mu$ and test df</span></span>
-<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a>My estimated scale is $\hat\mu = <span class="in">`r fmt(t3$mu_hat,3)`</span>$ (SE $<span class="in">`r fmt(t3$se_mu,3)`</span>$),</span>
-<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a>versus the paper's $0.90$ (SE $0.06$). Both are statistically distinguishable</span>
-<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a>from 1 and point the same way (the two treatments have *different* error scales),</span>
-<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a>but the point estimates differ. My scale test gives</span>
-<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a>$\chi^2 = <span class="in">`r fmt(t3$lr_stat,1)`</span>$ on <span class="in">`r t3$df_test`</span> df versus the paper's $106.8$</span>
-<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a>on $4$ df. The $\chi^2$ magnitudes are close; the **df differ because of how the</span>
-<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>joint restriction is counted** (I restrict 10 taste parameters to be equal and</span>
-<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>free 1 scale: $df = (10+10) - 11 = 9$; the paper's "4" suggests different</span>
-<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>bookkeeping). The substantive conclusion — *reject pooling* — is unchanged.</span>
-<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>Note also that my model **log-likelihoods sit below the paper's**</span>
-<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>(nonhyp $<span class="in">`r fmt(t3$ll_nh,1)`</span>$ vs $-1261.4$; hyp $<span class="in">`r fmt(t3$ll_hyp,1)`</span>$ vs $-627.4$).</span>
-<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>This level offset recurs in the <span class="co">[</span><span class="ot">IIA test</span><span class="co">](05-iia.qmd)</span> and is the main open</span>
-<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>question of the replication — most plausibly a difference in how price enters</span>
-<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>utility. See <span class="co">[</span><span class="ot">Discrepancies</span><span class="co">](08-discrepancies.qmd)</span>.</span>
-<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a><span class="in">make_mdata &lt;- function(d) mlogit.data(d, choice="chosen", shape="long",</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a><span class="in">  alt.var="alt", chid.var="chid", id.var="subject", alt.levels=alts)</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a><span class="in">f_mnl &lt;- chosen ~ p_GEN + p_GT + p_NAT + p_CHO + p_CAB | 1   # 5 prices + 5 ASCs</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a><span class="in">mnl_nh  &lt;- mlogit(f_mnl, make_mdata(filter(df0, treatment=="nonhyp")), reflevel="NONE")</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="in">mnl_hyp &lt;- mlogit(f_mnl, make_mdata(filter(df0, treatment=="hyp")),    reflevel="NONE")</span></span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a><span class="in"># Joint model with scale mu: custom log-likelihood maximised by optim(BFGS).</span></span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a><span class="in"># theta = (beta[1:5], alpha[6:10], log_mu[11]); V_NH scaled by exp(log_mu).</span></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a><span class="in">ll_joint_fn &lt;- function(theta, df) {</span></span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a><span class="in">  beta  &lt;- c(theta[1:5], 0); alpha &lt;- c(theta[6:10], 0); mu &lt;- exp(theta[11])</span></span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a><span class="in">  k &lt;- match(as.character(df$alt), alts)</span></span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a><span class="in">  V &lt;- beta[k] + alpha[k]*df$price_alt</span></span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a><span class="in">  V[df$treatment=="nonhyp"] &lt;- mu * V[df$treatment=="nonhyp"]</span></span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a><span class="in">  df |&gt; mutate(V=V) |&gt; group_by(chid) |&gt;</span></span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a><span class="in">    mutate(p = exp(V-max(V))/sum(exp(V-max(V)))) |&gt; ungroup() |&gt;</span></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="in">    summarise(ll = sum(log(pmax(p[chosen], 1e-300)))) |&gt; pull(ll)</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a><span class="in">}</span></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a><span class="in">opt &lt;- optim(theta0, ll_joint_fn, df=df0, method="BFGS",</span></span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a><span class="in">             control=list(fnscale=-1, maxit=1e4, reltol=1e-12), hessian=TRUE)</span></span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a><span class="in"># Swait–Louviere LR scale test: chi2 = -2(LL_joint - LL_nh - LL_hyp)</span></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a><span class="in">lr_stat &lt;- -2 * (opt$value - logLik(mnl_nh) - logLik(mnl_hyp))</span></span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a>There is no off-the-shelf <span class="in">`mlogit`</span> command for the scaled joint model, so I wrote</span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a>the log-likelihood by hand and maximised it with <span class="in">`optim`</span>. The <span class="in">`exp(V - max(V))`</span></span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>inside the probability is just the log-sum-exp trick to keep things numerically</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>stable.</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Results</span></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a><span class="in">```{r mnl-results}</span></span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a><span class="in">kable(t3$table3 |&gt; mutate(Parameter = gk(Parameter)),</span></span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a><span class="in">      col.names = c("Parameter","NH Est","NH (SE)","HY Est","HY (SE)","JT Est","JT (SE)"),</span></span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a><span class="in">      caption = "Table 3. MNL estimates — Nonhyp | Hyp | Joint (with scale).")</span></span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a><span class="in">mnl_summary &lt;- tibble(</span></span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a><span class="in">  Statistic = c("Log-likelihood", "Observations", "Scale (mu)", "SE(mu)",</span></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a><span class="in">                "Scale-test Chi-sq", "df", "p-value"),</span></span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a><span class="in">  Nonhyp = c(fmt(t3$ll_nh,1), "1072", "—", "—", "—", "—", "—"),</span></span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a><span class="in">  Hyp    = c(fmt(t3$ll_hyp,1), "592", "—", "—", "—", "—", "—"),</span></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a><span class="in">  Joint  = c(fmt(t3$ll_joint,1), "1664", fmt(t3$mu_hat,3), fmt(t3$se_mu,3),</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a><span class="in">             fmt(t3$lr_stat,1), as.character(t3$df_test), formatC(t3$p_lr, format="e", digits=1)))</span></span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a><span class="in">kable(mnl_summary, caption = "Table 3 fit statistics.")</span></span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>::: {.callout-warning}</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a><span class="fu">## Where this differs from the paper</span></span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>My scale estimate is $\hat\mu = <span class="in">`r fmt(t3$mu_hat,3)`</span>$ (SE $<span class="in">`r fmt(t3$se_mu,3)`</span>$),</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a>against the paper's $0.90$ (SE $0.06$). Both are far enough from 1 to be</span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a>significant, and both say the two treatments have different error scales, but the</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>point estimates are not the same. My scale test is</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>$\chi^2 = <span class="in">`r fmt(t3$lr_stat,1)`</span>$ on <span class="in">`r t3$df_test`</span> df, while the paper reports</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>$106.8$ on $4$ df. The $\chi^2$ values are close. The degrees of freedom differ</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>because of how the joint restriction is counted: I restrict 10 taste parameters</span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>and free 1 scale, which gives $(10+10) - 11 = 9$, whereas the paper's "4" implies</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>a different count. Either way the conclusion is the same, the pooling is rejected.</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>One more thing is worth flagging. My log-likelihoods are a bit lower than the</span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>paper's (nonhyp $<span class="in">`r fmt(t3$ll_nh,1)`</span>$ against $-1261.4$; hyp $<span class="in">`r fmt(t3$ll_hyp,1)`</span>$</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>against $-627.4$). The same offset shows up again in the <span class="co">[</span><span class="ot">IIA test</span><span class="co">](05-iia.qmd)</span>,</span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a>and it is the one loose end I could not fully tie off. My best guess is that the</span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a>price enters utility a little differently than in the original; I come back to</span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a>this in <span class="co">[</span><span class="ot">Discrepancies</span><span class="co">](08-discrepancies.qmd)</span>.</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

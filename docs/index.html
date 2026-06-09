@@ -264,11 +264,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="preface" class="level1 unnumbered">
 <h1 class="unnumbered">Preface</h1>
-<p>This site reproduces, in <strong>R</strong>, the main empirical results of</p>
+<p>This site is my replication, in <strong>R</strong>, of</p>
 <blockquote class="blockquote">
 <p>Lusk, J. L., &amp; Schroeder, T. C. (2004). <em>Are Choice Experiments Incentive Compatible? A Test with Quality Differentiated Beef Steaks.</em> American Journal of Agricultural Economics, <strong>86</strong>(2), 467–482.</p>
 </blockquote>
-<p>The original analysis was conducted in <strong>LIMDEP</strong>. This is a replication project for <strong>AGEC 5045 — Applied Discrete Choice Analysis (NTU, 114-2)</strong>, written as a Quarto book so that <strong>code, results, and commentary</strong> sit side by side and the whole analysis can be reproduced end to end.</p>
+<p>The authors ran their analysis in LIMDEP. I redid it in R for the AGEC 5045 (Applied Discrete Choice Analysis, NTU 114-2) replication project. I wrote it as a Quarto book so that the code, the output it produces, and my own comments are all in one place and easy to follow.</p>
 <section id="what-is-reproduced" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-reproduced">What is reproduced</h2>
 <table class="caption-top table">
@@ -313,18 +313,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <tr class="odd">
 <td>Discussion</td>
 <td><a href="./08-discrepancies.html">Discrepancies</a></td>
-<td>replication experience &amp; gaps</td>
+<td>what went differently, and why</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="how-to-read-it" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-read-it">How to read it</h2>
-<ul>
-<li><strong>Data preparation runs live</strong> in the book — the <a href="./02-data.html">Data</a> chapter reads the raw spreadsheet and builds the estimation dataset in front of you.</li>
-<li><strong>Model estimation code is shown but loaded, not re-run.</strong> The heavy models (custom-likelihood MNL scale test, HEV quadrature, simulated-ML RPL, the Poe bootstrap) are estimated by the numbered scripts in <code>R/</code>, saved to <code>output/*.rds</code>, and loaded here; results are then recomputed for display. This keeps the book fast and deterministic while still showing every line of code.</li>
-<li><strong>Commentary is set off in coloured callout boxes</strong> so my own notes are never confused with the paper’s claims or the raw output.</li>
-</ul>
+<p>The <a href="./02-data.html">Data</a> chapter runs for real when the book is built: it opens the raw spreadsheet and builds the estimation dataset step by step.</p>
+<p>The model chapters work a little differently. The heavy models (the custom-likelihood MNL scale test, the HEV quadrature, the simulated-ML RPL, and the Poe bootstrap) are estimated by the numbered scripts in <code>R/</code>, which save their results to <code>output/*.rds</code>. The book shows that estimation code but loads the saved results rather than re-running them, so it builds in a few seconds. The lighter summaries and Figure 2 are still computed on the spot.</p>
+<p>My own comments are in coloured callout boxes, so they are easy to tell apart from the paper’s claims and from the raw output.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -338,7 +336,7 @@ Reproducibility
 <p>All code and data are in the <a href="https://github.com/JunJie-Chang/ADCA-replication">GitHub repository</a>. To rebuild from scratch, run the scripts in <code>R/</code> in order (see <a href="./09-reproducibility.html">Reproducibility</a>) and re-render the book.</p>
 </div>
 </div>
-<p>The headline result, stated once up front: <strong>hypothetical choices overstate real willingness to pay.</strong> Every qualitative finding of the paper replicates; the quantitative gaps that remain are documented and interpreted in the final chapter.</p>
+<p>If there is one result to remember, it is this: hypothetical choices overstate what people will really pay. Every qualitative finding of the paper comes through in my replication. The numbers that do not match exactly are listed and discussed in the final chapter.</p>
 
 
 <!-- -->
@@ -823,16 +821,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>This site reproduces, in **R**, the main empirical results of</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>This site is my replication, in **R**, of</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Lusk, J. L., &amp; Schroeder, T. C. (2004). *Are Choice Experiments Incentive</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; Compatible? A Test with Quality Differentiated Beef Steaks.* American Journal</span></span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; of Agricultural Economics, **86**(2), 467–482.</span></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>The original analysis was conducted in **LIMDEP**. This is a replication project</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>for **AGEC 5045 — Applied Discrete Choice Analysis (NTU, 114-2)**, written as a</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Quarto book so that **code, results, and commentary** sit side by side and the</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>whole analysis can be reproduced end to end.</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>The authors ran their analysis in LIMDEP. I redid it in R for the AGEC 5045</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>(Applied Discrete Choice Analysis, NTU 114-2) replication project. I wrote it as</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>a Quarto book so that the code, the output it produces, and my own comments are</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>all in one place and easy to follow.</span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">## What is reproduced</span></span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
@@ -844,31 +842,35 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>| IIA test | <span class="co">[</span><span class="ot">IIA</span><span class="co">](05-iia.qmd)</span> | universal ("mother") logit LR test |</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>| Table 4 | <span class="co">[</span><span class="ot">Advanced models</span><span class="co">](06-advanced-models.qmd)</span> | HEV, RPL (MNP discussed) |</span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>| Table 5 &amp; Figure 2 | <span class="co">[</span><span class="ot">WTP</span><span class="co">](07-wtp-figure.qmd)</span> | willingness to pay + Poe test; HEV market shares |</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>| Discussion | <span class="co">[</span><span class="ot">Discrepancies</span><span class="co">](08-discrepancies.qmd)</span> | replication experience &amp; gaps |</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>| Discussion | <span class="co">[</span><span class="ot">Discrepancies</span><span class="co">](08-discrepancies.qmd)</span> | what went differently, and why |</span>
 <span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">## How to read it</span></span>
 <span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Data preparation runs live** in the book — the <span class="co">[</span><span class="ot">Data</span><span class="co">](02-data.qmd)</span> chapter</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  reads the raw spreadsheet and builds the estimation dataset in front of you.</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Model estimation code is shown but loaded, not re-run.** The heavy models</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>  (custom-likelihood MNL scale test, HEV quadrature, simulated-ML RPL, the Poe</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>  bootstrap) are estimated by the numbered scripts in <span class="in">`R/`</span>, saved to</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="in">`output/*.rds`</span>, and loaded here; results are then recomputed for display. This</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>  keeps the book fast and deterministic while still showing every line of code.</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Commentary is set off in coloured callout boxes** so my own notes are never</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  confused with the paper's claims or the raw output.</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">Data</span><span class="co">](02-data.qmd)</span> chapter runs for real when the book is built: it opens</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>the raw spreadsheet and builds the estimation dataset step by step.</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>The model chapters work a little differently. The heavy models (the</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>custom-likelihood MNL scale test, the HEV quadrature, the simulated-ML RPL, and</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>the Poe bootstrap) are estimated by the numbered scripts in <span class="in">`R/`</span>, which save</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>their results to <span class="in">`output/*.rds`</span>. The book shows that estimation code but loads</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>the saved results rather than re-running them, so it builds in a few seconds.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>The lighter summaries and Figure 2 are still computed on the spot.</span>
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducibility</span></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>All code and data are in the <span class="co">[</span><span class="ot">GitHub repository</span><span class="co">](https://github.com/JunJie-Chang/ADCA-replication)</span>.</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>To rebuild from scratch, run the scripts in <span class="in">`R/`</span> in order (see</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Reproducibility</span><span class="co">](09-reproducibility.qmd)</span>) and re-render the book.</span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>The headline result, stated once up front: **hypothetical choices overstate</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>real willingness to pay.** Every qualitative finding of the paper replicates;</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>the quantitative gaps that remain are documented and interpreted in the final</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a>chapter.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>My own comments are in coloured callout boxes, so they are easy to tell apart</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>from the paper's claims and from the raw output.</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reproducibility</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>All code and data are in the</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">GitHub repository</span><span class="co">](https://github.com/JunJie-Chang/ADCA-replication)</span>. To rebuild</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>from scratch, run the scripts in <span class="in">`R/`</span> in order (see</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Reproducibility</span><span class="co">](09-reproducibility.qmd)</span>) and re-render the book.</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>If there is one result to remember, it is this: hypothetical choices overstate</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>what people will really pay. Every qualitative finding of the paper comes through</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>in my replication. The numbers that do not match exactly are listed and</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>discussed in the final chapter.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

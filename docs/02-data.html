@@ -247,10 +247,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This chapter runs <strong>live</strong>: it reads the raw spreadsheet and builds the estimation dataset, exactly the data-preparation workflow demonstrated in class.</p>
+<p>This chapter actually runs when the book is built. It reads the raw spreadsheet and builds the estimation dataset, following the same data-preparation steps we used in class.</p>
 <section id="the-raw-file" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="the-raw-file"><span class="header-section-number">2.1</span> The raw file</h2>
-<p>The authors provided <code>harrison.xls</code>. The relevant sheet, <code>trt 10&amp;11</code>, is a <em>wide</em> spreadsheet — one row per respondent — with a two-row header, label rows separating the two treatments, and summary rows at the bottom. Treatment 10 is the nonhypothetical group; Treatment 11 is the hypothetical group.</p>
+<p>The data came as <code>harrison.xls</code>. The sheet I need, <code>trt 10&amp;11</code>, is in wide form: one row per respondent, with a two-row header, label rows that separate the two treatments, and a few summary rows at the bottom. Treatment 10 is the nonhypothetical group and Treatment 11 is the hypothetical group.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>raw_dims <span class="ot">&lt;-</span> <span class="fu">dim</span>(readxl<span class="sc">::</span><span class="fu">read_excel</span>(<span class="st">"harrison.xls"</span>, <span class="at">sheet =</span> <span class="st">"trt 10&amp;11"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">skip =</span> <span class="dv">3</span>, <span class="at">col_types =</span> <span class="st">"text"</span>))</span>
@@ -258,7 +258,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    raw_dims[<span class="dv">1</span>], <span class="st">"rows ×"</span>, raw_dims[<span class="dv">2</span>], <span class="st">"columns</span><span class="sc">\n</span><span class="st">"</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Raw sheet (after skipping 3 header rows): 129 rows × 57 columns</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p><strong>Key variables.</strong></p>
+<p>The columns fall into a few groups:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 33%">
@@ -289,17 +289,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>Survey Likert items (not used in estimation)</td>
 </tr>
 <tr class="even">
-<td><strong>Choices</strong></td>
+<td>Choices</td>
 <td><code>sc1</code>–<code>sc17</code></td>
 <td>Chosen alternative per scenario, coded 1–6</td>
 </tr>
 </tbody>
 </table>
-<p>Choice codes: <code>1 = Generic (GEN)</code>, <code>2 = Guaranteed Tender (GT)</code>, <code>3 = Natural (NAT)</code>, <code>4 = USDA Choice (CHO)</code>, <code>5 = CAB</code>, <code>6 = None (NONE)</code>.</p>
+<p>The choice codes are <code>1 = Generic (GEN)</code>, <code>2 = Guaranteed Tender (GT)</code>, <code>3 = Natural (NAT)</code>, <code>4 = USDA Choice (CHO)</code>, <code>5 = CAB</code>, <code>6 = None (NONE)</code>.</p>
 </section>
 <section id="the-price-design-paper-appendix" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="the-price-design-paper-appendix"><span class="header-section-number">2.2</span> The price design (paper appendix)</h2>
-<p>The 17 × 5 price matrix is the experimental design; it is the same for both treatments and is the bridge between a chosen <em>code</em> and the <em>prices</em> the respondent faced.</p>
+<p>The 17 × 5 price matrix is the experimental design. It is the same for both treatments, and it is what connects a stored choice <em>code</em> to the <em>prices</em> the respondent was actually looking at.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>price_matrix <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>scenario, <span class="sc">~</span>GEN,  <span class="sc">~</span>GT,   <span class="sc">~</span>NAT,  <span class="sc">~</span>CHO,  <span class="sc">~</span>CAB,</span>
@@ -471,7 +471,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="cleaning-from-spreadsheet-to-respondents" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="cleaning-from-spreadsheet-to-respondents"><span class="header-section-number">2.3</span> Cleaning: from spreadsheet to respondents</h2>
-<p>I keep only valid subject-ID rows (1001–1199), which automatically drops the treatment-label rows and the trailing summary rows. <strong>One subject (ID 1060) has all 17 scenarios missing and is excluded</strong> — this reconciles the 68 rows in the file with the 67 nonhypothetical subjects the paper reports.</p>
+<p>I keep only the rows whose subject ID is between 1001 and 1199. That filter alone drops the treatment-label rows and the summary rows at the bottom. One more case needs handling: subject 1060 has no answers for any of the 17 scenarios, so I drop it. Doing this brings the file’s 68 rows down to the 67 nonhypothetical subjects the paper reports.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>demo_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"subject"</span>,<span class="st">"gender"</span>,<span class="st">"age"</span>,<span class="st">"household"</span>,<span class="st">"child"</span>,<span class="st">"education"</span>,<span class="st">"income"</span>,<span class="st">"student"</span>,</span>
@@ -503,11 +503,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="reshape-wide-long-choice-format" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="reshape-wide-long-choice-format"><span class="header-section-number">2.4</span> Reshape: wide → long → choice format</h2>
-<p>Two reshapes turn the respondent-level table into the estimation data:</p>
-<ol type="1">
-<li><strong>Long</strong> — one row per <em>respondent × scenario</em>; merge in the five prices.</li>
-<li><strong>Choice (mlogit) format</strong> — one row per <em>respondent × scenario × alternative</em>, with a logical <code>chosen</code> flag and the alternative’s own price. <strong>Scenario 17 is excluded from estimation</strong> (it is the all-equal-price binding scenario), leaving scenarios 1–16.</li>
-</ol>
+<p>Two reshapes turn the respondent table into something the choice models can use. First I go to long form, one row per respondent and scenario, and merge in the five prices. Then I expand to choice (mlogit) form, one row per respondent, scenario, and alternative, with a logical <code>chosen</code> flag and the alternative’s own price. Scenario 17 is dropped at this stage, since it is the all-equal-price binding scenario, which leaves scenarios 1 to 16 for estimation.</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df_wide <span class="sc">|&gt;</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(subject, treatment, session, <span class="fu">all_of</span>(sc_names)) <span class="sc">|&gt;</span></span>
@@ -599,14 +595,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Data-prep lessons
+Two things I learned here
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li>The “68 vs 67” gap is the first thing a replicator hits. Rather than guess, I searched for the structural reason — subject 1060 is empty — which is exactly the kind of provenance note the original LIMDEP file does not carry.</li>
-<li><code>NONE</code> has <strong>no price</strong>; encoding its <code>price_alt</code> as <code>NA</code>/0 (and never giving it an own-price coefficient) is what makes it the natural base alternative.</li>
-</ul>
+<p>The “68 vs 67” mismatch is the first thing you run into. Instead of guessing which subject to drop, I looked for a reason and found that subject 1060 is empty, which is the kind of note the original LIMDEP file simply does not carry.</p>
+<p>The other point is that <code>NONE</code> has no price. Coding its <code>price_alt</code> as <code>NA</code> or 0, and never giving it an own-price coefficient, is what makes it the natural base alternative.</p>
 </div>
 </div>
 
@@ -1095,143 +1089,146 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>This chapter runs **live**: it reads the raw spreadsheet and builds the</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>estimation dataset, exactly the data-preparation workflow demonstrated in class.</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## The raw file</span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>The authors provided <span class="in">`harrison.xls`</span>. The relevant sheet, <span class="in">`trt 10&amp;11`</span>, is a</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>*wide* spreadsheet — one row per respondent — with a two-row header, label rows</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>separating the two treatments, and summary rows at the bottom. Treatment 10 is</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>the nonhypothetical group; Treatment 11 is the hypothetical group.</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r raw-peek}</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="in">raw_dims &lt;- dim(readxl::read_excel("harrison.xls", sheet = "trt 10&amp;11",</span></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="in">                                   skip = 3, col_types = "text"))</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Raw sheet (after skipping 3 header rows):",</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="in">    raw_dims[1], "rows ×", raw_dims[2], "columns\n")</span></span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>**Key variables.**</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>| Block | Columns | Contents |</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>|---|---|---|</span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>| Identifiers | <span class="in">`subject`</span>, <span class="in">`session`</span> | Subject ID (1001–1099 = nonhyp; 1100–1199 = hyp) |</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>| Demographics | <span class="in">`gender`</span>, <span class="in">`age`</span>, <span class="in">`education`</span>, <span class="in">`student`</span>, <span class="in">`income`</span>, … | Used for Table 1 |</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>| Attitudes | <span class="in">`color`</span>, <span class="in">`tenderness`</span>, <span class="in">`flavor`</span>, … | Survey Likert items (not used in estimation) |</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>| **Choices** | <span class="in">`sc1`</span>–<span class="in">`sc17`</span> | Chosen alternative per scenario, coded 1–6 |</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>Choice codes: <span class="in">`1 = Generic (GEN)`</span>, <span class="in">`2 = Guaranteed Tender (GT)`</span>,</span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="in">`3 = Natural (NAT)`</span>, <span class="in">`4 = USDA Choice (CHO)`</span>, <span class="in">`5 = CAB`</span>, <span class="in">`6 = None (NONE)`</span>.</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## The price design (paper appendix)</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>The 17 × 5 price matrix is the experimental design; it is the same for both</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>treatments and is the bridge between a chosen *code* and the *prices* the</span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>respondent faced.</span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{r price-matrix}</span></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="in">price_matrix &lt;- tibble::tribble(</span></span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="in">  ~scenario, ~GEN,  ~GT,   ~NAT,  ~CHO,  ~CAB,</span></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="in">  1, 3.38, 7.88, 6.75, 6.75, 6.75,   2, 4.50, 9.00, 6.75, 5.63, 9.00,</span></span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="in">  3, 6.75, 9.00, 5.63, 9.00, 6.75,   4, 5.63, 9.00, 9.00, 6.75, 5.63,</span></span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="in">  5, 6.75, 6.75, 6.75, 7.88, 7.88,   6, 4.50, 7.88, 7.88, 9.00, 9.00,</span></span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="in">  7, 4.50, 6.75, 5.63, 6.75, 7.88,   8, 5.63, 5.63, 5.63, 7.88, 9.00,</span></span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="in">  9, 5.63, 7.88, 5.63, 7.88, 9.00,  10, 5.63, 6.75, 7.88, 5.63, 9.00,</span></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="in"> 11, 6.75, 7.88, 9.00, 5.63, 7.88,  12, 4.50, 5.63, 5.63, 7.88, 7.88,</span></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="in"> 13, 3.38, 9.00, 7.88, 7.88, 9.00,  14, 3.38, 5.63, 5.63, 5.63, 5.63,</span></span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a><span class="in"> 15, 3.38, 6.75, 9.00, 9.00, 9.00,  16, 6.75, 5.63, 7.88, 6.75, 6.75,</span></span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="in"> 17, 5.63, 5.63, 5.63, 5.63, 5.63</span></span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a><span class="in">kable(price_matrix, caption = "Price design: 17 scenarios × 5 steaks (USD).")</span></span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cleaning: from spreadsheet to respondents</span></span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>I keep only valid subject-ID rows (1001–1199), which automatically drops the</span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>treatment-label rows and the trailing summary rows. **One subject (ID 1060) has</span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>all 17 scenarios missing and is excluded** — this reconciles the 68 rows in the</span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>file with the 67 nonhypothetical subjects the paper reports.</span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a><span class="in">```{r clean-wide}</span></span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="in">demo_names &lt;- c(</span></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="in">  "subject","gender","age","household","child","education","income","student",</span></span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="in">  "occupation","race","gbeef","steak_buy","other_beef","gbeef_freq","steak_freq",</span></span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="in">  "color","brand","quality_gd","ex_fat","in_fat","price_imp","safety","juiciness",</span></span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="in">  "flavor","tenderness","consistency","doneness","production","quality_gd2",</span></span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="in">  "slaughter","food_safe","quality_pref","cooked","chance1","chance2","chance3",</span></span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="in">  "chance4","chance5")</span></span>
-<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="in">sc_names &lt;- paste0("sc", 1:17)</span></span>
-<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="in">raw &lt;- read_excel("harrison.xls", sheet = "trt 10&amp;11",</span></span>
-<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="in">                  col_names = c(demo_names, sc_names, "blank", "session"),</span></span>
-<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="in">                  skip = 3, col_types = "text")</span></span>
-<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="in">df_wide &lt;- raw |&gt;</span></span>
-<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(subject = suppressWarnings(as.numeric(subject))) |&gt;</span></span>
-<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(!is.na(subject), subject &gt;= 1001, subject &lt;= 1199) |&gt;</span></span>
-<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(subject != 1060) |&gt;                              # all scenarios missing</span></span>
-<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(treatment = factor(if_else(subject &lt; 1100, "nonhyp", "hyp"),</span></span>
-<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="in">                            levels = c("nonhyp", "hyp"))) |&gt;</span></span>
-<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(across(all_of(c(setdiff(demo_names, "subject"), sc_names, "session")),</span></span>
-<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="in">                as.numeric))</span></span>
-<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Nonhypothetical subjects:", sum(df_wide$treatment == "nonhyp"), "(paper: 67)\n")</span></span>
-<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Hypothetical  subjects:",  sum(df_wide$treatment == "hyp"),    "(paper: 37)\n")</span></span>
-<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reshape: wide → long → choice format</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>This chapter actually runs when the book is built. It reads the raw spreadsheet</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>and builds the estimation dataset, following the same data-preparation steps we</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>used in class.</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## The raw file</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>The data came as <span class="in">`harrison.xls`</span>. The sheet I need, <span class="in">`trt 10&amp;11`</span>, is in wide form:</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>one row per respondent, with a two-row header, label rows that separate the two</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>treatments, and a few summary rows at the bottom. Treatment 10 is the</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>nonhypothetical group and Treatment 11 is the hypothetical group.</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="in">```{r raw-peek}</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="in">raw_dims &lt;- dim(readxl::read_excel("harrison.xls", sheet = "trt 10&amp;11",</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="in">                                   skip = 3, col_types = "text"))</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Raw sheet (after skipping 3 header rows):",</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="in">    raw_dims[1], "rows ×", raw_dims[2], "columns\n")</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>The columns fall into a few groups:</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>| Block | Columns | Contents |</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>|---|---|---|</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>| Identifiers | <span class="in">`subject`</span>, <span class="in">`session`</span> | Subject ID (1001–1099 = nonhyp; 1100–1199 = hyp) |</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>| Demographics | <span class="in">`gender`</span>, <span class="in">`age`</span>, <span class="in">`education`</span>, <span class="in">`student`</span>, <span class="in">`income`</span>, … | Used for Table 1 |</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>| Attitudes | <span class="in">`color`</span>, <span class="in">`tenderness`</span>, <span class="in">`flavor`</span>, … | Survey Likert items (not used in estimation) |</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>| Choices | <span class="in">`sc1`</span>–<span class="in">`sc17`</span> | Chosen alternative per scenario, coded 1–6 |</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>The choice codes are <span class="in">`1 = Generic (GEN)`</span>, <span class="in">`2 = Guaranteed Tender (GT)`</span>,</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="in">`3 = Natural (NAT)`</span>, <span class="in">`4 = USDA Choice (CHO)`</span>, <span class="in">`5 = CAB`</span>, <span class="in">`6 = None (NONE)`</span>.</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="fu">## The price design (paper appendix)</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>The 17 × 5 price matrix is the experimental design. It is the same for both</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>treatments, and it is what connects a stored choice *code* to the *prices* the</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>respondent was actually looking at.</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="in">```{r price-matrix}</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="in">price_matrix &lt;- tibble::tribble(</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="in">  ~scenario, ~GEN,  ~GT,   ~NAT,  ~CHO,  ~CAB,</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="in">  1, 3.38, 7.88, 6.75, 6.75, 6.75,   2, 4.50, 9.00, 6.75, 5.63, 9.00,</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="in">  3, 6.75, 9.00, 5.63, 9.00, 6.75,   4, 5.63, 9.00, 9.00, 6.75, 5.63,</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="in">  5, 6.75, 6.75, 6.75, 7.88, 7.88,   6, 4.50, 7.88, 7.88, 9.00, 9.00,</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="in">  7, 4.50, 6.75, 5.63, 6.75, 7.88,   8, 5.63, 5.63, 5.63, 7.88, 9.00,</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="in">  9, 5.63, 7.88, 5.63, 7.88, 9.00,  10, 5.63, 6.75, 7.88, 5.63, 9.00,</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="in"> 11, 6.75, 7.88, 9.00, 5.63, 7.88,  12, 4.50, 5.63, 5.63, 7.88, 7.88,</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a><span class="in"> 13, 3.38, 9.00, 7.88, 7.88, 9.00,  14, 3.38, 5.63, 5.63, 5.63, 5.63,</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="in"> 15, 3.38, 6.75, 9.00, 9.00, 9.00,  16, 6.75, 5.63, 7.88, 6.75, 6.75,</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="in"> 17, 5.63, 5.63, 5.63, 5.63, 5.63</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a><span class="in">kable(price_matrix, caption = "Price design: 17 scenarios × 5 steaks (USD).")</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cleaning: from spreadsheet to respondents</span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>I keep only the rows whose subject ID is between 1001 and 1199. That filter alone</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>drops the treatment-label rows and the summary rows at the bottom. One more case</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>needs handling: subject 1060 has no answers for any of the 17 scenarios, so I drop</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>it. Doing this brings the file's 68 rows down to the 67 nonhypothetical subjects</span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>the paper reports.</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r clean-wide}</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="in">demo_names &lt;- c(</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="in">  "subject","gender","age","household","child","education","income","student",</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="in">  "occupation","race","gbeef","steak_buy","other_beef","gbeef_freq","steak_freq",</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="in">  "color","brand","quality_gd","ex_fat","in_fat","price_imp","safety","juiciness",</span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="in">  "flavor","tenderness","consistency","doneness","production","quality_gd2",</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="in">  "slaughter","food_safe","quality_pref","cooked","chance1","chance2","chance3",</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a><span class="in">  "chance4","chance5")</span></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="in">sc_names &lt;- paste0("sc", 1:17)</span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="in">raw &lt;- read_excel("harrison.xls", sheet = "trt 10&amp;11",</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a><span class="in">                  col_names = c(demo_names, sc_names, "blank", "session"),</span></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="in">                  skip = 3, col_types = "text")</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="in">df_wide &lt;- raw |&gt;</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(subject = suppressWarnings(as.numeric(subject))) |&gt;</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(!is.na(subject), subject &gt;= 1001, subject &lt;= 1199) |&gt;</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(subject != 1060) |&gt;                              # all scenarios missing</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(treatment = factor(if_else(subject &lt; 1100, "nonhyp", "hyp"),</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="in">                            levels = c("nonhyp", "hyp"))) |&gt;</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(across(all_of(c(setdiff(demo_names, "subject"), sc_names, "session")),</span></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a><span class="in">                as.numeric))</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Nonhypothetical subjects:", sum(df_wide$treatment == "nonhyp"), "(paper: 67)\n")</span></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Hypothetical  subjects:",  sum(df_wide$treatment == "hyp"),    "(paper: 37)\n")</span></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>Two reshapes turn the respondent-level table into the estimation data:</span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reshape: wide → long → choice format</span></span>
 <span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Long** — one row per *respondent × scenario*; merge in the five prices.</span>
-<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Choice (mlogit) format** — one row per *respondent × scenario ×</span>
-<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>   alternative*, with a logical <span class="in">`chosen`</span> flag and the alternative's own price.</span>
-<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>   **Scenario 17 is excluded from estimation** (it is the all-equal-price binding</span>
-<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>   scenario), leaving scenarios 1–16.</span>
-<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r reshape}</span></span>
-<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a><span class="in">df_long &lt;- df_wide |&gt;</span></span>
-<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="in">  select(subject, treatment, session, all_of(sc_names)) |&gt;</span></span>
-<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="in">  pivot_longer(all_of(sc_names), names_to = "sc_var", values_to = "choice_code") |&gt;</span></span>
-<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(scenario = as.integer(sub("sc", "", sc_var)),</span></span>
-<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="in">         choice   = factor(choice_code, levels = 1:6, labels = alt_labels)) |&gt;</span></span>
-<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a><span class="in">  select(-sc_var, -choice_code) |&gt;</span></span>
-<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a><span class="in">  left_join(price_matrix, by = "scenario") |&gt;</span></span>
-<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="in">  arrange(subject, scenario)</span></span>
-<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="in">df_mlogit &lt;- df_long |&gt;</span></span>
-<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(scenario &lt;= 16) |&gt;                               # drop binding scenario</span></span>
-<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="in">  crossing(alt = factor(alt_labels, levels = alt_labels)) |&gt;</span></span>
-<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(</span></span>
-<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a><span class="in">    chosen    = as.character(choice) == as.character(alt),</span></span>
-<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="in">    price_alt = case_when(</span></span>
-<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a><span class="in">      alt == "GEN" ~ GEN, alt == "GT"  ~ GT,  alt == "NAT" ~ NAT,</span></span>
-<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="in">      alt == "CHO" ~ CHO, alt == "CAB" ~ CAB, alt == "NONE" ~ NA_real_),</span></span>
-<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="in">    chid = paste(subject, scenario, sep = "_")) |&gt;</span></span>
-<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="in">  select(chid, subject, treatment, session, scenario, alt, chosen, price_alt) |&gt;</span></span>
-<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="in">  arrange(subject, scenario, alt)</span></span>
-<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Nonhyp choice situations:",</span></span>
-<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="in">    sum(df_mlogit$treatment == "nonhyp" &amp; df_mlogit$alt == "GEN"), "(paper: 1072 = 67×16)\n")</span></span>
-<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Hyp    choice situations:",</span></span>
-<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a><span class="in">    sum(df_mlogit$treatment == "hyp"    &amp; df_mlogit$alt == "GEN"), "(paper:  592 = 37×16)\n")</span></span>
-<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r show-choice-format}</span></span>
-<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="in">df_mlogit |&gt; filter(chid == "1001_1") |&gt;</span></span>
-<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a><span class="in">  select(chid, alt, chosen, price_alt) |&gt;</span></span>
-<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a><span class="in">  kable(caption = "One choice situation in long format (subject 1001, scenario 1).")</span></span>
-<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data-prep lessons</span></span>
-<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The "68 vs 67" gap is the first thing a replicator hits. Rather than guess, I</span>
-<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>  searched for the structural reason — subject 1060 is empty — which is exactly</span>
-<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>  the kind of provenance note the original LIMDEP file does not carry.</span>
-<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`NONE`</span> has **no price**; encoding its <span class="in">`price_alt`</span> as <span class="in">`NA`</span>/0 (and never giving</span>
-<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>  it an own-price coefficient) is what makes it the natural base alternative.</span>
-<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a>Two reshapes turn the respondent table into something the choice models can use.</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>First I go to long form, one row per respondent and scenario, and merge in the</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>five prices. Then I expand to choice (mlogit) form, one row per respondent,</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>scenario, and alternative, with a logical <span class="in">`chosen`</span> flag and the alternative's own</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>price. Scenario 17 is dropped at this stage, since it is the all-equal-price</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a>binding scenario, which leaves scenarios 1 to 16 for estimation.</span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r reshape}</span></span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="in">df_long &lt;- df_wide |&gt;</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="in">  select(subject, treatment, session, all_of(sc_names)) |&gt;</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a><span class="in">  pivot_longer(all_of(sc_names), names_to = "sc_var", values_to = "choice_code") |&gt;</span></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(scenario = as.integer(sub("sc", "", sc_var)),</span></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a><span class="in">         choice   = factor(choice_code, levels = 1:6, labels = alt_labels)) |&gt;</span></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a><span class="in">  select(-sc_var, -choice_code) |&gt;</span></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="in">  left_join(price_matrix, by = "scenario") |&gt;</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a><span class="in">  arrange(subject, scenario)</span></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a><span class="in">df_mlogit &lt;- df_long |&gt;</span></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(scenario &lt;= 16) |&gt;                               # drop binding scenario</span></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="in">  crossing(alt = factor(alt_labels, levels = alt_labels)) |&gt;</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(</span></span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="in">    chosen    = as.character(choice) == as.character(alt),</span></span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a><span class="in">    price_alt = case_when(</span></span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="in">      alt == "GEN" ~ GEN, alt == "GT"  ~ GT,  alt == "NAT" ~ NAT,</span></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="in">      alt == "CHO" ~ CHO, alt == "CAB" ~ CAB, alt == "NONE" ~ NA_real_),</span></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="in">    chid = paste(subject, scenario, sep = "_")) |&gt;</span></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="in">  select(chid, subject, treatment, session, scenario, alt, chosen, price_alt) |&gt;</span></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a><span class="in">  arrange(subject, scenario, alt)</span></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Nonhyp choice situations:",</span></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a><span class="in">    sum(df_mlogit$treatment == "nonhyp" &amp; df_mlogit$alt == "GEN"), "(paper: 1072 = 67×16)\n")</span></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Hyp    choice situations:",</span></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="in">    sum(df_mlogit$treatment == "hyp"    &amp; df_mlogit$alt == "GEN"), "(paper:  592 = 37×16)\n")</span></span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r show-choice-format}</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a><span class="in">df_mlogit |&gt; filter(chid == "1001_1") |&gt;</span></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a><span class="in">  select(chid, alt, chosen, price_alt) |&gt;</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="in">  kable(caption = "One choice situation in long format (subject 1001, scenario 1).")</span></span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a><span class="fu">## Two things I learned here</span></span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>The "68 vs 67" mismatch is the first thing you run into. Instead of guessing</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>which subject to drop, I looked for a reason and found that subject 1060 is empty,</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a>which is the kind of note the original LIMDEP file simply does not carry.</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>The other point is that <span class="in">`NONE`</span> has no price. Coding its <span class="in">`price_alt`</span> as <span class="in">`NA`</span> or 0,</span>
+<span id="cb6-147"><a href="#cb6-147" aria-hidden="true" tabindex="-1"></a>and never giving it an own-price coefficient, is what makes it the natural base</span>
+<span id="cb6-148"><a href="#cb6-148" aria-hidden="true" tabindex="-1"></a>alternative.</span>
+<span id="cb6-149"><a href="#cb6-149" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

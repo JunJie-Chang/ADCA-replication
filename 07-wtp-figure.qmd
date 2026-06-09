@@ -7,15 +7,18 @@ source("_common.R")
 
 ## Specification
 
-Total WTP for steak $j$ relative to buying nothing:
+Total WTP for steak $j$, relative to buying nothing, is
+
 $$
 \text{WTP}_j = -\,\frac{\beta_j}{\alpha_j}.
 $$
-The **Poe combinatorial test** asks whether nonhypothetical WTP is *lower* than
-hypothetical WTP (the hypothetical-bias hypothesis). I draw $B=1000$ coefficient
-vectors per treatment from $\mathcal{N}(\hat\theta, \widehat{\text{Var}})$,
-compute all $1000\times1000$ WTP differences, and take the one-tailed p-value as
-the share of differences below zero.
+
+To compare treatments I use the Poe combinatorial test, which asks whether
+nonhypothetical WTP is lower than hypothetical WTP (the hypothetical-bias
+hypothesis). For each treatment I draw 1000 coefficient vectors from
+$\mathcal{N}(\hat\theta, \widehat{\text{Var}})$, form all $1000\times1000$
+differences in WTP, and take the one-tailed p-value as the share of those
+differences that fall below zero.
 
 ## Estimation code (`R/05_table5_wtp.R`)
 
@@ -42,19 +45,19 @@ kable(t5$table5,
 ```
 
 ::: {.callout-tip}
-## Result — hypothetical bias confirmed
-Across **all three models and all five steaks**, hypothetical WTP exceeds
-nonhypothetical WTP, and the Poe p-values are ~1 (i.e., the probability that
-$\text{WTP}_{\text{NH}} < \text{WTP}_{\text{HY}}$ is essentially certain). This is
-the paper's central finding: stated (hypothetical) WTP overstates real WTP. The
-HEV Choice values are inflated by the $\sigma_{\text{CHO}}$ issue from the
-[previous chapter](06-advanced-models.qmd) and should be read with that caveat.
+## Result: the main finding
+For all three models and all five steaks, hypothetical WTP is higher than
+nonhypothetical WTP, and the Poe p-values sit at about 1, meaning it is essentially
+certain that $\text{WTP}_{\text{NH}} < \text{WTP}_{\text{HY}}$. That is the
+paper's central result: stated WTP overstates real WTP. The HEV numbers for Choice
+are inflated by the $\sigma_{\text{CHO}}$ problem from the
+[previous chapter](06-advanced-models.qmd), so read those with that caveat.
 :::
 
 ## Figure 2 — predicted market shares (HEV)
 
-I regenerate Figure 2 *live* from the saved HEV parameters: for each scenario I
-compute the HEV choice probabilities and plot them across scenarios 1–16 for both
+I rebuild Figure 2 here from the saved HEV parameters. For each scenario I work
+out the HEV choice probabilities and plot them across scenarios 1 to 16 for both
 treatments.
 
 ```{r fig2, fig.width=9, fig.height=7}

@@ -8,14 +8,12 @@ source("_common.R")
 ## How to rebuild everything
 
 The numbered scripts in `R/` produce the saved objects in `output/` that this
-book loads. To reproduce from the raw spreadsheet:
+book loads. To start over from the raw spreadsheet, run them in this order:
 
-**Run order**
-
-1. `R/01_data_prep.R` — read `harrison.xls`, clean, reshape; save `df_*.rds`,
+1. `R/01_data_prep.R` — read `harrison.xls`, clean, reshape; save `df_*.rds` and
    `price_matrix.rds`.
 2. `R/02_table1_table2.R` — Tables 1 and 2.
-3. `R/03_table3_mnl.R` — MNL estimates + scale test → `table3_mnl.rds`.
+3. `R/03_table3_mnl.R` — MNL estimates and the scale test → `table3_mnl.rds`.
 4. `R/06_iia_universal_logit.R` — IIA universal logit → `iia_ul.rds`.
 5. `R/04_table4_adv.R` — HEV and RPL → `table4_hev.rds`, `table4_rpl.rds`.
 6. `R/05_table5_wtp.R` — WTP, Poe test, Figure 2 → `table5_wtp.rds`.
@@ -27,12 +25,13 @@ quarto render        # builds the site into docs/
 ```
 
 ::: {.callout-tip}
-## Notes
-* The numbered scripts use `rstudioapi` to locate the project, so run them from
-  **RStudio** (or replace the path line with `getwd()` to run headless).
-* The advanced models are slow (RPL at 500 draws; HEV quadrature; the Poe
-  bootstrap). The book itself does **not** re-run them — it loads `output/*.rds`
-  and recomputes only the lightweight summaries and Figure 2.
+## A couple of notes
+The numbered scripts use `rstudioapi` to find the project folder, so run them from
+RStudio, or replace that line with `getwd()` to run them without RStudio.
+
+The advanced models are slow (RPL with 500 draws, the HEV quadrature, the Poe
+bootstrap). The book does not re-run them; it loads `output/*.rds` and recomputes
+only the light summaries and Figure 2.
 :::
 
 ## Session information

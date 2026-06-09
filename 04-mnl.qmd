@@ -7,31 +7,34 @@ source("_common.R")
 
 ::: {.callout-note}
 ## How the model chapters work
-From here on, the **estimation code is shown but not re-evaluated** when the book
-builds (it is the code in `R/03`–`R/06`); the **saved model objects are loaded**
-from `output/` and the **results recomputed for display**. Each model follows the
-same template: *(i)* specification, *(ii)* estimation code, *(iii)* results,
-*(iv)* commentary.
+From here on the estimation code is shown but not re-run when the book builds. It
+is the code in `R/03`–`R/06`. The fitted objects are loaded from `output/`, and
+the results are recomputed for display. Each chapter follows the same order:
+specification, estimation code, results, then my comments.
 :::
 
 ## Specification
 
-Utility of alternative $j$ in choice situation $i$:
+The utility of alternative $j$ in choice situation $i$ is
+
 $$
 V_{ij} = \beta_j + \alpha_j P_{ij}, \qquad j \in \{\text{GEN, GT, NAT, CHO, CAB}\},
 \quad V_{i,\text{NONE}} \equiv 0 .
 $$
-There are **5 alternative-specific constants** $\beta_j$ and **5 own-price
-coefficients** $\alpha_j$ (10 taste parameters). The **joint model** stacks both
-treatments, holds taste parameters equal, and scales the nonhypothetical
-utilities by $\mu$:
+
+So there are five alternative-specific constants $\beta_j$ and five own-price
+coefficients $\alpha_j$, ten taste parameters in all. The joint model stacks both
+treatments, forces the taste parameters to be equal, and scales the
+nonhypothetical utilities by $\mu$:
+
 $$
 V^{\text{NH}}_{ij} = \mu\,(\beta_j + \alpha_j P_{ij}), \qquad
-V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij},
+V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij}.
 $$
-so $\mu$ is the relative error scale (precision) of the real-payment group. The
-**Swait–Louviere LR test** compares the joint model against the two separate
-models.
+
+Here $\mu$ is the error scale of the real-payment group relative to the
+hypothetical group. The Swait–Louviere LR test compares this joint model with the
+two separate models.
 
 ## Estimation code (`R/03_table3_mnl.R`)
 
@@ -70,6 +73,11 @@ opt <- optim(theta0, ll_joint_fn, df=df0, method="BFGS",
 lr_stat <- -2 * (opt$value - logLik(mnl_nh) - logLik(mnl_hyp))
 ```
 
+There is no off-the-shelf `mlogit` command for the scaled joint model, so I wrote
+the log-likelihood by hand and maximised it with `optim`. The `exp(V - max(V))`
+inside the probability is just the log-sum-exp trick to keep things numerically
+stable.
+
 ## Results
 
 ```{r mnl-results}
@@ -88,20 +96,21 @@ kable(mnl_summary, caption = "Table 3 fit statistics.")
 ```
 
 ::: {.callout-warning}
-## Discrepancy — scale $\mu$ and test df
-My estimated scale is $\hat\mu = `r fmt(t3$mu_hat,3)`$ (SE $`r fmt(t3$se_mu,3)`$),
-versus the paper's $0.90$ (SE $0.06$). Both are statistically distinguishable
-from 1 and point the same way (the two treatments have *different* error scales),
-but the point estimates differ. My scale test gives
-$\chi^2 = `r fmt(t3$lr_stat,1)`$ on `r t3$df_test` df versus the paper's $106.8$
-on $4$ df. The $\chi^2$ magnitudes are close; the **df differ because of how the
-joint restriction is counted** (I restrict 10 taste parameters to be equal and
-free 1 scale: $df = (10+10) - 11 = 9$; the paper's "4" suggests different
-bookkeeping). The substantive conclusion — *reject pooling* — is unchanged.
+## Where this differs from the paper
+My scale estimate is $\hat\mu = `r fmt(t3$mu_hat,3)`$ (SE $`r fmt(t3$se_mu,3)`$),
+against the paper's $0.90$ (SE $0.06$). Both are far enough from 1 to be
+significant, and both say the two treatments have different error scales, but the
+point estimates are not the same. My scale test is
+$\chi^2 = `r fmt(t3$lr_stat,1)`$ on `r t3$df_test` df, while the paper reports
+$106.8$ on $4$ df. The $\chi^2$ values are close. The degrees of freedom differ
+because of how the joint restriction is counted: I restrict 10 taste parameters
+and free 1 scale, which gives $(10+10) - 11 = 9$, whereas the paper's "4" implies
+a different count. Either way the conclusion is the same, the pooling is rejected.
 
-Note also that my model **log-likelihoods sit below the paper's**
-(nonhyp $`r fmt(t3$ll_nh,1)`$ vs $-1261.4$; hyp $`r fmt(t3$ll_hyp,1)`$ vs $-627.4$).
-This level offset recurs in the [IIA test](05-iia.qmd) and is the main open
-question of the replication — most plausibly a difference in how price enters
-utility. See [Discrepancies](08-discrepancies.qmd).
+One more thing is worth flagging. My log-likelihoods are a bit lower than the
+paper's (nonhyp $`r fmt(t3$ll_nh,1)`$ against $-1261.4$; hyp $`r fmt(t3$ll_hyp,1)`$
+against $-627.4$). The same offset shows up again in the [IIA test](05-iia.qmd),
+and it is the one loose end I could not fully tie off. My best guess is that the
+price enters utility a little differently than in the original; I come back to
+this in [Discrepancies](08-discrepancies.qmd).
 :::

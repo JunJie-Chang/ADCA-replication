@@ -248,41 +248,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="research-question" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="research-question"><span class="header-section-number">1.1</span> Research question</h2>
-<p>Choice experiments (CEs) ask respondents to pick repeatedly among multi-attribute products at varying prices, and have become a workhorse for valuing food quality, environmental goods, and new products. They are widely believed to be <em>more</em> incentive compatible than open-ended contingent valuation because they mimic real shopping. <strong>Lusk &amp; Schroeder (2004) test that belief directly</strong>: do the choices people make — and the willingness-to-pay (WTP) values recovered from them — differ when the task is <em>hypothetical</em> versus when <em>real money changes hands</em>?</p>
-<p>This is the same “hypothetical bias” question long studied in the contingent valuation literature, but moved <em>inside</em> the choice-experiment framework. The paper’s distinctive contribution is to pin down <strong>which</strong> WTP measures are biased: marginal WTP for a quality change, or total WTP relative to a no-buy option.</p>
+<p>In a choice experiment, people pick repeatedly among products that differ in their attributes and prices. The method is now standard for valuing food quality, environmental goods, and new products, and it is often assumed to be more incentive compatible than open-ended contingent valuation because it looks more like ordinary shopping.</p>
+<p>Lusk and Schroeder ask whether that assumption actually holds. Do the choices people make, and the willingness-to-pay (WTP) numbers we back out of them, change when the task is hypothetical rather than backed by real money? This is the “hypothetical bias” question from the contingent valuation literature, asked inside the choice-experiment setting. What makes the paper useful is that it does not just ask whether bias exists; it tries to say which WTP measure is affected, the marginal value of a quality change or the total value of a steak versus buying nothing.</p>
 </section>
 <section id="empirical-design" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="empirical-design"><span class="header-section-number">1.2</span> Empirical design</h2>
+<p>The good is a 12-oz ribeye steak, offered under five quality or assurance labels: Generic, Guaranteed Tender (GT), Natural, USDA Choice, and Certified Angus Beef (CAB). A sixth option, “None”, lets the respondent decline to buy, so each choice is among six alternatives.</p>
+<p>Each subject saw 17 scenarios. In every scenario the five steaks were offered at prices that varied by design (from $3.38 to $9.00), and the subject picked one steak or chose None. The full price design is in the paper’s appendix and is reproduced in the <a href="./02-data.html">Data</a> chapter.</p>
+<p>The manipulation that matters is the treatment:</p>
 <ul>
-<li><strong>Good.</strong> 12-oz ribeye steaks differentiated by a quality/assurance label: Generic, Guaranteed Tender (GT), Natural, USDA Choice, and Certified Angus Beef (CAB), plus a <strong>“None”</strong> (no-purchase) option — six alternatives.</li>
-<li><strong>Choice task.</strong> Each subject faced 17 choice scenarios; in each, the five steaks were offered at experimentally varied prices ($3.38–$9.00) and the subject chose one steak or “None”. The full price design is in the paper’s appendix and is reproduced in the <a href="./02-data.html">Data</a> chapter.</li>
-<li><strong>Treatments (the key manipulation).</strong>
-<ul>
-<li><em>Nonhypothetical</em> (real): subjects knew that one scenario would be drawn at random and <em>binding</em> — they would actually buy the steak they chose at the posted price. Scenario 17 (all five steaks at the same $5.63) served as the binding scenario.</li>
-<li><em>Hypothetical</em>: identical task, but no transaction ever occurred.</li>
-</ul></li>
-<li><strong>Estimation (LIMDEP in the original).</strong> A sequence of discrete-choice models on the panel of choices: multinomial logit (MNL); a test of IIA via the universal (“mother”) logit; and three less-restrictive models — heteroscedastic extreme value (HEV), multinomial probit (MNP), and random parameters logit (RPL). Treatments are compared with the Swait–Louviere scale-and-preference test, and WTP differences are tested with the Poe combinatorial test.</li>
+<li>In the <em>nonhypothetical</em> (real) treatment, subjects knew that one scenario would be drawn at random and would actually count: they would buy the steak they had chosen at the posted price. Scenario 17, where all five steaks cost the same $5.63, was the binding scenario.</li>
+<li>The <em>hypothetical</em> treatment used the identical task, except no purchase ever happened.</li>
 </ul>
+<p>For estimation the authors fit a series of discrete-choice models to the panel of choices: a multinomial logit (MNL), a test of IIA based on the universal (“mother”) logit, and three less restrictive models, namely heteroscedastic extreme value (HEV), multinomial probit (MNP), and random parameters logit (RPL). They compare the two treatments with the Swait–Louviere scale-and-preference test and test WTP differences with the Poe combinatorial test. All of this was done in LIMDEP.</p>
 </section>
 <section id="key-findings-of-the-paper" class="level2" data-number="1.3">
 <h2 data-number="1.3" class="anchored" data-anchor-id="key-findings-of-the-paper"><span class="header-section-number">1.3</span> Key findings of the paper</h2>
-<ol type="1">
-<li><strong>Hypothetical bias is present.</strong> Hypothetical respondents choose the no-purchase option less often and exhibit <em>higher</em> WTP than real-payment respondents.</li>
-<li><strong>The error scale differs across treatments</strong>, and a joint model rejects equality of preferences across treatments.</li>
-<li><strong>IIA is violated</strong> for the pooled and hypothetical data (universal-logit LR test), motivating the HEV / MNP / RPL models.</li>
-<li><strong>Bias is concentrated in total WTP</strong> (value of a steak vs.&nbsp;buying nothing) rather than in marginal quality premiums — an important, nuanced result for practitioners.</li>
-</ol>
+<p>The paper reports four main results. Hypothetical respondents choose the no-purchase option less often and have higher WTP than the real-payment group, so hypothetical bias is present. The error scale differs across treatments, and a joint model rejects equality of preferences across the two groups. IIA is violated for the pooled and hypothetical data, which is what motivates the richer HEV, MNP, and RPL models. Finally, the bias shows up mainly in total WTP (a steak versus buying nothing) rather than in the marginal premiums between quality levels, which is the practically useful part of the result.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-My framing
+Why this paper is good to replicate
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The paper is essentially a careful <em>measurement-validity</em> exercise for stated preference methods. For replication this is attractive because every headline number is a likelihood, a test statistic, or a WTP — all things we can recompute from the raw choices. The challenge is less “what to compute” than “reproducing 2004 LIMDEP defaults in modern R,” which is where most of my discrepancies arise (see <a href="./08-discrepancies.html">Discrepancies</a>).</p>
+<p>Almost every headline number is a likelihood, a test statistic, or a WTP, so each one can be recomputed from the raw choices. That means the hard part is rarely deciding what to calculate. The hard part is matching LIMDEP’s 2004 defaults in present-day R, and that is where most of my discrepancies come from (see <a href="./08-discrepancies.html">Discrepancies</a>).</p>
 </div>
 </div>
 
@@ -773,66 +766,69 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## Research question</span></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>Choice experiments (CEs) ask respondents to pick repeatedly among</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>multi-attribute products at varying prices, and have become a workhorse for</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>valuing food quality, environmental goods, and new products. They are widely</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>believed to be *more* incentive compatible than open-ended contingent valuation</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>because they mimic real shopping. **Lusk &amp; Schroeder (2004) test that belief</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>directly**: do the choices people make — and the willingness-to-pay (WTP) values</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>recovered from them — differ when the task is *hypothetical* versus when *real</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>money changes hands*?</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>This is the same "hypothetical bias" question long studied in the contingent</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>valuation literature, but moved *inside* the choice-experiment framework. The</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>paper's distinctive contribution is to pin down **which** WTP measures are</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>biased: marginal WTP for a quality change, or total WTP relative to a no-buy</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>option.</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>In a choice experiment, people pick repeatedly among products that differ in</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>their attributes and prices. The method is now standard for valuing food</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>quality, environmental goods, and new products, and it is often assumed to be</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>more incentive compatible than open-ended contingent valuation because it looks</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>more like ordinary shopping.</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Lusk and Schroeder ask whether that assumption actually holds. Do the choices</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>people make, and the willingness-to-pay (WTP) numbers we back out of them, change</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>when the task is hypothetical rather than backed by real money? This is the</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>"hypothetical bias" question from the contingent valuation literature, asked</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>inside the choice-experiment setting. What makes the paper useful is that it does</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>not just ask whether bias exists; it tries to say which WTP measure is affected,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>the marginal value of a quality change or the total value of a steak versus</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>buying nothing.</span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Empirical design</span></span>
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Good.** 12-oz ribeye steaks differentiated by a quality/assurance label:</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  Generic, Guaranteed Tender (GT), Natural, USDA Choice, and Certified Angus</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  Beef (CAB), plus a **"None"** (no-purchase) option — six alternatives.</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Choice task.** Each subject faced 17 choice scenarios; in each, the five</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>  steaks were offered at experimentally varied prices (\$3.38–\$9.00) and the</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  subject chose one steak or "None". The full price design is in the paper's</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  appendix and is reproduced in the <span class="co">[</span><span class="ot">Data</span><span class="co">](02-data.qmd)</span> chapter.</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Treatments (the key manipulation).**</span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>*Nonhypothetical* (real): subjects knew that one scenario would be drawn at</span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>    random and *binding* — they would actually buy the steak they chose at the</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>    posted price. Scenario 17 (all five steaks at the same \$5.63) served as the</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    binding scenario.</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>*Hypothetical*: identical task, but no transaction ever occurred.</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Estimation (LIMDEP in the original).** A sequence of discrete-choice models</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  on the panel of choices: multinomial logit (MNL); a test of IIA via the</span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  universal ("mother") logit; and three less-restrictive models —</span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>  heteroscedastic extreme value (HEV), multinomial probit (MNP), and random</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>  parameters logit (RPL). Treatments are compared with the Swait–Louviere</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>  scale-and-preference test, and WTP differences are tested with the Poe</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>  combinatorial test.</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key findings of the paper</span></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Hypothetical bias is present.** Hypothetical respondents choose the</span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>   no-purchase option less often and exhibit *higher* WTP than real-payment</span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>   respondents.</span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**The error scale differs across treatments**, and a joint model rejects</span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>   equality of preferences across treatments.</span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**IIA is violated** for the pooled and hypothetical data (universal-logit LR</span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>   test), motivating the HEV / MNP / RPL models.</span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Bias is concentrated in total WTP** (value of a steak vs. buying nothing)</span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>   rather than in marginal quality premiums — an important, nuanced result for</span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>   practitioners.</span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## My framing</span></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>The paper is essentially a careful *measurement-validity* exercise for stated</span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a>preference methods. For replication this is attractive because every headline</span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>number is a likelihood, a test statistic, or a WTP — all things we can recompute</span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>from the raw choices. The challenge is less "what to compute" than "reproducing</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>2004 LIMDEP defaults in modern R," which is where most of my discrepancies arise</span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>(see <span class="co">[</span><span class="ot">Discrepancies</span><span class="co">](08-discrepancies.qmd)</span>).</span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>The good is a 12-oz ribeye steak, offered under five quality or assurance labels:</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>Generic, Guaranteed Tender (GT), Natural, USDA Choice, and Certified Angus Beef</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>(CAB). A sixth option, "None", lets the respondent decline to buy, so each choice</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>is among six alternatives.</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>Each subject saw 17 scenarios. In every scenario the five steaks were offered at</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>prices that varied by design (from \$3.38 to \$9.00), and the subject picked one</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>steak or chose None. The full price design is in the paper's appendix and is</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>reproduced in the <span class="co">[</span><span class="ot">Data</span><span class="co">](02-data.qmd)</span> chapter.</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>The manipulation that matters is the treatment:</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>In the *nonhypothetical* (real) treatment, subjects knew that one scenario</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  would be drawn at random and would actually count: they would buy the steak</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>  they had chosen at the posted price. Scenario 17, where all five steaks cost</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  the same \$5.63, was the binding scenario.</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The *hypothetical* treatment used the identical task, except no purchase ever</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>  happened.</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>For estimation the authors fit a series of discrete-choice models to the panel</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>of choices: a multinomial logit (MNL), a test of IIA based on the universal</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>("mother") logit, and three less restrictive models, namely heteroscedastic</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>extreme value (HEV), multinomial probit (MNP), and random parameters logit (RPL).</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>They compare the two treatments with the Swait–Louviere scale-and-preference test</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>and test WTP differences with the Poe combinatorial test. All of this was done in</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a>LIMDEP.</span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Key findings of the paper</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a>The paper reports four main results. Hypothetical respondents choose the</span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>no-purchase option less often and have higher WTP than the real-payment group, so</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a>hypothetical bias is present. The error scale differs across treatments, and a</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>joint model rejects equality of preferences across the two groups. IIA is</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>violated for the pooled and hypothetical data, which is what motivates the richer</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>HEV, MNP, and RPL models. Finally, the bias shows up mainly in total WTP (a steak</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a>versus buying nothing) rather than in the marginal premiums between quality</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>levels, which is the practically useful part of the result.</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a><span class="fu">## Why this paper is good to replicate</span></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>Almost every headline number is a likelihood, a test statistic, or a WTP, so each</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>one can be recomputed from the raw choices. That means the hard part is rarely</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>deciding what to calculate. The hard part is matching LIMDEP's 2004 defaults in</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>present-day R, and that is where most of my discrepancies come from (see</span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">Discrepancies</span><span class="co">](08-discrepancies.qmd)</span>).</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

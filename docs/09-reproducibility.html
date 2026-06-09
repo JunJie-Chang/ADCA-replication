@@ -247,12 +247,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="how-to-rebuild-everything" class="level2" data-number="9.1">
 <h2 data-number="9.1" class="anchored" data-anchor-id="how-to-rebuild-everything"><span class="header-section-number">9.1</span> How to rebuild everything</h2>
-<p>The numbered scripts in <code>R/</code> produce the saved objects in <code>output/</code> that this book loads. To reproduce from the raw spreadsheet:</p>
-<p><strong>Run order</strong></p>
+<p>The numbered scripts in <code>R/</code> produce the saved objects in <code>output/</code> that this book loads. To start over from the raw spreadsheet, run them in this order:</p>
 <ol type="1">
-<li><code>R/01_data_prep.R</code> — read <code>harrison.xls</code>, clean, reshape; save <code>df_*.rds</code>, <code>price_matrix.rds</code>.</li>
+<li><code>R/01_data_prep.R</code> — read <code>harrison.xls</code>, clean, reshape; save <code>df_*.rds</code> and <code>price_matrix.rds</code>.</li>
 <li><code>R/02_table1_table2.R</code> — Tables 1 and 2.</li>
-<li><code>R/03_table3_mnl.R</code> — MNL estimates + scale test → <code>table3_mnl.rds</code>.</li>
+<li><code>R/03_table3_mnl.R</code> — MNL estimates and the scale test → <code>table3_mnl.rds</code>.</li>
 <li><code>R/06_iia_universal_logit.R</code> — IIA universal logit → <code>iia_ul.rds</code>.</li>
 <li><code>R/04_table4_adv.R</code> — HEV and RPL → <code>table4_hev.rds</code>, <code>table4_rpl.rds</code>.</li>
 <li><code>R/05_table5_wtp.R</code> — WTP, Poe test, Figure 2 → <code>table5_wtp.rds</code>.</li>
@@ -265,14 +264,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Notes
+A couple of notes
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<ul>
-<li>The numbered scripts use <code>rstudioapi</code> to locate the project, so run them from <strong>RStudio</strong> (or replace the path line with <code>getwd()</code> to run headless).</li>
-<li>The advanced models are slow (RPL at 500 draws; HEV quadrature; the Poe bootstrap). The book itself does <strong>not</strong> re-run them — it loads <code>output/*.rds</code> and recomputes only the lightweight summaries and Figure 2.</li>
-</ul>
+<p>The numbered scripts use <code>rstudioapi</code> to find the project folder, so run them from RStudio, or replace that line with <code>getwd()</code> to run them without RStudio.</p>
+<p>The advanced models are slow (RPL with 500 draws, the HEV quadrature, the Poe bootstrap). The book does not re-run them; it loads <code>output/*.rds</code> and recomputes only the light summaries and Figure 2.</p>
 </div>
 </div>
 </section>
@@ -783,57 +780,56 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## How to rebuild everything</span></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>The numbered scripts in <span class="in">`R/`</span> produce the saved objects in <span class="in">`output/`</span> that this</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>book loads. To reproduce from the raw spreadsheet:</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>book loads. To start over from the raw spreadsheet, run them in this order:</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>**Run order**</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span><span class="in">`R/01_data_prep.R`</span> — read <span class="in">`harrison.xls`</span>, clean, reshape; save <span class="in">`df_*.rds`</span>,</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>   <span class="in">`price_matrix.rds`</span>.</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span><span class="in">`R/02_table1_table2.R`</span> — Tables 1 and 2.</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span><span class="in">`R/03_table3_mnl.R`</span> — MNL estimates + scale test → <span class="in">`table3_mnl.rds`</span>.</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span><span class="in">`R/06_iia_universal_logit.R`</span> — IIA universal logit → <span class="in">`iia_ul.rds`</span>.</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span><span class="in">`R/04_table4_adv.R`</span> — HEV and RPL → <span class="in">`table4_hev.rds`</span>, <span class="in">`table4_rpl.rds`</span>.</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span><span class="in">`R/05_table5_wtp.R`</span> — WTP, Poe test, Figure 2 → <span class="in">`table5_wtp.rds`</span>.</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span><span class="in">`R/01_data_prep.R`</span> — read <span class="in">`harrison.xls`</span>, clean, reshape; save <span class="in">`df_*.rds`</span> and</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>   <span class="in">`price_matrix.rds`</span>.</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span><span class="in">`R/02_table1_table2.R`</span> — Tables 1 and 2.</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span><span class="in">`R/03_table3_mnl.R`</span> — MNL estimates and the scale test → <span class="in">`table3_mnl.rds`</span>.</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span><span class="in">`R/06_iia_universal_logit.R`</span> — IIA universal logit → <span class="in">`iia_ul.rds`</span>.</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ss">5. </span><span class="in">`R/04_table4_adv.R`</span> — HEV and RPL → <span class="in">`table4_hev.rds`</span>, <span class="in">`table4_rpl.rds`</span>.</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="ss">6. </span><span class="in">`R/05_table5_wtp.R`</span> — WTP, Poe test, Figure 2 → <span class="in">`table5_wtp.rds`</span>.</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>Then render the book:</span>
 <span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>Then render the book:</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render        <span class="co"># builds the site into docs/</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Notes</span></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The numbered scripts use <span class="in">`rstudioapi`</span> to locate the project, so run them from</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  **RStudio** (or replace the path line with <span class="in">`getwd()`</span> to run headless).</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The advanced models are slow (RPL at 500 draws; HEV quadrature; the Poe</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  bootstrap). The book itself does **not** re-run them — it loads <span class="in">`output/*.rds`</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  and recomputes only the lightweight summaries and Figure 2.</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session information</span></span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="in">```{r sessioninfo, echo=FALSE}</span></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="in">si &lt;- sessionInfo()</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="in">cat("R version:", si$R.version$version.string, "\n\n")</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="in">pkgs &lt;- c("mlogit","dfidx","readxl","dplyr","tidyr","ggplot2","MASS","Matrix","knitr")</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="in">have &lt;- pkgs[pkgs %in% rownames(installed.packages())]</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Key packages:\n")</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="in">for (p in have) cat(sprintf("  %-10s %s\n", p, as.character(packageVersion(p))))</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>Lusk, J. L., &amp; Schroeder, T. C. (2004). Are Choice Experiments Incentive</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>Compatible? A Test with Quality Differentiated Beef Steaks. *American Journal of</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>Agricultural Economics*, 86(2), 467–482.</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>Poe, G. L., Giraud, K. L., &amp; Loomis, J. B. (2005). Computational Methods for</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>Measuring the Difference of Empirical Distributions. *American Journal of</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>Agricultural Economics*, 87(2), 353–365.</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>Swait, J., &amp; Louviere, J. (1993). The Role of the Scale Parameter in the</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>Estimation and Comparison of Multinomial Logit Models. *Journal of Marketing</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>Research*, 30(3), 305–314.</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="in">```bash</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render        <span class="co"># builds the site into docs/</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip}</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="fu">## A couple of notes</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>The numbered scripts use <span class="in">`rstudioapi`</span> to find the project folder, so run them from</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>RStudio, or replace that line with <span class="in">`getwd()`</span> to run them without RStudio.</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>The advanced models are slow (RPL with 500 draws, the HEV quadrature, the Poe</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>bootstrap). The book does not re-run them; it loads <span class="in">`output/*.rds`</span> and recomputes</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>only the light summaries and Figure 2.</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## Session information</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="in">```{r sessioninfo, echo=FALSE}</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="in">si &lt;- sessionInfo()</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="in">cat("R version:", si$R.version$version.string, "\n\n")</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="in">pkgs &lt;- c("mlogit","dfidx","readxl","dplyr","tidyr","ggplot2","MASS","Matrix","knitr")</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="in">have &lt;- pkgs[pkgs %in% rownames(installed.packages())]</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Key packages:\n")</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="in">for (p in have) cat(sprintf("  %-10s %s\n", p, as.character(packageVersion(p))))</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="fu">## References {.unnumbered}</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>Lusk, J. L., &amp; Schroeder, T. C. (2004). Are Choice Experiments Incentive</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>Compatible? A Test with Quality Differentiated Beef Steaks. *American Journal of</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>Agricultural Economics*, 86(2), 467–482.</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>Poe, G. L., Giraud, K. L., &amp; Loomis, J. B. (2005). Computational Methods for</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>Measuring the Difference of Empirical Distributions. *American Journal of</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>Agricultural Economics*, 87(2), 353–365.</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>Swait, J., &amp; Louviere, J. (1993). The Role of the Scale Parameter in the</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>Estimation and Comparison of Multinomial Logit Models. *Journal of Marketing</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>Research*, 30(3), 305–314.</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

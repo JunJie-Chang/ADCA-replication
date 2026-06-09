@@ -7,17 +7,23 @@ source("_common.R")
 
 ## Specifications
 
-- **HEV (heteroscedastic extreme value).** Like MNL but each alternative has its
-  own Gumbel scale $\sigma_j$ (with $\sigma_{\text{NONE}} = 1$ fixed for
-  identification). It relaxes IIA by allowing alternative-specific error
-  variances. I estimate it with a **custom log-likelihood** that integrates the
-  choice probability over the Gumbel density by trapezoidal quadrature.
-- **RPL (random parameters logit).** ASCs are random-normal across respondents
-  (mean + SD); price coefficients are held fixed for convergence. Estimated by
-  simulated ML (500 draws) in `mlogit`.
-- **MNP (multinomial probit).** Off-diagonal correlations set to 0, two SDs fixed
-  to 1. *Not estimated here* — it needs the `apollo` package and a GHK simulator
-  over a 5-dimensional normal; I document the intended setup instead.
+Three models go into Table 4, and I fit two of them.
+
+HEV (heteroscedastic extreme value) is like MNL except that each alternative has
+its own Gumbel scale $\sigma_j$, with $\sigma_{\text{NONE}} = 1$ fixed for
+identification. Letting the error variances differ by alternative is how it
+relaxes IIA. I fit it with a hand-written log-likelihood that integrates the
+choice probability over the Gumbel density using trapezoidal quadrature.
+
+RPL (random parameters logit) lets the constants vary across respondents as
+normal draws (a mean and a standard deviation each), while the price coefficients
+stay fixed so the model converges. I estimate it by simulated maximum likelihood
+with 500 draws in `mlogit`.
+
+MNP (multinomial probit) sets the off-diagonal correlations to zero and fixes two
+standard deviations to 1. I do not fit it here. It needs the `apollo` package and
+a GHK simulator over a five-dimensional normal, which is more than this project
+took on, so I describe the intended setup rather than report estimates.
 
 ## Estimation code (`R/04_table4_adv.R`)
 
@@ -53,13 +59,14 @@ cat(sprintf("HEV log-likelihood — NH: %.1f | HY: %.1f | Joint: %.1f\n",
 ```
 
 ::: {.callout-warning}
-## Convergence issue — HEV $\sigma_{\text{CHO}}$
-The estimated scale for USDA Choice is implausibly large
-($\hat\sigma_{\text{CHO}} \approx `r fmt(t4h$table4_hev$NH_Est[14],0)`$ nonhyp).
-This signals weak identification of that alternative's variance given the price
-design, and it inflates the HEV WTP for Choice in the [next chapter](07-wtp-figure.qmd)
-and makes the HEV covariance matrix near-singular (I repair it with
-`Matrix::nearPD` before the Poe bootstrap). Better starting values or bounded
-reparameterisation ($\log\sigma$ already used) would be the next step. This is the
-single largest numerical fragility in my replication.
+## A convergence problem with HEV
+The HEV scale for USDA Choice comes out far too large
+($\hat\sigma_{\text{CHO}} \approx `r fmt(t4h$table4_hev$NH_Est[14],0)`$ in the
+nonhyp model). That is a sign the variance of this alternative is only weakly
+identified given the price design. It feeds through to an inflated HEV WTP for
+Choice in the [next chapter](07-wtp-figure.qmd), and it leaves the HEV covariance
+matrix close to singular, which is why I run it through `Matrix::nearPD` before
+the Poe bootstrap. Better starting values or tighter bounds (I already estimate
+$\log\sigma$ rather than $\sigma$) would be the next thing to try. This is the
+shakiest number in the whole replication.
 :::

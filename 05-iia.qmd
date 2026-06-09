@@ -7,14 +7,18 @@ source("_common.R")
 
 ## Specification
 
-The universal ("mother") logit nests cross-price effects that MNL forbids:
+The universal, or "mother", logit allows the cross-price effects that MNL rules
+out:
+
 $$
 V_{ij} = \beta_j + \sum_{k=1}^{5} \alpha_{jk}\,P_{ik}.
 $$
-This is **30 parameters** (5 ASCs + a 5×5 price matrix). **MNL is the restriction
-$\alpha_{jk}=0$ for $j\neq k$** (20 constraints), so the IIA LR test has
-$df = 30 - 10 = 20$. A second test — *preference equality under the relaxed
-model* — compares the joint universal logit to the two separate ones ($df = 30$).
+
+That is 30 parameters: 5 constants plus a full 5×5 price matrix. MNL is the
+special case where $\alpha_{jk}=0$ for $j\neq k$, which is 20 restrictions, so the
+IIA likelihood-ratio test has 20 degrees of freedom. A second test takes the
+relaxed model and asks whether preferences are equal across treatments, comparing
+the joint universal logit with the two separate ones (30 degrees of freedom).
 
 ## Estimation code (`R/06_iia_universal_logit.R`)
 
@@ -42,31 +46,31 @@ cat(sprintf("Preference-equality test (relaxed model): Chi-sq(%d) = %.1f, p = %.
 ```
 
 ::: {.callout-warning}
-## Discrepancy — IIA test magnitudes
-My **qualitative conclusion matches the paper** (IIA is rejected for all three
-samples), but the test *magnitudes* are larger: my $\chi^2(20)$ are
-`r fmt(iia$chi2_jt,0)` (joint), `r fmt(iia$chi2_nh,0)` (nonhyp),
-`r fmt(iia$chi2_hyp,0)` (hyp) versus the paper's 66.9, 31.3, 59.5. The nonhyp
-case is the most consequential: the paper's value (31.3) is *marginal*
-($p \approx 0.051$), whereas mine is decisively significant.
+## Where this differs from the paper
+The conclusion is the same as the paper: IIA is rejected in all three samples. But
+my test statistics are larger. My $\chi^2(20)$ values are `r fmt(iia$chi2_jt,0)`
+(joint), `r fmt(iia$chi2_nh,0)` (nonhyp), and `r fmt(iia$chi2_hyp,0)` (hyp),
+against the paper's 66.9, 31.3, and 59.5. The nonhyp case matters most here,
+because the paper's 31.3 is only borderline ($p \approx 0.051$) while mine is
+clearly significant.
 
-The cause is visible in the log-likelihoods: **my LL *levels* are systematically
-more negative than the paper's** (e.g. nonhyp MNL `r fmt(iia$summary_tbl$LL_MNL[2],1)`
-vs the paper's $-1261.4$; joint UL `r fmt(iia$ll_ul_jt,1)` vs $-1908.8$). A roughly
-constant offset in the LL level inflates the *absolute* IIA $\chi^2$ (a
-within-sample difference of two offset likelihoods) while leaving
-*differenced-across-sample* tests intact — which is exactly what I observe: the
-**preference-equality test matches closely**, $\chi^2(30) = `r fmt(iia$chi2_eq,1)`$
-vs the paper's $130.7$. This points to a **specification difference in the base
-MNL/UL** (most likely how the price enters utility) rather than a coding error in
-the test itself. See [Discrepancies](08-discrepancies.qmd).
+The reason is in the log-likelihoods. My LL levels are consistently lower than the
+paper's (for example nonhyp MNL `r fmt(iia$summary_tbl$LL_MNL[2],1)` against
+$-1261.4$, and joint UL `r fmt(iia$ll_ul_jt,1)` against $-1908.8$). A roughly
+constant gap in the LL level pushes up the IIA $\chi^2$, which is a difference of
+two of these offset likelihoods within one sample. It should not affect a test
+that differences across samples, and indeed it does not: my preference-equality
+test comes out at $\chi^2(30) = `r fmt(iia$chi2_eq,1)`$, almost exactly the
+paper's $130.7$. So the problem is in the base MNL/UL specification, most likely
+the way price enters utility, rather than in the IIA test itself. More on this in
+[Discrepancies](08-discrepancies.qmd).
 :::
 
 ::: {.callout-note}
 ## Why IIA matters here
-IIA is the assumption that the odds between any two alternatives are unaffected by
-the others — the structural cost of MNL. Rejecting it (especially for the
-hypothetical and pooled samples) is what justifies the richer error structures in
-the next chapter: respondents do *not* treat the steaks as independent draws, so a
-model that lets error scales differ across alternatives fits materially better.
+IIA says the relative odds of any two alternatives do not depend on the others.
+That is the price of using MNL. Rejecting it, especially in the hypothetical and
+pooled samples, is what justifies the richer models in the next chapter: people
+are not treating the steaks as independent draws, so a model that lets the error
+scales differ across alternatives fits better.
 :::
