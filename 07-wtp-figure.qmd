@@ -1,0 +1,99 @@
+# Willingness to pay and market shares {#sec-wtp}
+
+```{r}
+#| include: false
+source("_common.R")
+```
+
+## Specification
+
+Total WTP for steak $j$ relative to buying nothing:
+$$
+\text{WTP}_j = -\,\frac{\beta_j}{\alpha_j}.
+$$
+The **Poe combinatorial test** asks whether nonhypothetical WTP is *lower* than
+hypothetical WTP (the hypothetical-bias hypothesis). I draw $B=1000$ coefficient
+vectors per treatment from $\mathcal{N}(\hat\theta, \widehat{\text{Var}})$,
+compute all $1000\times1000$ WTP differences, and take the one-tailed p-value as
+the share of differences below zero.
+
+## Estimation code (`R/05_table5_wtp.R`)
+
+```{r t5-code, eval=FALSE}
+compute_wtp <- function(theta) -theta[1:5] / theta[6:10]   # -beta_j / alpha_j
+
+poe_test <- function(vcov_nh, vcov_hyp, theta_nh, theta_hyp, B = 1000) {
+  draws_nh  <- MASS::mvrnorm(B, theta_nh,  make_pd(vcov_nh))   # PD repair if needed
+  draws_hyp <- MASS::mvrnorm(B, theta_hyp, make_pd(vcov_hyp))
+  wtp_nh  <- t(apply(draws_nh,  1, compute_wtp))
+  wtp_hyp <- t(apply(draws_hyp, 1, compute_wtp))
+  sapply(1:5, function(j)                                       # P(WTP_NH < WTP_HY)
+    mean(sapply(wtp_nh[,j], function(w) mean(w < wtp_hyp[,j]))))
+}
+```
+
+## Table 5 — WTP and the Poe test
+
+```{r t5-results}
+kable(t5$table5,
+      col.names = c("Steak", "MNL NH","MNL HY","MNL p",
+                    "HEV NH","HEV HY","HEV p", "RPL NH","RPL HY","RPL p"),
+      caption = "Table 5. WTP vs. None (USD) and Poe one-tailed p-values, by model.")
+```
+
+::: {.callout-tip}
+## Result — hypothetical bias confirmed
+Across **all three models and all five steaks**, hypothetical WTP exceeds
+nonhypothetical WTP, and the Poe p-values are ~1 (i.e., the probability that
+$\text{WTP}_{\text{NH}} < \text{WTP}_{\text{HY}}$ is essentially certain). This is
+the paper's central finding: stated (hypothetical) WTP overstates real WTP. The
+HEV Choice values are inflated by the $\sigma_{\text{CHO}}$ issue from the
+[previous chapter](06-advanced-models.qmd) and should be read with that caveat.
+:::
+
+## Figure 2 — predicted market shares (HEV)
+
+I regenerate Figure 2 *live* from the saved HEV parameters: for each scenario I
+compute the HEV choice probabilities and plot them across scenarios 1–16 for both
+treatments.
+
+```{r fig2, fig.width=9, fig.height=7}
+#| fig-cap: "Figure 2. HEV-predicted market shares across scenarios, by treatment."
+n_q <- 200; w_grid <- seq(-8, 45, length.out = n_q)
+wt_trap <- c(0.5, rep(1, n_q - 2), 0.5) * diff(w_grid)[1]; ev_base <- exp(-w_grid)
+
+hev_probs_single <- function(V, sigma) {
+  J <- length(V); lp <- numeric(J)
+  for (j in seq_len(J)) {
+    oth <- seq_len(J)[-j]; r <- sigma[oth] / sigma[j]; d <- V[j] - V[oth]
+    inner <- as.vector(exp(-sigma[oth] * d) %*% exp(outer(-r, w_grid)))
+    li <- -w_grid - (ev_base + inner); m <- max(li)
+    lp[j] <- m + log(max(sum(exp(li - m) * wt_trap), 1e-300))
+  }
+  exp(lp - max(lp)) / sum(exp(lp - max(lp)))
+}
+shares_of <- function(par15, label) {
+  asc <- c(par15[1:5], 0); alpha <- c(par15[6:10], 0); sigma <- c(exp(par15[11:15]), 1)
+  do.call(rbind, lapply(1:16, function(s) {
+    prices <- c(as.numeric(price_matrix[s, c("GEN","GT","NAT","CHO","CAB")]), 0)
+    data.frame(scenario = s, alternative = alt_labels,
+               share = hev_probs_single(asc + alpha * prices, sigma), treatment = label)
+  }))
+}
+shares <- bind_rows(shares_of(t4h$par_nh,  "Nonhypothetical"),
+                    shares_of(t4h$par_hyp, "Hypothetical")) |>
+  mutate(alternative = factor(alternative, levels = alt_labels),
+         treatment   = factor(treatment, levels = c("Nonhypothetical","Hypothetical")))
+
+ggplot(shares, aes(scenario, share, colour = alternative)) +
+  geom_line(linewidth = 0.8) + geom_point(size = 1.3) +
+  facet_wrap(~treatment, ncol = 1) +
+  scale_x_continuous(breaks = 1:16) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +
+  scale_colour_brewer(palette = "Dark2", name = "Alternative") +
+  labs(x = "Scenario", y = "Predicted choice probability",
+       title = "Predicted market shares — HEV model (scenarios 1–16)") +
+  theme_bw(base_size = 11) +
+  theme(panel.grid.minor = element_blank(),
+        strip.background = element_rect(fill = "grey90"))
+```

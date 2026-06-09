@@ -1,0 +1,144 @@
+# Data structure and preparation {#sec-data}
+
+```{r}
+#| include: false
+source("_common.R")
+```
+
+This chapter runs **live**: it reads the raw spreadsheet and builds the
+estimation dataset, exactly the data-preparation workflow demonstrated in class.
+
+## The raw file
+
+The authors provided `harrison.xls`. The relevant sheet, `trt 10&11`, is a
+*wide* spreadsheet — one row per respondent — with a two-row header, label rows
+separating the two treatments, and summary rows at the bottom. Treatment 10 is
+the nonhypothetical group; Treatment 11 is the hypothetical group.
+
+```{r raw-peek}
+raw_dims <- dim(readxl::read_excel("harrison.xls", sheet = "trt 10&11",
+                                   skip = 3, col_types = "text"))
+cat("Raw sheet (after skipping 3 header rows):",
+    raw_dims[1], "rows ×", raw_dims[2], "columns\n")
+```
+
+**Key variables.**
+
+| Block | Columns | Contents |
+|---|---|---|
+| Identifiers | `subject`, `session` | Subject ID (1001–1099 = nonhyp; 1100–1199 = hyp) |
+| Demographics | `gender`, `age`, `education`, `student`, `income`, … | Used for Table 1 |
+| Attitudes | `color`, `tenderness`, `flavor`, … | Survey Likert items (not used in estimation) |
+| **Choices** | `sc1`–`sc17` | Chosen alternative per scenario, coded 1–6 |
+
+Choice codes: `1 = Generic (GEN)`, `2 = Guaranteed Tender (GT)`,
+`3 = Natural (NAT)`, `4 = USDA Choice (CHO)`, `5 = CAB`, `6 = None (NONE)`.
+
+## The price design (paper appendix)
+
+The 17 × 5 price matrix is the experimental design; it is the same for both
+treatments and is the bridge between a chosen *code* and the *prices* the
+respondent faced.
+
+```{r price-matrix}
+price_matrix <- tibble::tribble(
+  ~scenario, ~GEN,  ~GT,   ~NAT,  ~CHO,  ~CAB,
+  1, 3.38, 7.88, 6.75, 6.75, 6.75,   2, 4.50, 9.00, 6.75, 5.63, 9.00,
+  3, 6.75, 9.00, 5.63, 9.00, 6.75,   4, 5.63, 9.00, 9.00, 6.75, 5.63,
+  5, 6.75, 6.75, 6.75, 7.88, 7.88,   6, 4.50, 7.88, 7.88, 9.00, 9.00,
+  7, 4.50, 6.75, 5.63, 6.75, 7.88,   8, 5.63, 5.63, 5.63, 7.88, 9.00,
+  9, 5.63, 7.88, 5.63, 7.88, 9.00,  10, 5.63, 6.75, 7.88, 5.63, 9.00,
+ 11, 6.75, 7.88, 9.00, 5.63, 7.88,  12, 4.50, 5.63, 5.63, 7.88, 7.88,
+ 13, 3.38, 9.00, 7.88, 7.88, 9.00,  14, 3.38, 5.63, 5.63, 5.63, 5.63,
+ 15, 3.38, 6.75, 9.00, 9.00, 9.00,  16, 6.75, 5.63, 7.88, 6.75, 6.75,
+ 17, 5.63, 5.63, 5.63, 5.63, 5.63
+)
+kable(price_matrix, caption = "Price design: 17 scenarios × 5 steaks (USD).")
+```
+
+## Cleaning: from spreadsheet to respondents
+
+I keep only valid subject-ID rows (1001–1199), which automatically drops the
+treatment-label rows and the trailing summary rows. **One subject (ID 1060) has
+all 17 scenarios missing and is excluded** — this reconciles the 68 rows in the
+file with the 67 nonhypothetical subjects the paper reports.
+
+```{r clean-wide}
+demo_names <- c(
+  "subject","gender","age","household","child","education","income","student",
+  "occupation","race","gbeef","steak_buy","other_beef","gbeef_freq","steak_freq",
+  "color","brand","quality_gd","ex_fat","in_fat","price_imp","safety","juiciness",
+  "flavor","tenderness","consistency","doneness","production","quality_gd2",
+  "slaughter","food_safe","quality_pref","cooked","chance1","chance2","chance3",
+  "chance4","chance5")
+sc_names <- paste0("sc", 1:17)
+
+raw <- read_excel("harrison.xls", sheet = "trt 10&11",
+                  col_names = c(demo_names, sc_names, "blank", "session"),
+                  skip = 3, col_types = "text")
+
+df_wide <- raw |>
+  mutate(subject = suppressWarnings(as.numeric(subject))) |>
+  filter(!is.na(subject), subject >= 1001, subject <= 1199) |>
+  filter(subject != 1060) |>                              # all scenarios missing
+  mutate(treatment = factor(if_else(subject < 1100, "nonhyp", "hyp"),
+                            levels = c("nonhyp", "hyp"))) |>
+  mutate(across(all_of(c(setdiff(demo_names, "subject"), sc_names, "session")),
+                as.numeric))
+
+cat("Nonhypothetical subjects:", sum(df_wide$treatment == "nonhyp"), "(paper: 67)\n")
+cat("Hypothetical  subjects:",  sum(df_wide$treatment == "hyp"),    "(paper: 37)\n")
+```
+
+## Reshape: wide → long → choice format
+
+Two reshapes turn the respondent-level table into the estimation data:
+
+1. **Long** — one row per *respondent × scenario*; merge in the five prices.
+2. **Choice (mlogit) format** — one row per *respondent × scenario ×
+   alternative*, with a logical `chosen` flag and the alternative's own price.
+   **Scenario 17 is excluded from estimation** (it is the all-equal-price binding
+   scenario), leaving scenarios 1–16.
+
+```{r reshape}
+df_long <- df_wide |>
+  select(subject, treatment, session, all_of(sc_names)) |>
+  pivot_longer(all_of(sc_names), names_to = "sc_var", values_to = "choice_code") |>
+  mutate(scenario = as.integer(sub("sc", "", sc_var)),
+         choice   = factor(choice_code, levels = 1:6, labels = alt_labels)) |>
+  select(-sc_var, -choice_code) |>
+  left_join(price_matrix, by = "scenario") |>
+  arrange(subject, scenario)
+
+df_mlogit <- df_long |>
+  filter(scenario <= 16) |>                               # drop binding scenario
+  crossing(alt = factor(alt_labels, levels = alt_labels)) |>
+  mutate(
+    chosen    = as.character(choice) == as.character(alt),
+    price_alt = case_when(
+      alt == "GEN" ~ GEN, alt == "GT"  ~ GT,  alt == "NAT" ~ NAT,
+      alt == "CHO" ~ CHO, alt == "CAB" ~ CAB, alt == "NONE" ~ NA_real_),
+    chid = paste(subject, scenario, sep = "_")) |>
+  select(chid, subject, treatment, session, scenario, alt, chosen, price_alt) |>
+  arrange(subject, scenario, alt)
+
+cat("Nonhyp choice situations:",
+    sum(df_mlogit$treatment == "nonhyp" & df_mlogit$alt == "GEN"), "(paper: 1072 = 67×16)\n")
+cat("Hyp    choice situations:",
+    sum(df_mlogit$treatment == "hyp"    & df_mlogit$alt == "GEN"), "(paper:  592 = 37×16)\n")
+```
+
+```{r show-choice-format}
+df_mlogit |> filter(chid == "1001_1") |>
+  select(chid, alt, chosen, price_alt) |>
+  kable(caption = "One choice situation in long format (subject 1001, scenario 1).")
+```
+
+::: {.callout-note}
+## Data-prep lessons
+* The "68 vs 67" gap is the first thing a replicator hits. Rather than guess, I
+  searched for the structural reason — subject 1060 is empty — which is exactly
+  the kind of provenance note the original LIMDEP file does not carry.
+* `NONE` has **no price**; encoding its `price_alt` as `NA`/0 (and never giving
+  it an own-price coefficient) is what makes it the natural base alternative.
+:::

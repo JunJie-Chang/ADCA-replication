@@ -1,0 +1,61 @@
+# Reproducibility {#sec-repro}
+
+```{r}
+#| include: false
+source("_common.R")
+```
+
+## How to rebuild everything
+
+The numbered scripts in `R/` produce the saved objects in `output/` that this
+book loads. To reproduce from the raw spreadsheet:
+
+**Run order**
+
+1. `R/01_data_prep.R` — read `harrison.xls`, clean, reshape; save `df_*.rds`,
+   `price_matrix.rds`.
+2. `R/02_table1_table2.R` — Tables 1 and 2.
+3. `R/03_table3_mnl.R` — MNL estimates + scale test → `table3_mnl.rds`.
+4. `R/06_iia_universal_logit.R` — IIA universal logit → `iia_ul.rds`.
+5. `R/04_table4_adv.R` — HEV and RPL → `table4_hev.rds`, `table4_rpl.rds`.
+6. `R/05_table5_wtp.R` — WTP, Poe test, Figure 2 → `table5_wtp.rds`.
+
+Then render the book:
+
+```bash
+quarto render        # builds the site into docs/
+```
+
+::: {.callout-tip}
+## Notes
+* The numbered scripts use `rstudioapi` to locate the project, so run them from
+  **RStudio** (or replace the path line with `getwd()` to run headless).
+* The advanced models are slow (RPL at 500 draws; HEV quadrature; the Poe
+  bootstrap). The book itself does **not** re-run them — it loads `output/*.rds`
+  and recomputes only the lightweight summaries and Figure 2.
+:::
+
+## Session information
+
+```{r sessioninfo, echo=FALSE}
+si <- sessionInfo()
+cat("R version:", si$R.version$version.string, "\n\n")
+pkgs <- c("mlogit","dfidx","readxl","dplyr","tidyr","ggplot2","MASS","Matrix","knitr")
+have <- pkgs[pkgs %in% rownames(installed.packages())]
+cat("Key packages:\n")
+for (p in have) cat(sprintf("  %-10s %s\n", p, as.character(packageVersion(p))))
+```
+
+## References {.unnumbered}
+
+Lusk, J. L., & Schroeder, T. C. (2004). Are Choice Experiments Incentive
+Compatible? A Test with Quality Differentiated Beef Steaks. *American Journal of
+Agricultural Economics*, 86(2), 467–482.
+
+Poe, G. L., Giraud, K. L., & Loomis, J. B. (2005). Computational Methods for
+Measuring the Difference of Empirical Distributions. *American Journal of
+Agricultural Economics*, 87(2), 353–365.
+
+Swait, J., & Louviere, J. (1993). The Role of the Scale Parameter in the
+Estimation and Comparison of Multinomial Logit Models. *Journal of Marketing
+Research*, 30(3), 305–314.

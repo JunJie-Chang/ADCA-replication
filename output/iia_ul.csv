@@ -1,0 +1,4 @@
+"Model","LL_MNL","LL_UL","Chi2_df20","p_value","Paper_Chi2","Paper_p"
+"Joint",-2131.2,-2048.1,166.2,0,66.9,"<0.01"
+"Nonhypothetical",-1400.3,-1349.8,101.1,0,31.3,"0.051"
+"Hypothetical",-677.9,-634.8,86.2,0,59.5,"<0.01"

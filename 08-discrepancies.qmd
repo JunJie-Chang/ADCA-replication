@@ -1,0 +1,81 @@
+# Replication experience and discrepancies {#sec-discrepancies}
+
+```{r}
+#| include: false
+source("_common.R")
+```
+
+This chapter is the reflective core of the project: what was hard, what I had to
+translate from LIMDEP to R, and how I interpret the gaps.
+
+## Locating data and documentation
+
+- The dataset (`harrison.xls`) and questionnaire (`harrison.doc`) were available,
+  but **undocumented**: a two-row header, embedded label rows, and trailing
+  summary rows that masquerade as data. The single most consequential cleaning
+  decision — dropping subject **1060** — is invisible unless you check for
+  all-missing choice rows. This alone resolves the "68 vs 67 subjects" puzzle.
+- The **price design** lives only in the paper's appendix, not in the data file.
+  Re-keying it by hand is the bridge between a stored choice *code* and the prices
+  a respondent actually saw; a single transcription error here would corrupt every
+  downstream estimate, so I cross-checked it against the appendix twice.
+
+## Translating LIMDEP → R
+
+- **No turn-key joint-scale or HEV command in `mlogit`.** The Swait–Louviere
+  scaled joint MNL and the HEV model were written as **custom log-likelihoods
+  maximised with `optim(BFGS)`**, including the log-sum-exp trick for numerical
+  stability and trapezoidal quadrature for the HEV Gumbel integral. LIMDEP exposes
+  these as canned estimators; R made the mechanics explicit, which was
+  pedagogically useful but is where small numerical differences enter.
+- **Identification choices must be stated explicitly.** Base alternative
+  (`NONE`), the fixed scale ($\mu_{\text{H}}=1$), and the fixed HEV scale
+  ($\sigma_{\text{NONE}}=1$) are defaults in LIMDEP but hand-coded here.
+- **A package-version landmine.** `dfidx` 0.2.0 + `vctrs` triggers a node-stack
+  overflow; I fell back to `mlogit.data()` to build the choice data.
+
+## Interpreting the discrepancies
+
+```{r disc-table, echo=FALSE}
+disc <- tibble(
+  Item = c("MNL/UL log-likelihood level", "IIA test Chi-sq(20)", "MNL scale mu",
+           "Scale-test df", "HEV sigma_CHO", "MNP", "RPL joint model"),
+  `My replication` = c(paste0(fmt(t3$ll_nh,0), " (nonhyp MNL)"),
+                       paste0(fmt(iia$chi2_nh,0), " (nonhyp)"),
+                       fmt(t3$mu_hat,3),
+                       paste0(t3$df_test, " (=(10+10)-11)"),
+                       paste0("~ ", fmt(t4h$table4_hev$NH_Est[14],0), " (NH)"),
+                       "not estimated",
+                       "skipped (runtime)"),
+  Paper = c("-1261.4", "31.3 (p~0.051)", "0.90", "4", "moderate",
+            "estimated (apollo-style)", "estimated"),
+  `My reading` = c(
+    "Systematic level offset -> likely a price-utility specification difference (main open issue).",
+    "Inflated by the LL-level offset; preference-equality test (differenced) matches (127 vs 131).",
+    "Same sign & significance; optimiser/start-value sensitivity.",
+    "Bookkeeping of the joint restriction differs; conclusion (reject pooling) identical.",
+    "Weak identification of Choice's error variance given the price design.",
+    "Needs GHK simulator (apollo); out of scope but documented.",
+    "Separate-model LLs used as the scale-test benchmark instead."))
+kable(disc, caption = "Documented discrepancies and interpretation.")
+```
+
+**Bottom line.** Every *qualitative* conclusion of Lusk & Schroeder (2004)
+replicates: demographics balance across treatments; the real-payment group
+chooses "None" more; IIA is rejected for the pooled/hypothetical data; and
+hypothetical WTP exceeds real WTP for every steak under every model. The
+*quantitative* gaps are confined to (a) the log-likelihood level (and the IIA
+$\chi^2$ it inflates), (b) the scale point estimate and test-df bookkeeping, and
+(c) one weakly-identified HEV scale — all attributable to optimiser defaults and
+software-specific identification conventions rather than to a substantive
+disagreement with the paper.
+
+::: {.callout-note}
+## The one thing I would chase next
+The constant log-likelihood offset is the thread worth pulling. The prime suspect
+is the **price specification**: this replication uses five alternative-specific
+own-price coefficients $\alpha_j$, whereas a single generic price coefficient (or
+a different normalisation of price) would change the attainable likelihood while
+leaving the qualitative story intact. Confirming this against the paper's Table 3
+specification and footnote 13 would likely close most of the remaining gap.
+:::

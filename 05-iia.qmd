@@ -1,0 +1,72 @@
+# Testing IIA with the universal logit {#sec-iia}
+
+```{r}
+#| include: false
+source("_common.R")
+```
+
+## Specification
+
+The universal ("mother") logit nests cross-price effects that MNL forbids:
+$$
+V_{ij} = \beta_j + \sum_{k=1}^{5} \alpha_{jk}\,P_{ik}.
+$$
+This is **30 parameters** (5 ASCs + a 5×5 price matrix). **MNL is the restriction
+$\alpha_{jk}=0$ for $j\neq k$** (20 constraints), so the IIA LR test has
+$df = 30 - 10 = 20$. A second test — *preference equality under the relaxed
+model* — compares the joint universal logit to the two separate ones ($df = 30$).
+
+## Estimation code (`R/06_iia_universal_logit.R`)
+
+```{r iia-code, eval=FALSE}
+# 25 cross-price dummies: p_{j}_{k} = P_k × 1{alt = j}; zero for NONE.
+for (j in steak_alts) for (k in steak_alts)
+  df0[[paste0("p_",j,"_",k)]] <- ifelse(df0$alt==j, df0[[paste0("P_",k)]], 0)
+
+f_ul <- as.formula(paste("chosen ~", paste(ul_price_names, collapse=" + "), "| 1"))
+ul_nh  <- mlogit(f_ul, make_mdata(filter(df0, treatment=="nonhyp")), reflevel="NONE")
+ul_hyp <- mlogit(f_ul, make_mdata(filter(df0, treatment=="hyp")),    reflevel="NONE")
+# Joint UL with scale via custom optim (31 params); see script.
+
+chi2 <- function(ll_ul, ll_mnl) 2 * (ll_ul - ll_mnl)   # IIA LR, df = 20
+```
+
+## Results
+
+```{r iia-results}
+kable(iia$summary_tbl,
+      col.names = c("Model","LL(MNL)","LL(UL)","Chi-sq(20)","p-value","Paper Chi-sq","Paper p"),
+      caption = "IIA test via universal logit (cf. Lusk & Schroeder 2004, p. 476).")
+cat(sprintf("Preference-equality test (relaxed model): Chi-sq(%d) = %.1f, p = %.4f  [paper: Chi-sq(30)=130.7]\n",
+            iia$df_eq, iia$chi2_eq, iia$p_eq))
+```
+
+::: {.callout-warning}
+## Discrepancy — IIA test magnitudes
+My **qualitative conclusion matches the paper** (IIA is rejected for all three
+samples), but the test *magnitudes* are larger: my $\chi^2(20)$ are
+`r fmt(iia$chi2_jt,0)` (joint), `r fmt(iia$chi2_nh,0)` (nonhyp),
+`r fmt(iia$chi2_hyp,0)` (hyp) versus the paper's 66.9, 31.3, 59.5. The nonhyp
+case is the most consequential: the paper's value (31.3) is *marginal*
+($p \approx 0.051$), whereas mine is decisively significant.
+
+The cause is visible in the log-likelihoods: **my LL *levels* are systematically
+more negative than the paper's** (e.g. nonhyp MNL `r fmt(iia$summary_tbl$LL_MNL[2],1)`
+vs the paper's $-1261.4$; joint UL `r fmt(iia$ll_ul_jt,1)` vs $-1908.8$). A roughly
+constant offset in the LL level inflates the *absolute* IIA $\chi^2$ (a
+within-sample difference of two offset likelihoods) while leaving
+*differenced-across-sample* tests intact — which is exactly what I observe: the
+**preference-equality test matches closely**, $\chi^2(30) = `r fmt(iia$chi2_eq,1)`$
+vs the paper's $130.7$. This points to a **specification difference in the base
+MNL/UL** (most likely how the price enters utility) rather than a coding error in
+the test itself. See [Discrepancies](08-discrepancies.qmd).
+:::
+
+::: {.callout-note}
+## Why IIA matters here
+IIA is the assumption that the odds between any two alternatives are unaffected by
+the others — the structural cost of MNL. Rejecting it (especially for the
+hypothetical and pooled samples) is what justifies the richer error structures in
+the next chapter: respondents do *not* treat the steaks as independent draws, so a
+model that lets error scales differ across alternatives fits materially better.
+:::

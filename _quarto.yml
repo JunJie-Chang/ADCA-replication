@@ -1,0 +1,54 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Are Choice Experiments Incentive Compatible?"
+  subtitle: "A Replication of Lusk & Schroeder (2004) in R"
+  author: "張鈞傑 (Chang Jun-Jie) — AGEC 5045 Applied Discrete Choice Analysis, NTU 114-2"
+  date: "2026-06-12"
+  reader-mode: true
+  search: true
+  repo-url: https://github.com/JunJie-Chang/ADCA-replication
+  repo-actions: [source, issue]
+  page-footer:
+    left: "Replication of Lusk & Schroeder (2004), AJAE 86(2): 467–482."
+    right: "Built with [Quarto](https://quarto.org)."
+  sidebar:
+    style: docked
+    collapse-level: 1
+  chapters:
+    - index.qmd
+    - 01-original-study.qmd
+    - 02-data.qmd
+    - 03-descriptives.qmd
+    - 04-mnl.qmd
+    - 05-iia.qmd
+    - 06-advanced-models.qmd
+    - 07-wtp-figure.qmd
+    - 08-discrepancies.qmd
+    - 09-reproducibility.qmd
+
+format:
+  html:
+    theme:
+      - cosmo
+    toc: true
+    toc-depth: 3
+    code-fold: false
+    code-tools: true
+    code-overflow: wrap
+    fig-width: 9
+    fig-height: 7
+    df-print: kable
+
+execute:
+  warning: false
+  message: false
+  echo: true
+  freeze: auto
+
+knitr:
+  opts_chunk:
+    comment: "#>"
+    collapse: true

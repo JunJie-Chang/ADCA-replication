@@ -1,0 +1,53 @@
+# Preface {.unnumbered}
+
+```{r}
+#| include: false
+source("_common.R")
+```
+
+This site reproduces, in **R**, the main empirical results of
+
+> Lusk, J. L., & Schroeder, T. C. (2004). *Are Choice Experiments Incentive
+> Compatible? A Test with Quality Differentiated Beef Steaks.* American Journal
+> of Agricultural Economics, **86**(2), 467–482.
+
+The original analysis was conducted in **LIMDEP**. This is a replication project
+for **AGEC 5045 — Applied Discrete Choice Analysis (NTU, 114-2)**, written as a
+Quarto book so that **code, results, and commentary** sit side by side and the
+whole analysis can be reproduced end to end.
+
+## What is reproduced
+
+| Output | Chapter | Method |
+|---|---|---|
+| Data preparation | [Data](02-data.qmd) | read `harrison.xls`, reshape to choice format |
+| Tables 1–2 | [Descriptives](03-descriptives.qmd) | demographics & choice frequencies |
+| Table 3 | [MNL](04-mnl.qmd) | multinomial logit + Swait–Louviere scale test |
+| IIA test | [IIA](05-iia.qmd) | universal ("mother") logit LR test |
+| Table 4 | [Advanced models](06-advanced-models.qmd) | HEV, RPL (MNP discussed) |
+| Table 5 & Figure 2 | [WTP](07-wtp-figure.qmd) | willingness to pay + Poe test; HEV market shares |
+| Discussion | [Discrepancies](08-discrepancies.qmd) | replication experience & gaps |
+
+## How to read it
+
+* **Data preparation runs live** in the book — the [Data](02-data.qmd) chapter
+  reads the raw spreadsheet and builds the estimation dataset in front of you.
+* **Model estimation code is shown but loaded, not re-run.** The heavy models
+  (custom-likelihood MNL scale test, HEV quadrature, simulated-ML RPL, the Poe
+  bootstrap) are estimated by the numbered scripts in `R/`, saved to
+  `output/*.rds`, and loaded here; results are then recomputed for display. This
+  keeps the book fast and deterministic while still showing every line of code.
+* **Commentary is set off in coloured callout boxes** so my own notes are never
+  confused with the paper's claims or the raw output.
+
+::: {.callout-note}
+## Reproducibility
+All code and data are in the [GitHub repository](https://github.com/JunJie-Chang/ADCA-replication).
+To rebuild from scratch, run the scripts in `R/` in order (see
+[Reproducibility](09-reproducibility.qmd)) and re-render the book.
+:::
+
+The headline result, stated once up front: **hypothetical choices overstate
+real willingness to pay.** Every qualitative finding of the paper replicates;
+the quantitative gaps that remain are documented and interpreted in the final
+chapter.

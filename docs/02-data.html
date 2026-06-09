@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Are Choice Experiments Incentive Compatible? - 2&nbsp; Data structure and preparation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-descriptives.html" rel="next">
+<link href="./01-original-study.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar docked">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-data.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data structure and preparation</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Are Choice Experiments Incentive Compatible?</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/JunJie-Chang/ADCA-replication" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-original-study.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The original study</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data structure and preparation</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-descriptives.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Descriptive replication: Tables 1 and 2</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-mnl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Multinomial logit and the scale test</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-iia.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Testing IIA with the universal logit</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-advanced-models.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Advanced models: HEV and RPL</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-wtp-figure.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Willingness to pay and market shares</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-discrepancies.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Replication experience and discrepancies</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-reproducibility.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reproducibility</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#the-raw-file" id="toc-the-raw-file" class="nav-link active" data-scroll-target="#the-raw-file"><span class="header-section-number">2.1</span> The raw file</a></li>
+  <li><a href="#the-price-design-paper-appendix" id="toc-the-price-design-paper-appendix" class="nav-link" data-scroll-target="#the-price-design-paper-appendix"><span class="header-section-number">2.2</span> The price design (paper appendix)</a></li>
+  <li><a href="#cleaning-from-spreadsheet-to-respondents" id="toc-cleaning-from-spreadsheet-to-respondents" class="nav-link" data-scroll-target="#cleaning-from-spreadsheet-to-respondents"><span class="header-section-number">2.3</span> Cleaning: from spreadsheet to respondents</a></li>
+  <li><a href="#reshape-wide-long-choice-format" id="toc-reshape-wide-long-choice-format" class="nav-link" data-scroll-target="#reshape-wide-long-choice-format"><span class="header-section-number">2.4</span> Reshape: wide → long → choice format</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/JunJie-Chang/ADCA-replication/blob/main/02-data.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/JunJie-Chang/ADCA-replication/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title"><span id="sec-data" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Data structure and preparation</span></span></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This chapter runs <strong>live</strong>: it reads the raw spreadsheet and builds the estimation dataset, exactly the data-preparation workflow demonstrated in class.</p>
+<section id="the-raw-file" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="the-raw-file"><span class="header-section-number">2.1</span> The raw file</h2>
+<p>The authors provided <code>harrison.xls</code>. The relevant sheet, <code>trt 10&amp;11</code>, is a <em>wide</em> spreadsheet — one row per respondent — with a two-row header, label rows separating the two treatments, and summary rows at the bottom. Treatment 10 is the nonhypothetical group; Treatment 11 is the hypothetical group.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>raw_dims <span class="ot">&lt;-</span> <span class="fu">dim</span>(readxl<span class="sc">::</span><span class="fu">read_excel</span>(<span class="st">"harrison.xls"</span>, <span class="at">sheet =</span> <span class="st">"trt 10&amp;11"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">skip =</span> <span class="dv">3</span>, <span class="at">col_types =</span> <span class="st">"text"</span>))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Raw sheet (after skipping 3 header rows):"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    raw_dims[<span class="dv">1</span>], <span class="st">"rows ×"</span>, raw_dims[<span class="dv">2</span>], <span class="st">"columns</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Raw sheet (after skipping 3 header rows): 129 rows × 57 columns</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Key variables.</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Block</th>
+<th>Columns</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Identifiers</td>
+<td><code>subject</code>, <code>session</code></td>
+<td>Subject ID (1001–1099 = nonhyp; 1100–1199 = hyp)</td>
+</tr>
+<tr class="even">
+<td>Demographics</td>
+<td><code>gender</code>, <code>age</code>, <code>education</code>, <code>student</code>, <code>income</code>, …</td>
+<td>Used for Table 1</td>
+</tr>
+<tr class="odd">
+<td>Attitudes</td>
+<td><code>color</code>, <code>tenderness</code>, <code>flavor</code>, …</td>
+<td>Survey Likert items (not used in estimation)</td>
+</tr>
+<tr class="even">
+<td><strong>Choices</strong></td>
+<td><code>sc1</code>–<code>sc17</code></td>
+<td>Chosen alternative per scenario, coded 1–6</td>
+</tr>
+</tbody>
+</table>
+<p>Choice codes: <code>1 = Generic (GEN)</code>, <code>2 = Guaranteed Tender (GT)</code>, <code>3 = Natural (NAT)</code>, <code>4 = USDA Choice (CHO)</code>, <code>5 = CAB</code>, <code>6 = None (NONE)</code>.</p>
+</section>
+<section id="the-price-design-paper-appendix" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="the-price-design-paper-appendix"><span class="header-section-number">2.2</span> The price design (paper appendix)</h2>
+<p>The 17 × 5 price matrix is the experimental design; it is the same for both treatments and is the bridge between a chosen <em>code</em> and the <em>prices</em> the respondent faced.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>price_matrix <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tribble</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>scenario, <span class="sc">~</span>GEN,  <span class="sc">~</span>GT,   <span class="sc">~</span>NAT,  <span class="sc">~</span>CHO,  <span class="sc">~</span>CAB,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span>, <span class="fl">3.38</span>, <span class="fl">7.88</span>, <span class="fl">6.75</span>, <span class="fl">6.75</span>, <span class="fl">6.75</span>,   <span class="dv">2</span>, <span class="fl">4.50</span>, <span class="fl">9.00</span>, <span class="fl">6.75</span>, <span class="fl">5.63</span>, <span class="fl">9.00</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">3</span>, <span class="fl">6.75</span>, <span class="fl">9.00</span>, <span class="fl">5.63</span>, <span class="fl">9.00</span>, <span class="fl">6.75</span>,   <span class="dv">4</span>, <span class="fl">5.63</span>, <span class="fl">9.00</span>, <span class="fl">9.00</span>, <span class="fl">6.75</span>, <span class="fl">5.63</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="dv">5</span>, <span class="fl">6.75</span>, <span class="fl">6.75</span>, <span class="fl">6.75</span>, <span class="fl">7.88</span>, <span class="fl">7.88</span>,   <span class="dv">6</span>, <span class="fl">4.50</span>, <span class="fl">7.88</span>, <span class="fl">7.88</span>, <span class="fl">9.00</span>, <span class="fl">9.00</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">7</span>, <span class="fl">4.50</span>, <span class="fl">6.75</span>, <span class="fl">5.63</span>, <span class="fl">6.75</span>, <span class="fl">7.88</span>,   <span class="dv">8</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>, <span class="fl">7.88</span>, <span class="fl">9.00</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="dv">9</span>, <span class="fl">5.63</span>, <span class="fl">7.88</span>, <span class="fl">5.63</span>, <span class="fl">7.88</span>, <span class="fl">9.00</span>,  <span class="dv">10</span>, <span class="fl">5.63</span>, <span class="fl">6.75</span>, <span class="fl">7.88</span>, <span class="fl">5.63</span>, <span class="fl">9.00</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a> <span class="dv">11</span>, <span class="fl">6.75</span>, <span class="fl">7.88</span>, <span class="fl">9.00</span>, <span class="fl">5.63</span>, <span class="fl">7.88</span>,  <span class="dv">12</span>, <span class="fl">4.50</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>, <span class="fl">7.88</span>, <span class="fl">7.88</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a> <span class="dv">13</span>, <span class="fl">3.38</span>, <span class="fl">9.00</span>, <span class="fl">7.88</span>, <span class="fl">7.88</span>, <span class="fl">9.00</span>,  <span class="dv">14</span>, <span class="fl">3.38</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a> <span class="dv">15</span>, <span class="fl">3.38</span>, <span class="fl">6.75</span>, <span class="fl">9.00</span>, <span class="fl">9.00</span>, <span class="fl">9.00</span>,  <span class="dv">16</span>, <span class="fl">6.75</span>, <span class="fl">5.63</span>, <span class="fl">7.88</span>, <span class="fl">6.75</span>, <span class="fl">6.75</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a> <span class="dv">17</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span>, <span class="fl">5.63</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(price_matrix, <span class="at">caption =</span> <span class="st">"Price design: 17 scenarios × 5 steaks (USD)."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Price design: 17 scenarios × 5 steaks (USD).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">scenario</th>
+<th style="text-align: right;">GEN</th>
+<th style="text-align: right;">GT</th>
+<th style="text-align: right;">NAT</th>
+<th style="text-align: right;">CHO</th>
+<th style="text-align: right;">CAB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.38</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">6.75</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">9.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">6.75</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">5.63</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">7.88</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">9.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">7.88</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">9.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">9.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">9.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">7.88</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">7.88</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">3.38</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">9.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">3.38</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">3.38</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">9.00</td>
+<td style="text-align: right;">9.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">7.88</td>
+<td style="text-align: right;">6.75</td>
+<td style="text-align: right;">6.75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+<td style="text-align: right;">5.63</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="cleaning-from-spreadsheet-to-respondents" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="cleaning-from-spreadsheet-to-respondents"><span class="header-section-number">2.3</span> Cleaning: from spreadsheet to respondents</h2>
+<p>I keep only valid subject-ID rows (1001–1199), which automatically drops the treatment-label rows and the trailing summary rows. <strong>One subject (ID 1060) has all 17 scenarios missing and is excluded</strong> — this reconciles the 68 rows in the file with the 67 nonhypothetical subjects the paper reports.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>demo_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"subject"</span>,<span class="st">"gender"</span>,<span class="st">"age"</span>,<span class="st">"household"</span>,<span class="st">"child"</span>,<span class="st">"education"</span>,<span class="st">"income"</span>,<span class="st">"student"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"occupation"</span>,<span class="st">"race"</span>,<span class="st">"gbeef"</span>,<span class="st">"steak_buy"</span>,<span class="st">"other_beef"</span>,<span class="st">"gbeef_freq"</span>,<span class="st">"steak_freq"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"color"</span>,<span class="st">"brand"</span>,<span class="st">"quality_gd"</span>,<span class="st">"ex_fat"</span>,<span class="st">"in_fat"</span>,<span class="st">"price_imp"</span>,<span class="st">"safety"</span>,<span class="st">"juiciness"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"flavor"</span>,<span class="st">"tenderness"</span>,<span class="st">"consistency"</span>,<span class="st">"doneness"</span>,<span class="st">"production"</span>,<span class="st">"quality_gd2"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"slaughter"</span>,<span class="st">"food_safe"</span>,<span class="st">"quality_pref"</span>,<span class="st">"cooked"</span>,<span class="st">"chance1"</span>,<span class="st">"chance2"</span>,<span class="st">"chance3"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"chance4"</span>,<span class="st">"chance5"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>sc_names <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"sc"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">17</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>raw <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"harrison.xls"</span>, <span class="at">sheet =</span> <span class="st">"trt 10&amp;11"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col_names =</span> <span class="fu">c</span>(demo_names, sc_names, <span class="st">"blank"</span>, <span class="st">"session"</span>),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">skip =</span> <span class="dv">3</span>, <span class="at">col_types =</span> <span class="st">"text"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>df_wide <span class="ot">&lt;-</span> raw <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">subject =</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(subject))) <span class="sc">|&gt;</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(subject), subject <span class="sc">&gt;=</span> <span class="dv">1001</span>, subject <span class="sc">&lt;=</span> <span class="dv">1199</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(subject <span class="sc">!=</span> <span class="dv">1060</span>) <span class="sc">|&gt;</span>                              <span class="co"># all scenarios missing</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">factor</span>(<span class="fu">if_else</span>(subject <span class="sc">&lt;</span> <span class="dv">1100</span>, <span class="st">"nonhyp"</span>, <span class="st">"hyp"</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>                            <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"nonhyp"</span>, <span class="st">"hyp"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(<span class="fu">c</span>(<span class="fu">setdiff</span>(demo_names, <span class="st">"subject"</span>), sc_names, <span class="st">"session"</span>)),</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>                as.numeric))</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Nonhypothetical subjects:"</span>, <span class="fu">sum</span>(df_wide<span class="sc">$</span>treatment <span class="sc">==</span> <span class="st">"nonhyp"</span>), <span class="st">"(paper: 67)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nonhypothetical subjects: 67 (paper: 67)</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Hypothetical  subjects:"</span>,  <span class="fu">sum</span>(df_wide<span class="sc">$</span>treatment <span class="sc">==</span> <span class="st">"hyp"</span>),    <span class="st">"(paper: 37)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Hypothetical  subjects: 37 (paper: 37)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="reshape-wide-long-choice-format" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="reshape-wide-long-choice-format"><span class="header-section-number">2.4</span> Reshape: wide → long → choice format</h2>
+<p>Two reshapes turn the respondent-level table into the estimation data:</p>
+<ol type="1">
+<li><strong>Long</strong> — one row per <em>respondent × scenario</em>; merge in the five prices.</li>
+<li><strong>Choice (mlogit) format</strong> — one row per <em>respondent × scenario × alternative</em>, with a logical <code>chosen</code> flag and the alternative’s own price. <strong>Scenario 17 is excluded from estimation</strong> (it is the all-equal-price binding scenario), leaving scenarios 1–16.</li>
+</ol>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df_wide <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(subject, treatment, session, <span class="fu">all_of</span>(sc_names)) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">all_of</span>(sc_names), <span class="at">names_to =</span> <span class="st">"sc_var"</span>, <span class="at">values_to =</span> <span class="st">"choice_code"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">scenario =</span> <span class="fu">as.integer</span>(<span class="fu">sub</span>(<span class="st">"sc"</span>, <span class="st">""</span>, sc_var)),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">choice   =</span> <span class="fu">factor</span>(choice_code, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="at">labels =</span> alt_labels)) <span class="sc">|&gt;</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>sc_var, <span class="sc">-</span>choice_code) <span class="sc">|&gt;</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(price_matrix, <span class="at">by =</span> <span class="st">"scenario"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(subject, scenario)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>df_mlogit <span class="ot">&lt;-</span> df_long <span class="sc">|&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(scenario <span class="sc">&lt;=</span> <span class="dv">16</span>) <span class="sc">|&gt;</span>                               <span class="co"># drop binding scenario</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossing</span>(<span class="at">alt =</span> <span class="fu">factor</span>(alt_labels, <span class="at">levels =</span> alt_labels)) <span class="sc">|&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">chosen    =</span> <span class="fu">as.character</span>(choice) <span class="sc">==</span> <span class="fu">as.character</span>(alt),</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">price_alt =</span> <span class="fu">case_when</span>(</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>      alt <span class="sc">==</span> <span class="st">"GEN"</span> <span class="sc">~</span> GEN, alt <span class="sc">==</span> <span class="st">"GT"</span>  <span class="sc">~</span> GT,  alt <span class="sc">==</span> <span class="st">"NAT"</span> <span class="sc">~</span> NAT,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>      alt <span class="sc">==</span> <span class="st">"CHO"</span> <span class="sc">~</span> CHO, alt <span class="sc">==</span> <span class="st">"CAB"</span> <span class="sc">~</span> CAB, alt <span class="sc">==</span> <span class="st">"NONE"</span> <span class="sc">~</span> <span class="cn">NA_real_</span>),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">chid =</span> <span class="fu">paste</span>(subject, scenario, <span class="at">sep =</span> <span class="st">"_"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(chid, subject, treatment, session, scenario, alt, chosen, price_alt) <span class="sc">|&gt;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(subject, scenario, alt)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Nonhyp choice situations:"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(df_mlogit<span class="sc">$</span>treatment <span class="sc">==</span> <span class="st">"nonhyp"</span> <span class="sc">&amp;</span> df_mlogit<span class="sc">$</span>alt <span class="sc">==</span> <span class="st">"GEN"</span>), <span class="st">"(paper: 1072 = 67×16)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Nonhyp choice situations: 1072 (paper: 1072 = 67×16)</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Hyp    choice situations:"</span>,</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(df_mlogit<span class="sc">$</span>treatment <span class="sc">==</span> <span class="st">"hyp"</span>    <span class="sc">&amp;</span> df_mlogit<span class="sc">$</span>alt <span class="sc">==</span> <span class="st">"GEN"</span>), <span class="st">"(paper:  592 = 37×16)</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Hyp    choice situations: 592 (paper:  592 = 37×16)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df_mlogit <span class="sc">|&gt;</span> <span class="fu">filter</span>(chid <span class="sc">==</span> <span class="st">"1001_1"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(chid, alt, chosen, price_alt) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"One choice situation in long format (subject 1001, scenario 1)."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>One choice situation in long format (subject 1001, scenario 1).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">chid</th>
+<th style="text-align: left;">alt</th>
+<th style="text-align: left;">chosen</th>
+<th style="text-align: right;">price_alt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1001_1</td>
+<td style="text-align: left;">GEN</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">3.38</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1001_1</td>
+<td style="text-align: left;">GT</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">7.88</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1001_1</td>
+<td style="text-align: left;">NAT</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">6.75</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1001_1</td>
+<td style="text-align: left;">CHO</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">6.75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1001_1</td>
+<td style="text-align: left;">CAB</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">6.75</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1001_1</td>
+<td style="text-align: left;">NONE</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data-prep lessons
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>The “68 vs 67” gap is the first thing a replicator hits. Rather than guess, I searched for the structural reason — subject 1060 is empty — which is exactly the kind of provenance note the original LIMDEP file does not carry.</li>
+<li><code>NONE</code> has <strong>no price</strong>; encoding its <code>price_alt</code> as <code>NA</code>/0 (and never giving it an own-price coefficient) is what makes it the natural base alternative.</li>
+</ul>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01-original-study.html" class="pagination-link" aria-label="The original study">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">The original study</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-descriptives.html" class="pagination-link" aria-label="Descriptive replication: Tables 1 and 2">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Descriptive replication: Tables 1 and 2</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb6" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Data structure and preparation {#sec-data}</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"_common.R"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>This chapter runs **live**: it reads the raw spreadsheet and builds the</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>estimation dataset, exactly the data-preparation workflow demonstrated in class.</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## The raw file</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>The authors provided <span class="in">`harrison.xls`</span>. The relevant sheet, <span class="in">`trt 10&amp;11`</span>, is a</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>*wide* spreadsheet — one row per respondent — with a two-row header, label rows</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>separating the two treatments, and summary rows at the bottom. Treatment 10 is</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>the nonhypothetical group; Treatment 11 is the hypothetical group.</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r raw-peek}</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="in">raw_dims &lt;- dim(readxl::read_excel("harrison.xls", sheet = "trt 10&amp;11",</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="in">                                   skip = 3, col_types = "text"))</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Raw sheet (after skipping 3 header rows):",</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="in">    raw_dims[1], "rows ×", raw_dims[2], "columns\n")</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>**Key variables.**</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>| Block | Columns | Contents |</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>|---|---|---|</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>| Identifiers | <span class="in">`subject`</span>, <span class="in">`session`</span> | Subject ID (1001–1099 = nonhyp; 1100–1199 = hyp) |</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>| Demographics | <span class="in">`gender`</span>, <span class="in">`age`</span>, <span class="in">`education`</span>, <span class="in">`student`</span>, <span class="in">`income`</span>, … | Used for Table 1 |</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>| Attitudes | <span class="in">`color`</span>, <span class="in">`tenderness`</span>, <span class="in">`flavor`</span>, … | Survey Likert items (not used in estimation) |</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>| **Choices** | <span class="in">`sc1`</span>–<span class="in">`sc17`</span> | Chosen alternative per scenario, coded 1–6 |</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>Choice codes: <span class="in">`1 = Generic (GEN)`</span>, <span class="in">`2 = Guaranteed Tender (GT)`</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="in">`3 = Natural (NAT)`</span>, <span class="in">`4 = USDA Choice (CHO)`</span>, <span class="in">`5 = CAB`</span>, <span class="in">`6 = None (NONE)`</span>.</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## The price design (paper appendix)</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>The 17 × 5 price matrix is the experimental design; it is the same for both</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>treatments and is the bridge between a chosen *code* and the *prices* the</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>respondent faced.</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="in">```{r price-matrix}</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="in">price_matrix &lt;- tibble::tribble(</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="in">  ~scenario, ~GEN,  ~GT,   ~NAT,  ~CHO,  ~CAB,</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="in">  1, 3.38, 7.88, 6.75, 6.75, 6.75,   2, 4.50, 9.00, 6.75, 5.63, 9.00,</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="in">  3, 6.75, 9.00, 5.63, 9.00, 6.75,   4, 5.63, 9.00, 9.00, 6.75, 5.63,</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a><span class="in">  5, 6.75, 6.75, 6.75, 7.88, 7.88,   6, 4.50, 7.88, 7.88, 9.00, 9.00,</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="in">  7, 4.50, 6.75, 5.63, 6.75, 7.88,   8, 5.63, 5.63, 5.63, 7.88, 9.00,</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="in">  9, 5.63, 7.88, 5.63, 7.88, 9.00,  10, 5.63, 6.75, 7.88, 5.63, 9.00,</span></span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="in"> 11, 6.75, 7.88, 9.00, 5.63, 7.88,  12, 4.50, 5.63, 5.63, 7.88, 7.88,</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a><span class="in"> 13, 3.38, 9.00, 7.88, 7.88, 9.00,  14, 3.38, 5.63, 5.63, 5.63, 5.63,</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a><span class="in"> 15, 3.38, 6.75, 9.00, 9.00, 9.00,  16, 6.75, 5.63, 7.88, 6.75, 6.75,</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a><span class="in"> 17, 5.63, 5.63, 5.63, 5.63, 5.63</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a><span class="in">kable(price_matrix, caption = "Price design: 17 scenarios × 5 steaks (USD).")</span></span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cleaning: from spreadsheet to respondents</span></span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>I keep only valid subject-ID rows (1001–1199), which automatically drops the</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>treatment-label rows and the trailing summary rows. **One subject (ID 1060) has</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>all 17 scenarios missing and is excluded** — this reconciles the 68 rows in the</span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>file with the 67 nonhypothetical subjects the paper reports.</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a><span class="in">```{r clean-wide}</span></span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="in">demo_names &lt;- c(</span></span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="in">  "subject","gender","age","household","child","education","income","student",</span></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="in">  "occupation","race","gbeef","steak_buy","other_beef","gbeef_freq","steak_freq",</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="in">  "color","brand","quality_gd","ex_fat","in_fat","price_imp","safety","juiciness",</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="in">  "flavor","tenderness","consistency","doneness","production","quality_gd2",</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a><span class="in">  "slaughter","food_safe","quality_pref","cooked","chance1","chance2","chance3",</span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a><span class="in">  "chance4","chance5")</span></span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a><span class="in">sc_names &lt;- paste0("sc", 1:17)</span></span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a><span class="in">raw &lt;- read_excel("harrison.xls", sheet = "trt 10&amp;11",</span></span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a><span class="in">                  col_names = c(demo_names, sc_names, "blank", "session"),</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a><span class="in">                  skip = 3, col_types = "text")</span></span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a><span class="in">df_wide &lt;- raw |&gt;</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(subject = suppressWarnings(as.numeric(subject))) |&gt;</span></span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(!is.na(subject), subject &gt;= 1001, subject &lt;= 1199) |&gt;</span></span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(subject != 1060) |&gt;                              # all scenarios missing</span></span>
+<span id="cb6-86"><a href="#cb6-86" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(treatment = factor(if_else(subject &lt; 1100, "nonhyp", "hyp"),</span></span>
+<span id="cb6-87"><a href="#cb6-87" aria-hidden="true" tabindex="-1"></a><span class="in">                            levels = c("nonhyp", "hyp"))) |&gt;</span></span>
+<span id="cb6-88"><a href="#cb6-88" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(across(all_of(c(setdiff(demo_names, "subject"), sc_names, "session")),</span></span>
+<span id="cb6-89"><a href="#cb6-89" aria-hidden="true" tabindex="-1"></a><span class="in">                as.numeric))</span></span>
+<span id="cb6-90"><a href="#cb6-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-91"><a href="#cb6-91" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Nonhypothetical subjects:", sum(df_wide$treatment == "nonhyp"), "(paper: 67)\n")</span></span>
+<span id="cb6-92"><a href="#cb6-92" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Hypothetical  subjects:",  sum(df_wide$treatment == "hyp"),    "(paper: 37)\n")</span></span>
+<span id="cb6-93"><a href="#cb6-93" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-94"><a href="#cb6-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-95"><a href="#cb6-95" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reshape: wide → long → choice format</span></span>
+<span id="cb6-96"><a href="#cb6-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-97"><a href="#cb6-97" aria-hidden="true" tabindex="-1"></a>Two reshapes turn the respondent-level table into the estimation data:</span>
+<span id="cb6-98"><a href="#cb6-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-99"><a href="#cb6-99" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Long** — one row per *respondent × scenario*; merge in the five prices.</span>
+<span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Choice (mlogit) format** — one row per *respondent × scenario ×</span>
+<span id="cb6-101"><a href="#cb6-101" aria-hidden="true" tabindex="-1"></a>   alternative*, with a logical <span class="in">`chosen`</span> flag and the alternative's own price.</span>
+<span id="cb6-102"><a href="#cb6-102" aria-hidden="true" tabindex="-1"></a>   **Scenario 17 is excluded from estimation** (it is the all-equal-price binding</span>
+<span id="cb6-103"><a href="#cb6-103" aria-hidden="true" tabindex="-1"></a>   scenario), leaving scenarios 1–16.</span>
+<span id="cb6-104"><a href="#cb6-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-105"><a href="#cb6-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r reshape}</span></span>
+<span id="cb6-106"><a href="#cb6-106" aria-hidden="true" tabindex="-1"></a><span class="in">df_long &lt;- df_wide |&gt;</span></span>
+<span id="cb6-107"><a href="#cb6-107" aria-hidden="true" tabindex="-1"></a><span class="in">  select(subject, treatment, session, all_of(sc_names)) |&gt;</span></span>
+<span id="cb6-108"><a href="#cb6-108" aria-hidden="true" tabindex="-1"></a><span class="in">  pivot_longer(all_of(sc_names), names_to = "sc_var", values_to = "choice_code") |&gt;</span></span>
+<span id="cb6-109"><a href="#cb6-109" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(scenario = as.integer(sub("sc", "", sc_var)),</span></span>
+<span id="cb6-110"><a href="#cb6-110" aria-hidden="true" tabindex="-1"></a><span class="in">         choice   = factor(choice_code, levels = 1:6, labels = alt_labels)) |&gt;</span></span>
+<span id="cb6-111"><a href="#cb6-111" aria-hidden="true" tabindex="-1"></a><span class="in">  select(-sc_var, -choice_code) |&gt;</span></span>
+<span id="cb6-112"><a href="#cb6-112" aria-hidden="true" tabindex="-1"></a><span class="in">  left_join(price_matrix, by = "scenario") |&gt;</span></span>
+<span id="cb6-113"><a href="#cb6-113" aria-hidden="true" tabindex="-1"></a><span class="in">  arrange(subject, scenario)</span></span>
+<span id="cb6-114"><a href="#cb6-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-115"><a href="#cb6-115" aria-hidden="true" tabindex="-1"></a><span class="in">df_mlogit &lt;- df_long |&gt;</span></span>
+<span id="cb6-116"><a href="#cb6-116" aria-hidden="true" tabindex="-1"></a><span class="in">  filter(scenario &lt;= 16) |&gt;                               # drop binding scenario</span></span>
+<span id="cb6-117"><a href="#cb6-117" aria-hidden="true" tabindex="-1"></a><span class="in">  crossing(alt = factor(alt_labels, levels = alt_labels)) |&gt;</span></span>
+<span id="cb6-118"><a href="#cb6-118" aria-hidden="true" tabindex="-1"></a><span class="in">  mutate(</span></span>
+<span id="cb6-119"><a href="#cb6-119" aria-hidden="true" tabindex="-1"></a><span class="in">    chosen    = as.character(choice) == as.character(alt),</span></span>
+<span id="cb6-120"><a href="#cb6-120" aria-hidden="true" tabindex="-1"></a><span class="in">    price_alt = case_when(</span></span>
+<span id="cb6-121"><a href="#cb6-121" aria-hidden="true" tabindex="-1"></a><span class="in">      alt == "GEN" ~ GEN, alt == "GT"  ~ GT,  alt == "NAT" ~ NAT,</span></span>
+<span id="cb6-122"><a href="#cb6-122" aria-hidden="true" tabindex="-1"></a><span class="in">      alt == "CHO" ~ CHO, alt == "CAB" ~ CAB, alt == "NONE" ~ NA_real_),</span></span>
+<span id="cb6-123"><a href="#cb6-123" aria-hidden="true" tabindex="-1"></a><span class="in">    chid = paste(subject, scenario, sep = "_")) |&gt;</span></span>
+<span id="cb6-124"><a href="#cb6-124" aria-hidden="true" tabindex="-1"></a><span class="in">  select(chid, subject, treatment, session, scenario, alt, chosen, price_alt) |&gt;</span></span>
+<span id="cb6-125"><a href="#cb6-125" aria-hidden="true" tabindex="-1"></a><span class="in">  arrange(subject, scenario, alt)</span></span>
+<span id="cb6-126"><a href="#cb6-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-127"><a href="#cb6-127" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Nonhyp choice situations:",</span></span>
+<span id="cb6-128"><a href="#cb6-128" aria-hidden="true" tabindex="-1"></a><span class="in">    sum(df_mlogit$treatment == "nonhyp" &amp; df_mlogit$alt == "GEN"), "(paper: 1072 = 67×16)\n")</span></span>
+<span id="cb6-129"><a href="#cb6-129" aria-hidden="true" tabindex="-1"></a><span class="in">cat("Hyp    choice situations:",</span></span>
+<span id="cb6-130"><a href="#cb6-130" aria-hidden="true" tabindex="-1"></a><span class="in">    sum(df_mlogit$treatment == "hyp"    &amp; df_mlogit$alt == "GEN"), "(paper:  592 = 37×16)\n")</span></span>
+<span id="cb6-131"><a href="#cb6-131" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-132"><a href="#cb6-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-133"><a href="#cb6-133" aria-hidden="true" tabindex="-1"></a><span class="in">```{r show-choice-format}</span></span>
+<span id="cb6-134"><a href="#cb6-134" aria-hidden="true" tabindex="-1"></a><span class="in">df_mlogit |&gt; filter(chid == "1001_1") |&gt;</span></span>
+<span id="cb6-135"><a href="#cb6-135" aria-hidden="true" tabindex="-1"></a><span class="in">  select(chid, alt, chosen, price_alt) |&gt;</span></span>
+<span id="cb6-136"><a href="#cb6-136" aria-hidden="true" tabindex="-1"></a><span class="in">  kable(caption = "One choice situation in long format (subject 1001, scenario 1).")</span></span>
+<span id="cb6-137"><a href="#cb6-137" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb6-138"><a href="#cb6-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-139"><a href="#cb6-139" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb6-140"><a href="#cb6-140" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data-prep lessons</span></span>
+<span id="cb6-141"><a href="#cb6-141" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>The "68 vs 67" gap is the first thing a replicator hits. Rather than guess, I</span>
+<span id="cb6-142"><a href="#cb6-142" aria-hidden="true" tabindex="-1"></a>  searched for the structural reason — subject 1060 is empty — which is exactly</span>
+<span id="cb6-143"><a href="#cb6-143" aria-hidden="true" tabindex="-1"></a>  the kind of provenance note the original LIMDEP file does not carry.</span>
+<span id="cb6-144"><a href="#cb6-144" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`NONE`</span> has **no price**; encoding its <span class="in">`price_alt`</span> as <span class="in">`NA`</span>/0 (and never giving</span>
+<span id="cb6-145"><a href="#cb6-145" aria-hidden="true" tabindex="-1"></a>  it an own-price coefficient) is what makes it the natural base alternative.</span>
+<span id="cb6-146"><a href="#cb6-146" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Replication of Lusk &amp; Schroeder (2004), AJAE 86(2): 467–482.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    <div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/JunJie-Chang/ADCA-replication/blob/main/02-data.qmd" class="toc-action"><i class="bi bi-github"></i>View source</a></li><li><a href="https://github.com/JunJie-Chang/ADCA-replication/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p>Built with <a href="https://quarto.org">Quarto</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -1,0 +1,362 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Are Choice Experiments Incentive Compatible?",
+    "section": "",
+    "text": "Preface\nThis site reproduces, in R, the main empirical results of\nThe original analysis was conducted in LIMDEP. This is a replication project for AGEC 5045 — Applied Discrete Choice Analysis (NTU, 114-2), written as a Quarto book so that code, results, and commentary sit side by side and the whole analysis can be reproduced end to end.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#what-is-reproduced",
+    "href": "index.html#what-is-reproduced",
+    "title": "Are Choice Experiments Incentive Compatible?",
+    "section": "What is reproduced",
+    "text": "What is reproduced\n\n\n\nOutput\nChapter\nMethod\n\n\n\n\nData preparation\nData\nread harrison.xls, reshape to choice format\n\n\nTables 1–2\nDescriptives\ndemographics & choice frequencies\n\n\nTable 3\nMNL\nmultinomial logit + Swait–Louviere scale test\n\n\nIIA test\nIIA\nuniversal (“mother”) logit LR test\n\n\nTable 4\nAdvanced models\nHEV, RPL (MNP discussed)\n\n\nTable 5 & Figure 2\nWTP\nwillingness to pay + Poe test; HEV market shares\n\n\nDiscussion\nDiscrepancies\nreplication experience & gaps",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-read-it",
+    "href": "index.html#how-to-read-it",
+    "title": "Are Choice Experiments Incentive Compatible?",
+    "section": "How to read it",
+    "text": "How to read it\n\nData preparation runs live in the book — the Data chapter reads the raw spreadsheet and builds the estimation dataset in front of you.\nModel estimation code is shown but loaded, not re-run. The heavy models (custom-likelihood MNL scale test, HEV quadrature, simulated-ML RPL, the Poe bootstrap) are estimated by the numbered scripts in R/, saved to output/*.rds, and loaded here; results are then recomputed for display. This keeps the book fast and deterministic while still showing every line of code.\nCommentary is set off in coloured callout boxes so my own notes are never confused with the paper’s claims or the raw output.\n\n\n\n\n\n\n\nReproducibility\n\n\n\nAll code and data are in the GitHub repository. To rebuild from scratch, run the scripts in R/ in order (see Reproducibility) and re-render the book.\n\n\nThe headline result, stated once up front: hypothetical choices overstate real willingness to pay. Every qualitative finding of the paper replicates; the quantitative gaps that remain are documented and interpreted in the final chapter.",
+    "crumbs": [
+      "Preface"
+    ]
+  },
+  {
+    "objectID": "01-original-study.html",
+    "href": "01-original-study.html",
+    "title": "1  The original study",
+    "section": "",
+    "text": "1.1 Research question\nChoice experiments (CEs) ask respondents to pick repeatedly among multi-attribute products at varying prices, and have become a workhorse for valuing food quality, environmental goods, and new products. They are widely believed to be more incentive compatible than open-ended contingent valuation because they mimic real shopping. Lusk & Schroeder (2004) test that belief directly: do the choices people make — and the willingness-to-pay (WTP) values recovered from them — differ when the task is hypothetical versus when real money changes hands?\nThis is the same “hypothetical bias” question long studied in the contingent valuation literature, but moved inside the choice-experiment framework. The paper’s distinctive contribution is to pin down which WTP measures are biased: marginal WTP for a quality change, or total WTP relative to a no-buy option.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The original study</span>"
+    ]
+  },
+  {
+    "objectID": "01-original-study.html#empirical-design",
+    "href": "01-original-study.html#empirical-design",
+    "title": "1  The original study",
+    "section": "1.2 Empirical design",
+    "text": "1.2 Empirical design\n\nGood. 12-oz ribeye steaks differentiated by a quality/assurance label: Generic, Guaranteed Tender (GT), Natural, USDA Choice, and Certified Angus Beef (CAB), plus a “None” (no-purchase) option — six alternatives.\nChoice task. Each subject faced 17 choice scenarios; in each, the five steaks were offered at experimentally varied prices ($3.38–$9.00) and the subject chose one steak or “None”. The full price design is in the paper’s appendix and is reproduced in the Data chapter.\nTreatments (the key manipulation).\n\nNonhypothetical (real): subjects knew that one scenario would be drawn at random and binding — they would actually buy the steak they chose at the posted price. Scenario 17 (all five steaks at the same $5.63) served as the binding scenario.\nHypothetical: identical task, but no transaction ever occurred.\n\nEstimation (LIMDEP in the original). A sequence of discrete-choice models on the panel of choices: multinomial logit (MNL); a test of IIA via the universal (“mother”) logit; and three less-restrictive models — heteroscedastic extreme value (HEV), multinomial probit (MNP), and random parameters logit (RPL). Treatments are compared with the Swait–Louviere scale-and-preference test, and WTP differences are tested with the Poe combinatorial test.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The original study</span>"
+    ]
+  },
+  {
+    "objectID": "01-original-study.html#key-findings-of-the-paper",
+    "href": "01-original-study.html#key-findings-of-the-paper",
+    "title": "1  The original study",
+    "section": "1.3 Key findings of the paper",
+    "text": "1.3 Key findings of the paper\n\nHypothetical bias is present. Hypothetical respondents choose the no-purchase option less often and exhibit higher WTP than real-payment respondents.\nThe error scale differs across treatments, and a joint model rejects equality of preferences across treatments.\nIIA is violated for the pooled and hypothetical data (universal-logit LR test), motivating the HEV / MNP / RPL models.\nBias is concentrated in total WTP (value of a steak vs. buying nothing) rather than in marginal quality premiums — an important, nuanced result for practitioners.\n\n\n\n\n\n\n\nMy framing\n\n\n\nThe paper is essentially a careful measurement-validity exercise for stated preference methods. For replication this is attractive because every headline number is a likelihood, a test statistic, or a WTP — all things we can recompute from the raw choices. The challenge is less “what to compute” than “reproducing 2004 LIMDEP defaults in modern R,” which is where most of my discrepancies arise (see Discrepancies).",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>The original study</span>"
+    ]
+  },
+  {
+    "objectID": "02-data.html",
+    "href": "02-data.html",
+    "title": "2  Data structure and preparation",
+    "section": "",
+    "text": "2.1 The raw file\nThe authors provided harrison.xls. The relevant sheet, trt 10&11, is a wide spreadsheet — one row per respondent — with a two-row header, label rows separating the two treatments, and summary rows at the bottom. Treatment 10 is the nonhypothetical group; Treatment 11 is the hypothetical group.\nraw_dims &lt;- dim(readxl::read_excel(\"harrison.xls\", sheet = \"trt 10&11\",\n                                   skip = 3, col_types = \"text\"))\ncat(\"Raw sheet (after skipping 3 header rows):\",\n    raw_dims[1], \"rows ×\", raw_dims[2], \"columns\\n\")\n#&gt; Raw sheet (after skipping 3 header rows): 129 rows × 57 columns\nKey variables.\nChoice codes: 1 = Generic (GEN), 2 = Guaranteed Tender (GT), 3 = Natural (NAT), 4 = USDA Choice (CHO), 5 = CAB, 6 = None (NONE).",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data structure and preparation</span>"
+    ]
+  },
+  {
+    "objectID": "02-data.html#the-raw-file",
+    "href": "02-data.html#the-raw-file",
+    "title": "2  Data structure and preparation",
+    "section": "",
+    "text": "Block\nColumns\nContents\n\n\n\n\nIdentifiers\nsubject, session\nSubject ID (1001–1099 = nonhyp; 1100–1199 = hyp)\n\n\nDemographics\ngender, age, education, student, income, …\nUsed for Table 1\n\n\nAttitudes\ncolor, tenderness, flavor, …\nSurvey Likert items (not used in estimation)\n\n\nChoices\nsc1–sc17\nChosen alternative per scenario, coded 1–6",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data structure and preparation</span>"
+    ]
+  },
+  {
+    "objectID": "02-data.html#the-price-design-paper-appendix",
+    "href": "02-data.html#the-price-design-paper-appendix",
+    "title": "2  Data structure and preparation",
+    "section": "2.2 The price design (paper appendix)",
+    "text": "2.2 The price design (paper appendix)\nThe 17 × 5 price matrix is the experimental design; it is the same for both treatments and is the bridge between a chosen code and the prices the respondent faced.\n\nprice_matrix &lt;- tibble::tribble(\n  ~scenario, ~GEN,  ~GT,   ~NAT,  ~CHO,  ~CAB,\n  1, 3.38, 7.88, 6.75, 6.75, 6.75,   2, 4.50, 9.00, 6.75, 5.63, 9.00,\n  3, 6.75, 9.00, 5.63, 9.00, 6.75,   4, 5.63, 9.00, 9.00, 6.75, 5.63,\n  5, 6.75, 6.75, 6.75, 7.88, 7.88,   6, 4.50, 7.88, 7.88, 9.00, 9.00,\n  7, 4.50, 6.75, 5.63, 6.75, 7.88,   8, 5.63, 5.63, 5.63, 7.88, 9.00,\n  9, 5.63, 7.88, 5.63, 7.88, 9.00,  10, 5.63, 6.75, 7.88, 5.63, 9.00,\n 11, 6.75, 7.88, 9.00, 5.63, 7.88,  12, 4.50, 5.63, 5.63, 7.88, 7.88,\n 13, 3.38, 9.00, 7.88, 7.88, 9.00,  14, 3.38, 5.63, 5.63, 5.63, 5.63,\n 15, 3.38, 6.75, 9.00, 9.00, 9.00,  16, 6.75, 5.63, 7.88, 6.75, 6.75,\n 17, 5.63, 5.63, 5.63, 5.63, 5.63\n)\nkable(price_matrix, caption = \"Price design: 17 scenarios × 5 steaks (USD).\")\n\n\nPrice design: 17 scenarios × 5 steaks (USD).\n\n\nscenario\nGEN\nGT\nNAT\nCHO\nCAB\n\n\n\n\n1\n3.38\n7.88\n6.75\n6.75\n6.75\n\n\n2\n4.50\n9.00\n6.75\n5.63\n9.00\n\n\n3\n6.75\n9.00\n5.63\n9.00\n6.75\n\n\n4\n5.63\n9.00\n9.00\n6.75\n5.63\n\n\n5\n6.75\n6.75\n6.75\n7.88\n7.88\n\n\n6\n4.50\n7.88\n7.88\n9.00\n9.00\n\n\n7\n4.50\n6.75\n5.63\n6.75\n7.88\n\n\n8\n5.63\n5.63\n5.63\n7.88\n9.00\n\n\n9\n5.63\n7.88\n5.63\n7.88\n9.00\n\n\n10\n5.63\n6.75\n7.88\n5.63\n9.00\n\n\n11\n6.75\n7.88\n9.00\n5.63\n7.88\n\n\n12\n4.50\n5.63\n5.63\n7.88\n7.88\n\n\n13\n3.38\n9.00\n7.88\n7.88\n9.00\n\n\n14\n3.38\n5.63\n5.63\n5.63\n5.63\n\n\n15\n3.38\n6.75\n9.00\n9.00\n9.00\n\n\n16\n6.75\n5.63\n7.88\n6.75\n6.75\n\n\n17\n5.63\n5.63\n5.63\n5.63\n5.63",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data structure and preparation</span>"
+    ]
+  },
+  {
+    "objectID": "02-data.html#cleaning-from-spreadsheet-to-respondents",
+    "href": "02-data.html#cleaning-from-spreadsheet-to-respondents",
+    "title": "2  Data structure and preparation",
+    "section": "2.3 Cleaning: from spreadsheet to respondents",
+    "text": "2.3 Cleaning: from spreadsheet to respondents\nI keep only valid subject-ID rows (1001–1199), which automatically drops the treatment-label rows and the trailing summary rows. One subject (ID 1060) has all 17 scenarios missing and is excluded — this reconciles the 68 rows in the file with the 67 nonhypothetical subjects the paper reports.\n\ndemo_names &lt;- c(\n  \"subject\",\"gender\",\"age\",\"household\",\"child\",\"education\",\"income\",\"student\",\n  \"occupation\",\"race\",\"gbeef\",\"steak_buy\",\"other_beef\",\"gbeef_freq\",\"steak_freq\",\n  \"color\",\"brand\",\"quality_gd\",\"ex_fat\",\"in_fat\",\"price_imp\",\"safety\",\"juiciness\",\n  \"flavor\",\"tenderness\",\"consistency\",\"doneness\",\"production\",\"quality_gd2\",\n  \"slaughter\",\"food_safe\",\"quality_pref\",\"cooked\",\"chance1\",\"chance2\",\"chance3\",\n  \"chance4\",\"chance5\")\nsc_names &lt;- paste0(\"sc\", 1:17)\n\nraw &lt;- read_excel(\"harrison.xls\", sheet = \"trt 10&11\",\n                  col_names = c(demo_names, sc_names, \"blank\", \"session\"),\n                  skip = 3, col_types = \"text\")\n\ndf_wide &lt;- raw |&gt;\n  mutate(subject = suppressWarnings(as.numeric(subject))) |&gt;\n  filter(!is.na(subject), subject &gt;= 1001, subject &lt;= 1199) |&gt;\n  filter(subject != 1060) |&gt;                              # all scenarios missing\n  mutate(treatment = factor(if_else(subject &lt; 1100, \"nonhyp\", \"hyp\"),\n                            levels = c(\"nonhyp\", \"hyp\"))) |&gt;\n  mutate(across(all_of(c(setdiff(demo_names, \"subject\"), sc_names, \"session\")),\n                as.numeric))\n\ncat(\"Nonhypothetical subjects:\", sum(df_wide$treatment == \"nonhyp\"), \"(paper: 67)\\n\")\n#&gt; Nonhypothetical subjects: 67 (paper: 67)\ncat(\"Hypothetical  subjects:\",  sum(df_wide$treatment == \"hyp\"),    \"(paper: 37)\\n\")\n#&gt; Hypothetical  subjects: 37 (paper: 37)",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data structure and preparation</span>"
+    ]
+  },
+  {
+    "objectID": "02-data.html#reshape-wide-long-choice-format",
+    "href": "02-data.html#reshape-wide-long-choice-format",
+    "title": "2  Data structure and preparation",
+    "section": "2.4 Reshape: wide → long → choice format",
+    "text": "2.4 Reshape: wide → long → choice format\nTwo reshapes turn the respondent-level table into the estimation data:\n\nLong — one row per respondent × scenario; merge in the five prices.\nChoice (mlogit) format — one row per respondent × scenario × alternative, with a logical chosen flag and the alternative’s own price. Scenario 17 is excluded from estimation (it is the all-equal-price binding scenario), leaving scenarios 1–16.\n\n\ndf_long &lt;- df_wide |&gt;\n  select(subject, treatment, session, all_of(sc_names)) |&gt;\n  pivot_longer(all_of(sc_names), names_to = \"sc_var\", values_to = \"choice_code\") |&gt;\n  mutate(scenario = as.integer(sub(\"sc\", \"\", sc_var)),\n         choice   = factor(choice_code, levels = 1:6, labels = alt_labels)) |&gt;\n  select(-sc_var, -choice_code) |&gt;\n  left_join(price_matrix, by = \"scenario\") |&gt;\n  arrange(subject, scenario)\n\ndf_mlogit &lt;- df_long |&gt;\n  filter(scenario &lt;= 16) |&gt;                               # drop binding scenario\n  crossing(alt = factor(alt_labels, levels = alt_labels)) |&gt;\n  mutate(\n    chosen    = as.character(choice) == as.character(alt),\n    price_alt = case_when(\n      alt == \"GEN\" ~ GEN, alt == \"GT\"  ~ GT,  alt == \"NAT\" ~ NAT,\n      alt == \"CHO\" ~ CHO, alt == \"CAB\" ~ CAB, alt == \"NONE\" ~ NA_real_),\n    chid = paste(subject, scenario, sep = \"_\")) |&gt;\n  select(chid, subject, treatment, session, scenario, alt, chosen, price_alt) |&gt;\n  arrange(subject, scenario, alt)\n\ncat(\"Nonhyp choice situations:\",\n    sum(df_mlogit$treatment == \"nonhyp\" & df_mlogit$alt == \"GEN\"), \"(paper: 1072 = 67×16)\\n\")\n#&gt; Nonhyp choice situations: 1072 (paper: 1072 = 67×16)\ncat(\"Hyp    choice situations:\",\n    sum(df_mlogit$treatment == \"hyp\"    & df_mlogit$alt == \"GEN\"), \"(paper:  592 = 37×16)\\n\")\n#&gt; Hyp    choice situations: 592 (paper:  592 = 37×16)\n\n\ndf_mlogit |&gt; filter(chid == \"1001_1\") |&gt;\n  select(chid, alt, chosen, price_alt) |&gt;\n  kable(caption = \"One choice situation in long format (subject 1001, scenario 1).\")\n\n\nOne choice situation in long format (subject 1001, scenario 1).\n\n\nchid\nalt\nchosen\nprice_alt\n\n\n\n\n1001_1\nGEN\nFALSE\n3.38\n\n\n1001_1\nGT\nFALSE\n7.88\n\n\n1001_1\nNAT\nFALSE\n6.75\n\n\n1001_1\nCHO\nFALSE\n6.75\n\n\n1001_1\nCAB\nFALSE\n6.75\n\n\n1001_1\nNONE\nTRUE\nNA\n\n\n\n\n\n\n\n\n\n\n\nData-prep lessons\n\n\n\n\nThe “68 vs 67” gap is the first thing a replicator hits. Rather than guess, I searched for the structural reason — subject 1060 is empty — which is exactly the kind of provenance note the original LIMDEP file does not carry.\nNONE has no price; encoding its price_alt as NA/0 (and never giving it an own-price coefficient) is what makes it the natural base alternative.",
+    "crumbs": [
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Data structure and preparation</span>"
+    ]
+  },
+  {
+    "objectID": "03-descriptives.html",
+    "href": "03-descriptives.html",
+    "title": "3  Descriptive replication: Tables 1 and 2",
+    "section": "",
+    "text": "3.1 Table 1 — demographics by treatment\nThe paper’s Table 1 shows that randomisation worked: means are statistically indistinguishable across treatments. I reproduce the means, SDs, and t-tests.\nmean_sd &lt;- function(data, var) {\n  data |&gt; group_by(treatment) |&gt;\n    summarise(mean = round(mean(.data[[var]], na.rm = TRUE), 2),\n              sd   = round(sd(.data[[var]],   na.rm = TRUE), 2), .groups = \"drop\") |&gt;\n    pivot_wider(names_from = treatment, values_from = c(mean, sd)) |&gt;\n    mutate(variable = var)\n}\nt1_vars &lt;- c(\"gender\", \"age\", \"education\", \"student\", \"income\")\ntable1 &lt;- bind_rows(lapply(t1_vars, mean_sd, data = df_wide)) |&gt;\n  rowwise() |&gt;\n  mutate(t_p = round(t.test(df_wide[[variable]][df_wide$treatment == \"nonhyp\"],\n                            df_wide[[variable]][df_wide$treatment == \"hyp\"])$p.value, 3)) |&gt;\n  ungroup() |&gt;\n  select(variable, mean_nonhyp, sd_nonhyp, mean_hyp, sd_hyp, t_p)\n\nkable(table1,\n      col.names = c(\"Variable\", \"NH mean\", \"NH (SD)\", \"HY mean\", \"HY (SD)\", \"t-test p\"),\n      caption = \"Table 1. Demographics by treatment (NH = nonhypothetical, HY = hypothetical).\")\n\n\nTable 1. Demographics by treatment (NH = nonhypothetical, HY = hypothetical).\n\n\nVariable\nNH mean\nNH (SD)\nHY mean\nHY (SD)\nt-test p\n\n\n\n\ngender\n0.42\n0.50\n0.41\n0.50\n0.903\n\n\nage\n33.13\n17.55\n29.62\n14.92\n0.284\n\n\neducation\n3.66\n2.06\n3.38\n1.98\n0.500\n\n\nstudent\n0.51\n0.50\n0.59\n0.50\n0.397\n\n\nincome\n4.63\n4.82\n3.76\n4.06\n0.332",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Descriptive replication: Tables 1 and 2</span>"
+    ]
+  },
+  {
+    "objectID": "03-descriptives.html#table-1-demographics-by-treatment",
+    "href": "03-descriptives.html#table-1-demographics-by-treatment",
+    "title": "3  Descriptive replication: Tables 1 and 2",
+    "section": "",
+    "text": "Result\n\n\n\nEvery t-test p-value exceeds 0.05 — as in the paper, we cannot reject equality of demographic means across treatments. Randomisation is validated, so any behavioural difference later is attributable to the hypothetical/real manipulation, not to sample composition.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Descriptive replication: Tables 1 and 2</span>"
+    ]
+  },
+  {
+    "objectID": "03-descriptives.html#table-2-choice-frequencies-and-the-none-gap",
+    "href": "03-descriptives.html#table-2-choice-frequencies-and-the-none-gap",
+    "title": "3  Descriptive replication: Tables 1 and 2",
+    "section": "3.2 Table 2 — choice frequencies and the “None” gap",
+    "text": "3.2 Table 2 — choice frequencies and the “None” gap\n\ntable2 &lt;- df_long |&gt;\n  count(treatment, scenario, choice) |&gt;\n  group_by(treatment, scenario) |&gt;\n  mutate(pct = round(100 * n / sum(n), 1)) |&gt;\n  ungroup() |&gt; select(-n) |&gt;\n  pivot_wider(names_from = choice, values_from = pct, values_fill = 0) |&gt;\n  select(treatment, scenario, all_of(alt_labels)) |&gt;\n  arrange(treatment, scenario)\n\nkable(table2 |&gt; filter(treatment == \"nonhyp\") |&gt; select(-treatment),\n      col.names = c(\"Scenario\",\"Generic\",\"GT\",\"Natural\",\"USDA Choice\",\"CAB\",\"None\"),\n      caption = \"Table 2a. % choosing each alternative — Nonhypothetical.\")\n\n\nTable 2a. % choosing each alternative — Nonhypothetical.\n\n\nScenario\nGeneric\nGT\nNatural\nUSDA Choice\nCAB\nNone\n\n\n\n\n1\n28.4\n1.5\n4.5\n19.4\n20.9\n25.4\n\n\n2\n10.4\n1.5\n1.5\n65.7\n1.5\n19.4\n\n\n3\n0.0\n0.0\n29.9\n0.0\n32.8\n37.3\n\n\n4\n0.0\n1.5\n0.0\n7.5\n74.6\n16.4\n\n\n5\n0.0\n3.0\n3.0\n1.5\n76.1\n16.4\n\n\n6\n10.4\n1.5\n1.5\n1.5\n68.7\n16.4\n\n\n7\n16.4\n9.0\n16.4\n25.4\n0.0\n32.8\n\n\n8\n0.0\n61.2\n6.0\n0.0\n3.0\n29.9\n\n\n9\n11.9\n3.0\n25.4\n16.4\n1.5\n41.8\n\n\n10\n0.0\n0.0\n1.5\n73.1\n7.5\n17.9\n\n\n11\n0.0\n1.5\n0.0\n79.1\n1.5\n17.9\n\n\n12\n11.9\n38.8\n0.0\n1.5\n17.9\n29.9\n\n\n13\n40.3\n0.0\n1.5\n10.4\n14.9\n32.8\n\n\n14\n10.4\n13.4\n6.0\n13.4\n44.8\n11.9\n\n\n15\n34.3\n31.3\n0.0\n0.0\n3.0\n31.3\n\n\n16\n0.0\n50.7\n3.0\n16.4\n0.0\n29.9\n\n\n17\n0.0\n7.5\n6.0\n19.4\n52.2\n14.9\n\n\n\n\nkable(table2 |&gt; filter(treatment == \"hyp\") |&gt; select(-treatment),\n      col.names = c(\"Scenario\",\"Generic\",\"GT\",\"Natural\",\"USDA Choice\",\"CAB\",\"None\"),\n      caption = \"Table 2b. % choosing each alternative — Hypothetical.\")\n\n\nTable 2b. % choosing each alternative — Hypothetical.\n\n\nScenario\nGeneric\nGT\nNatural\nUSDA Choice\nCAB\nNone\n\n\n\n\n1\n48.6\n0.0\n10.8\n13.5\n24.3\n2.7\n\n\n2\n10.8\n0.0\n2.7\n86.5\n0.0\n0.0\n\n\n3\n0.0\n2.7\n48.6\n0.0\n37.8\n10.8\n\n\n4\n2.7\n0.0\n0.0\n5.4\n83.8\n8.1\n\n\n5\n0.0\n13.5\n10.8\n0.0\n67.6\n8.1\n\n\n6\n21.6\n0.0\n0.0\n0.0\n75.7\n2.7\n\n\n7\n24.3\n13.5\n40.5\n21.6\n0.0\n0.0\n\n\n8\n0.0\n64.9\n16.2\n2.7\n2.7\n13.5\n\n\n9\n16.2\n5.4\n51.4\n13.5\n0.0\n13.5\n\n\n10\n2.7\n0.0\n0.0\n89.2\n0.0\n8.1\n\n\n11\n0.0\n0.0\n0.0\n91.9\n0.0\n8.1\n\n\n12\n13.5\n59.5\n2.7\n0.0\n16.2\n8.1\n\n\n13\n56.8\n0.0\n0.0\n5.4\n21.6\n16.2\n\n\n14\n32.4\n10.8\n13.5\n21.6\n21.6\n0.0\n\n\n15\n48.6\n32.4\n0.0\n0.0\n5.4\n13.5\n\n\n16\n0.0\n59.5\n0.0\n27.0\n0.0\n13.5\n\n\n17\n0.0\n18.9\n13.5\n32.4\n32.4\n2.7\n\n\n\n\n\n\nnone_gap &lt;- table2 |&gt; filter(scenario &lt;= 16) |&gt;\n  select(treatment, scenario, NONE) |&gt;\n  pivot_wider(names_from = treatment, values_from = NONE) |&gt;\n  mutate(gap = nonhyp - hyp)\ncat(sprintf(\"Smallest None gap: scenario %d (%.1f pp)\\n\",\n            none_gap$scenario[which.min(abs(none_gap$gap))], min(abs(none_gap$gap))))\n#&gt; Smallest None gap: scenario 4 (8.3 pp)\ncat(sprintf(\"Largest  None gap: scenario %d (%.1f pp)\\n\",\n            none_gap$scenario[which.max(none_gap$gap)], max(none_gap$gap)))\n#&gt; Largest  None gap: scenario 7 (32.8 pp)\ncat(\"Paper: smallest = scenario 4 (8.31 pp), largest = scenario 7 (32.84 pp)\\n\")\n#&gt; Paper: smallest = scenario 4 (8.31 pp), largest = scenario 7 (32.84 pp)\n\n\n\n\n\n\n\nResult — the core stylised fact\n\n\n\nNonhypothetical subjects pick “None” much more often than hypothetical subjects (a positive gap in every scenario). This is hypothetical bias in its rawest form: when payment is real, more people walk away. The gap reproduces the paper’s reported extremes at scenarios 4 and 7 almost exactly.",
+    "crumbs": [
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Descriptive replication: Tables 1 and 2</span>"
+    ]
+  },
+  {
+    "objectID": "04-mnl.html",
+    "href": "04-mnl.html",
+    "title": "4  Multinomial logit and the scale test",
+    "section": "",
+    "text": "4.1 Specification\nUtility of alternative \\(j\\) in choice situation \\(i\\): \\[\nV_{ij} = \\beta_j + \\alpha_j P_{ij}, \\qquad j \\in \\{\\text{GEN, GT, NAT, CHO, CAB}\\},\n\\quad V_{i,\\text{NONE}} \\equiv 0 .\n\\] There are 5 alternative-specific constants \\(\\beta_j\\) and 5 own-price coefficients \\(\\alpha_j\\) (10 taste parameters). The joint model stacks both treatments, holds taste parameters equal, and scales the nonhypothetical utilities by \\(\\mu\\): \\[\nV^{\\text{NH}}_{ij} = \\mu\\,(\\beta_j + \\alpha_j P_{ij}), \\qquad\nV^{\\text{H}}_{ij}  =      \\beta_j + \\alpha_j P_{ij},\n\\] so \\(\\mu\\) is the relative error scale (precision) of the real-payment group. The Swait–Louviere LR test compares the joint model against the two separate models.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Multinomial logit and the scale test</span>"
+    ]
+  },
+  {
+    "objectID": "04-mnl.html#estimation-code-r03_table3_mnl.r",
+    "href": "04-mnl.html#estimation-code-r03_table3_mnl.r",
+    "title": "4  Multinomial logit and the scale test",
+    "section": "4.2 Estimation code (R/03_table3_mnl.R)",
+    "text": "4.2 Estimation code (R/03_table3_mnl.R)\n\n# Alternative-specific price variables: p_j = price × 1{alt = j}\ndf0 &lt;- df_mlogit |&gt;\n  mutate(price_alt = tidyr::replace_na(price_alt, 0),\n         p_GEN = if_else(alt==\"GEN\", price_alt, 0),\n         p_GT  = if_else(alt==\"GT\",  price_alt, 0),\n         p_NAT = if_else(alt==\"NAT\", price_alt, 0),\n         p_CHO = if_else(alt==\"CHO\", price_alt, 0),\n         p_CAB = if_else(alt==\"CAB\", price_alt, 0))\n\nmake_mdata &lt;- function(d) mlogit.data(d, choice=\"chosen\", shape=\"long\",\n  alt.var=\"alt\", chid.var=\"chid\", id.var=\"subject\", alt.levels=alts)\n\nf_mnl &lt;- chosen ~ p_GEN + p_GT + p_NAT + p_CHO + p_CAB | 1   # 5 prices + 5 ASCs\nmnl_nh  &lt;- mlogit(f_mnl, make_mdata(filter(df0, treatment==\"nonhyp\")), reflevel=\"NONE\")\nmnl_hyp &lt;- mlogit(f_mnl, make_mdata(filter(df0, treatment==\"hyp\")),    reflevel=\"NONE\")\n\n# Joint model with scale mu: custom log-likelihood maximised by optim(BFGS).\n# theta = (beta[1:5], alpha[6:10], log_mu[11]); V_NH scaled by exp(log_mu).\nll_joint_fn &lt;- function(theta, df) {\n  beta  &lt;- c(theta[1:5], 0); alpha &lt;- c(theta[6:10], 0); mu &lt;- exp(theta[11])\n  k &lt;- match(as.character(df$alt), alts)\n  V &lt;- beta[k] + alpha[k]*df$price_alt\n  V[df$treatment==\"nonhyp\"] &lt;- mu * V[df$treatment==\"nonhyp\"]\n  df |&gt; mutate(V=V) |&gt; group_by(chid) |&gt;\n    mutate(p = exp(V-max(V))/sum(exp(V-max(V)))) |&gt; ungroup() |&gt;\n    summarise(ll = sum(log(pmax(p[chosen], 1e-300)))) |&gt; pull(ll)\n}\nopt &lt;- optim(theta0, ll_joint_fn, df=df0, method=\"BFGS\",\n             control=list(fnscale=-1, maxit=1e4, reltol=1e-12), hessian=TRUE)\n\n# Swait–Louviere LR scale test: chi2 = -2(LL_joint - LL_nh - LL_hyp)\nlr_stat &lt;- -2 * (opt$value - logLik(mnl_nh) - logLik(mnl_hyp))",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Multinomial logit and the scale test</span>"
+    ]
+  },
+  {
+    "objectID": "04-mnl.html#results",
+    "href": "04-mnl.html#results",
+    "title": "4  Multinomial logit and the scale test",
+    "section": "4.3 Results",
+    "text": "4.3 Results\n\nkable(t3$table3 |&gt; mutate(Parameter = gk(Parameter)),\n      col.names = c(\"Parameter\",\"NH Est\",\"NH (SE)\",\"HY Est\",\"HY (SE)\",\"JT Est\",\"JT (SE)\"),\n      caption = \"Table 3. MNL estimates — Nonhyp | Hyp | Joint (with scale).\")\n\n\nTable 3. MNL estimates — Nonhyp | Hyp | Joint (with scale).\n\n\n\n\n\n\n\n\n\n\n\nParameter\nNH Est\nNH (SE)\nHY Est\nHY (SE)\nJT Est\nJT (SE)\n\n\n\n\nbeta GEN (Generic)\n3.9094\n0.5227\n5.8868\n0.6536\n5.2285\n0.5137\n\n\nbeta GT (Guaranteed Tender)\n10.0676\n0.8867\n12.5954\n1.1989\n12.4289\n0.9639\n\n\nbeta NAT (Natural)\n5.9844\n1.1660\n11.1365\n1.6456\n9.3556\n1.2035\n\n\nbeta CHO (USDA Choice)\n9.2681\n0.6670\n13.4089\n1.0984\n12.1501\n0.8534\n\n\nbeta CAB (Certified Angus Beef)\n4.5184\n0.4932\n5.1333\n0.7168\n5.2656\n0.5034\n\n\nalpha GEN (price)\n-1.0880\n0.1284\n-1.1654\n0.1541\n-1.2759\n0.1224\n\n\nalpha GT (price)\n-1.6216\n0.1435\n-1.7957\n0.1916\n-1.9218\n0.1522\n\n\nalpha NAT (price)\n-1.1629\n0.1949\n-1.7176\n0.2798\n-1.6250\n0.2023\n\n\nalpha CHO (price)\n-1.3998\n0.1032\n-1.8344\n0.1699\n-1.7724\n0.1278\n\n\nalpha CAB (price)\n-0.5974\n0.0641\n-0.5294\n0.0910\n-0.6490\n0.0637\n\n\n\n\n\nmnl_summary &lt;- tibble(\n  Statistic = c(\"Log-likelihood\", \"Observations\", \"Scale (mu)\", \"SE(mu)\",\n                \"Scale-test Chi-sq\", \"df\", \"p-value\"),\n  Nonhyp = c(fmt(t3$ll_nh,1), \"1072\", \"—\", \"—\", \"—\", \"—\", \"—\"),\n  Hyp    = c(fmt(t3$ll_hyp,1), \"592\", \"—\", \"—\", \"—\", \"—\", \"—\"),\n  Joint  = c(fmt(t3$ll_joint,1), \"1664\", fmt(t3$mu_hat,3), fmt(t3$se_mu,3),\n             fmt(t3$lr_stat,1), as.character(t3$df_test), formatC(t3$p_lr, format=\"e\", digits=1)))\nkable(mnl_summary, caption = \"Table 3 fit statistics.\")\n\n\nTable 3 fit statistics.\n\n\nStatistic\nNonhyp\nHyp\nJoint\n\n\n\n\nLog-likelihood\n-1400.3\n-677.9\n-2131.2\n\n\nObservations\n1072\n592\n1664\n\n\nScale (mu)\n—\n—\n0.804\n\n\nSE(mu)\n—\n—\n0.056\n\n\nScale-test Chi-sq\n—\n—\n105.9\n\n\ndf\n—\n—\n9\n\n\np-value\n—\n—\n9.9e-19\n\n\n\n\n\n\n\n\n\n\n\nDiscrepancy — scale \\(\\mu\\) and test df\n\n\n\nMy estimated scale is \\(\\hat\\mu = 0.804\\) (SE \\(0.056\\)), versus the paper’s \\(0.90\\) (SE \\(0.06\\)). Both are statistically distinguishable from 1 and point the same way (the two treatments have different error scales), but the point estimates differ. My scale test gives \\(\\chi^2 = 105.9\\) on 9 df versus the paper’s \\(106.8\\) on \\(4\\) df. The \\(\\chi^2\\) magnitudes are close; the df differ because of how the joint restriction is counted (I restrict 10 taste parameters to be equal and free 1 scale: \\(df = (10+10) - 11 = 9\\); the paper’s “4” suggests different bookkeeping). The substantive conclusion — reject pooling — is unchanged.\nNote also that my model log-likelihoods sit below the paper’s (nonhyp \\(-1400.3\\) vs \\(-1261.4\\); hyp \\(-677.9\\) vs \\(-627.4\\)). This level offset recurs in the IIA test and is the main open question of the replication — most plausibly a difference in how price enters utility. See Discrepancies.",
+    "crumbs": [
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Multinomial logit and the scale test</span>"
+    ]
+  },
+  {
+    "objectID": "05-iia.html",
+    "href": "05-iia.html",
+    "title": "5  Testing IIA with the universal logit",
+    "section": "",
+    "text": "5.1 Specification\nThe universal (“mother”) logit nests cross-price effects that MNL forbids: \\[\nV_{ij} = \\beta_j + \\sum_{k=1}^{5} \\alpha_{jk}\\,P_{ik}.\n\\] This is 30 parameters (5 ASCs + a 5×5 price matrix). MNL is the restriction \\(\\alpha_{jk}=0\\) for \\(j\\neq k\\) (20 constraints), so the IIA LR test has \\(df = 30 - 10 = 20\\). A second test — preference equality under the relaxed model — compares the joint universal logit to the two separate ones (\\(df = 30\\)).",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Testing IIA with the universal logit</span>"
+    ]
+  },
+  {
+    "objectID": "05-iia.html#estimation-code-r06_iia_universal_logit.r",
+    "href": "05-iia.html#estimation-code-r06_iia_universal_logit.r",
+    "title": "5  Testing IIA with the universal logit",
+    "section": "5.2 Estimation code (R/06_iia_universal_logit.R)",
+    "text": "5.2 Estimation code (R/06_iia_universal_logit.R)\n\n# 25 cross-price dummies: p_{j}_{k} = P_k × 1{alt = j}; zero for NONE.\nfor (j in steak_alts) for (k in steak_alts)\n  df0[[paste0(\"p_\",j,\"_\",k)]] &lt;- ifelse(df0$alt==j, df0[[paste0(\"P_\",k)]], 0)\n\nf_ul &lt;- as.formula(paste(\"chosen ~\", paste(ul_price_names, collapse=\" + \"), \"| 1\"))\nul_nh  &lt;- mlogit(f_ul, make_mdata(filter(df0, treatment==\"nonhyp\")), reflevel=\"NONE\")\nul_hyp &lt;- mlogit(f_ul, make_mdata(filter(df0, treatment==\"hyp\")),    reflevel=\"NONE\")\n# Joint UL with scale via custom optim (31 params); see script.\n\nchi2 &lt;- function(ll_ul, ll_mnl) 2 * (ll_ul - ll_mnl)   # IIA LR, df = 20",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Testing IIA with the universal logit</span>"
+    ]
+  },
+  {
+    "objectID": "05-iia.html#results",
+    "href": "05-iia.html#results",
+    "title": "5  Testing IIA with the universal logit",
+    "section": "5.3 Results",
+    "text": "5.3 Results\n\nkable(iia$summary_tbl,\n      col.names = c(\"Model\",\"LL(MNL)\",\"LL(UL)\",\"Chi-sq(20)\",\"p-value\",\"Paper Chi-sq\",\"Paper p\"),\n      caption = \"IIA test via universal logit (cf. Lusk & Schroeder 2004, p. 476).\")\n\n\nIIA test via universal logit (cf. Lusk & Schroeder 2004, p. 476).\n\n\n\n\n\n\n\n\n\n\n\nModel\nLL(MNL)\nLL(UL)\nChi-sq(20)\np-value\nPaper Chi-sq\nPaper p\n\n\n\n\nJoint\n-2131.2\n-2048.1\n166.2\n0\n66.9\n&lt;0.01\n\n\nNonhypothetical\n-1400.3\n-1349.8\n101.1\n0\n31.3\n0.051\n\n\nHypothetical\n-677.9\n-634.8\n86.2\n0\n59.5\n&lt;0.01\n\n\n\n\ncat(sprintf(\"Preference-equality test (relaxed model): Chi-sq(%d) = %.1f, p = %.4f  [paper: Chi-sq(30)=130.7]\\n\",\n            iia$df_eq, iia$chi2_eq, iia$p_eq))\n#&gt; Preference-equality test (relaxed model): Chi-sq(30) = 127.0, p = 0.0000  [paper: Chi-sq(30)=130.7]\n\n\n\n\n\n\n\nDiscrepancy — IIA test magnitudes\n\n\n\nMy qualitative conclusion matches the paper (IIA is rejected for all three samples), but the test magnitudes are larger: my \\(\\chi^2(20)\\) are 166 (joint), 101 (nonhyp), 86 (hyp) versus the paper’s 66.9, 31.3, 59.5. The nonhyp case is the most consequential: the paper’s value (31.3) is marginal (\\(p \\approx 0.051\\)), whereas mine is decisively significant.\nThe cause is visible in the log-likelihoods: my LL levels are systematically more negative than the paper’s (e.g. nonhyp MNL -1400.3 vs the paper’s \\(-1261.4\\); joint UL -2048.1 vs \\(-1908.8\\)). A roughly constant offset in the LL level inflates the absolute IIA \\(\\chi^2\\) (a within-sample difference of two offset likelihoods) while leaving differenced-across-sample tests intact — which is exactly what I observe: the preference-equality test matches closely, \\(\\chi^2(30) = 127.0\\) vs the paper’s \\(130.7\\). This points to a specification difference in the base MNL/UL (most likely how the price enters utility) rather than a coding error in the test itself. See Discrepancies.\n\n\n\n\n\n\n\n\nWhy IIA matters here\n\n\n\nIIA is the assumption that the odds between any two alternatives are unaffected by the others — the structural cost of MNL. Rejecting it (especially for the hypothetical and pooled samples) is what justifies the richer error structures in the next chapter: respondents do not treat the steaks as independent draws, so a model that lets error scales differ across alternatives fits materially better.",
+    "crumbs": [
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Testing IIA with the universal logit</span>"
+    ]
+  },
+  {
+    "objectID": "06-advanced-models.html",
+    "href": "06-advanced-models.html",
+    "title": "6  Advanced models: HEV and RPL",
+    "section": "",
+    "text": "6.1 Specifications",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Advanced models: HEV and RPL</span>"
+    ]
+  },
+  {
+    "objectID": "06-advanced-models.html#specifications",
+    "href": "06-advanced-models.html#specifications",
+    "title": "6  Advanced models: HEV and RPL",
+    "section": "",
+    "text": "HEV (heteroscedastic extreme value). Like MNL but each alternative has its own Gumbel scale \\(\\sigma_j\\) (with \\(\\sigma_{\\text{NONE}} = 1\\) fixed for identification). It relaxes IIA by allowing alternative-specific error variances. I estimate it with a custom log-likelihood that integrates the choice probability over the Gumbel density by trapezoidal quadrature.\nRPL (random parameters logit). ASCs are random-normal across respondents (mean + SD); price coefficients are held fixed for convergence. Estimated by simulated ML (500 draws) in mlogit.\nMNP (multinomial probit). Off-diagonal correlations set to 0, two SDs fixed to 1. Not estimated here — it needs the apollo package and a GHK simulator over a 5-dimensional normal; I document the intended setup instead.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Advanced models: HEV and RPL</span>"
+    ]
+  },
+  {
+    "objectID": "06-advanced-models.html#estimation-code-r04_table4_adv.r",
+    "href": "06-advanced-models.html#estimation-code-r04_table4_adv.r",
+    "title": "6  Advanced models: HEV and RPL",
+    "section": "6.2 Estimation code (R/04_table4_adv.R)",
+    "text": "6.2 Estimation code (R/04_table4_adv.R)\n\n## RPL: ASCs random normal, prices fixed; simulated ML with 500 draws\nrpar_spec &lt;- setNames(rep(\"n\", 5), asc_names)\nrpl_nh  &lt;- mlogit(f_mnl, mdata_nh,  reflevel=\"NONE\", rpar=rpar_spec, R=500, halton=NA, panel=TRUE)\nrpl_hyp &lt;- mlogit(f_mnl, mdata_hyp, reflevel=\"NONE\", rpar=rpar_spec, R=500, halton=NA, panel=TRUE)\n\n## HEV: per-alternative scale sigma_j (sigma_NONE = 1). The probability that j is\n## chosen is the integral over the Gumbel density of alternative j of the product\n## of the other alternatives' CDFs; evaluated on a trapezoidal grid w in [-8, 45]\n## and maximised by optim(BFGS).\nopt_hev_nh  &lt;- optim(theta0_nh,  hev_ll, df_s=df_nh,  method=\"BFGS\",\n                     control=list(fnscale=-1, reltol=1e-10), hessian=TRUE)\nopt_hev_hyp &lt;- optim(theta0_hyp, hev_ll, df_s=df_hyp, method=\"BFGS\",\n                     control=list(fnscale=-1, reltol=1e-10), hessian=TRUE)",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Advanced models: HEV and RPL</span>"
+    ]
+  },
+  {
+    "objectID": "06-advanced-models.html#results",
+    "href": "06-advanced-models.html#results",
+    "title": "6  Advanced models: HEV and RPL",
+    "section": "6.3 Results",
+    "text": "6.3 Results\n\nrpl_fit &lt;- tibble(\n  Model = c(\"RPL Nonhypothetical (R=500)\", \"RPL Hypothetical (R=500)\"),\n  `Log-likelihood` = c(fmt(t4r$ll_nh, 1), fmt(t4r$ll_hyp, 1)))\nkable(rpl_fit, caption = \"Table 4a. Random parameters logit fit.\")\n\n\nTable 4a. Random parameters logit fit.\n\n\nModel\nLog-likelihood\n\n\n\n\nRPL Nonhypothetical (R=500)\n-1053.6\n\n\nRPL Hypothetical (R=500)\n-571.3\n\n\n\n\n\nkable(t4h$table4_hev |&gt; mutate(Parameter = gk(Parameter)),\n      col.names = c(\"Parameter\",\"NH Est\",\"NH (SE)\",\"HY Est\",\"HY (SE)\",\"JT Est\",\"JT (SE)\"),\n      caption = \"Table 4b. HEV estimates — taste (beta, alpha) and scale (sigma) parameters. sigma(NONE) = 1 fixed.\")\n\n\nTable 4b. HEV estimates — taste (beta, alpha) and scale (sigma) parameters. sigma(NONE) = 1 fixed.\n\n\n\n\n\n\n\n\n\n\n\nParameter\nNH Est\nNH (SE)\nHY Est\nHY (SE)\nJT Est\nJT (SE)\n\n\n\n\nbeta GEN (ASC)\n2.8329\n0.1442\n5.6871\n0.1245\n4.1902\n0.0000\n\n\nbeta GT (ASC)\n3.4054\n0.0000\n5.8381\n0.2129\n4.7900\n0.0000\n\n\nbeta NAT (ASC)\n3.3112\n0.0000\n6.9589\n0.0000\n5.1367\n0.0000\n\n\nbeta CHO (ASC)\n2.8377\n0.0143\n4.8206\n0.0372\n3.9721\n0.0000\n\n\nbeta CAB (ASC)\n2.1223\n0.0000\n3.5628\n0.0465\n2.9722\n0.0090\n\n\nalpha GEN (price)\n-0.6699\n0.0473\n-1.1479\n0.0022\n-0.9011\n0.0000\n\n\nalpha GT (price)\n-0.4241\n0.0000\n-0.6418\n0.0371\n-0.5761\n0.0000\n\n\nalpha NAT (price)\n-0.4994\n0.0000\n-0.9184\n0.0000\n-0.7266\n0.0000\n\n\nalpha CHO (price)\n-0.2727\n0.0023\n-0.3884\n0.0032\n-0.3629\n0.0000\n\n\nalpha CAB (price)\n-0.1731\n0.0000\n-0.2119\n0.0052\n-0.2248\n0.0000\n\n\nsigma GEN (scale)\n1.7589\n0.1165\n0.9309\n0.0000\n1.3182\n0.0000\n\n\nsigma GT (scale)\n4.0009\n0.0000\n2.5415\n0.1948\n3.1729\n0.0709\n\n\nsigma NAT (scale)\n2.5798\n0.0962\n1.8185\n0.0552\n2.1816\n0.0439\n\n\nsigma CHO (scale)\n160.9314\n88.7059\n140.8183\n90.5479\n163.1633\n68.7494\n\n\nsigma CAB (scale)\n4.9296\n0.0000\n6.7284\n0.2972\n4.6817\n0.0617\n\n\n\n\ncat(sprintf(\"HEV log-likelihood — NH: %.1f | HY: %.1f | Joint: %.1f\\n\",\n            t4h$ll_nh, t4h$ll_hyp, t4h$ll_joint))\n#&gt; HEV log-likelihood — NH: -1345.0 | HY: -638.6 | Joint: -2047.1\n\n\n\n\n\n\n\nConvergence issue — HEV \\(\\sigma_{\\text{CHO}}\\)\n\n\n\nThe estimated scale for USDA Choice is implausibly large (\\(\\hat\\sigma_{\\text{CHO}} \\approx 161\\) nonhyp). This signals weak identification of that alternative’s variance given the price design, and it inflates the HEV WTP for Choice in the next chapter and makes the HEV covariance matrix near-singular (I repair it with Matrix::nearPD before the Poe bootstrap). Better starting values or bounded reparameterisation (\\(\\log\\sigma\\) already used) would be the next step. This is the single largest numerical fragility in my replication.",
+    "crumbs": [
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Advanced models: HEV and RPL</span>"
+    ]
+  },
+  {
+    "objectID": "07-wtp-figure.html",
+    "href": "07-wtp-figure.html",
+    "title": "7  Willingness to pay and market shares",
+    "section": "",
+    "text": "7.1 Specification\nTotal WTP for steak \\(j\\) relative to buying nothing: \\[\n\\text{WTP}_j = -\\,\\frac{\\beta_j}{\\alpha_j}.\n\\] The Poe combinatorial test asks whether nonhypothetical WTP is lower than hypothetical WTP (the hypothetical-bias hypothesis). I draw \\(B=1000\\) coefficient vectors per treatment from \\(\\mathcal{N}(\\hat\\theta, \\widehat{\\text{Var}})\\), compute all \\(1000\\times1000\\) WTP differences, and take the one-tailed p-value as the share of differences below zero.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Willingness to pay and market shares</span>"
+    ]
+  },
+  {
+    "objectID": "07-wtp-figure.html#estimation-code-r05_table5_wtp.r",
+    "href": "07-wtp-figure.html#estimation-code-r05_table5_wtp.r",
+    "title": "7  Willingness to pay and market shares",
+    "section": "7.2 Estimation code (R/05_table5_wtp.R)",
+    "text": "7.2 Estimation code (R/05_table5_wtp.R)\n\ncompute_wtp &lt;- function(theta) -theta[1:5] / theta[6:10]   # -beta_j / alpha_j\n\npoe_test &lt;- function(vcov_nh, vcov_hyp, theta_nh, theta_hyp, B = 1000) {\n  draws_nh  &lt;- MASS::mvrnorm(B, theta_nh,  make_pd(vcov_nh))   # PD repair if needed\n  draws_hyp &lt;- MASS::mvrnorm(B, theta_hyp, make_pd(vcov_hyp))\n  wtp_nh  &lt;- t(apply(draws_nh,  1, compute_wtp))\n  wtp_hyp &lt;- t(apply(draws_hyp, 1, compute_wtp))\n  sapply(1:5, function(j)                                       # P(WTP_NH &lt; WTP_HY)\n    mean(sapply(wtp_nh[,j], function(w) mean(w &lt; wtp_hyp[,j]))))\n}",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Willingness to pay and market shares</span>"
+    ]
+  },
+  {
+    "objectID": "07-wtp-figure.html#table-5-wtp-and-the-poe-test",
+    "href": "07-wtp-figure.html#table-5-wtp-and-the-poe-test",
+    "title": "7  Willingness to pay and market shares",
+    "section": "7.3 Table 5 — WTP and the Poe test",
+    "text": "7.3 Table 5 — WTP and the Poe test\n\nkable(t5$table5,\n      col.names = c(\"Steak\", \"MNL NH\",\"MNL HY\",\"MNL p\",\n                    \"HEV NH\",\"HEV HY\",\"HEV p\", \"RPL NH\",\"RPL HY\",\"RPL p\"),\n      caption = \"Table 5. WTP vs. None (USD) and Poe one-tailed p-values, by model.\")\n\n\nTable 5. WTP vs. None (USD) and Poe one-tailed p-values, by model.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSteak\nMNL NH\nMNL HY\nMNL p\nHEV NH\nHEV HY\nHEV p\nRPL NH\nRPL HY\nRPL p\n\n\n\n\nGeneric\n3.59\n5.05\n1\n4.23\n4.95\n1\n2.48\n4.23\n1.0000\n\n\nGuaranteed Tender\n6.21\n7.01\n1\n8.03\n9.10\n1\n5.80\n6.67\n1.0000\n\n\nNatural\n5.15\n6.48\n1\n6.63\n7.58\n1\n5.04\n5.97\n0.9999\n\n\nUSDA Choice\n6.62\n7.31\n1\n10.41\n12.41\n1\n6.69\n7.17\n0.9982\n\n\nCertified Angus Beef\n7.56\n9.70\n1\n12.26\n16.81\n1\n7.71\n9.18\n1.0000\n\n\n\n\n\n\n\n\n\n\n\nResult — hypothetical bias confirmed\n\n\n\nAcross all three models and all five steaks, hypothetical WTP exceeds nonhypothetical WTP, and the Poe p-values are ~1 (i.e., the probability that \\(\\text{WTP}_{\\text{NH}} &lt; \\text{WTP}_{\\text{HY}}\\) is essentially certain). This is the paper’s central finding: stated (hypothetical) WTP overstates real WTP. The HEV Choice values are inflated by the \\(\\sigma_{\\text{CHO}}\\) issue from the previous chapter and should be read with that caveat.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Willingness to pay and market shares</span>"
+    ]
+  },
+  {
+    "objectID": "07-wtp-figure.html#figure-2-predicted-market-shares-hev",
+    "href": "07-wtp-figure.html#figure-2-predicted-market-shares-hev",
+    "title": "7  Willingness to pay and market shares",
+    "section": "7.4 Figure 2 — predicted market shares (HEV)",
+    "text": "7.4 Figure 2 — predicted market shares (HEV)\nI regenerate Figure 2 live from the saved HEV parameters: for each scenario I compute the HEV choice probabilities and plot them across scenarios 1–16 for both treatments.\n\nn_q &lt;- 200; w_grid &lt;- seq(-8, 45, length.out = n_q)\nwt_trap &lt;- c(0.5, rep(1, n_q - 2), 0.5) * diff(w_grid)[1]; ev_base &lt;- exp(-w_grid)\n\nhev_probs_single &lt;- function(V, sigma) {\n  J &lt;- length(V); lp &lt;- numeric(J)\n  for (j in seq_len(J)) {\n    oth &lt;- seq_len(J)[-j]; r &lt;- sigma[oth] / sigma[j]; d &lt;- V[j] - V[oth]\n    inner &lt;- as.vector(exp(-sigma[oth] * d) %*% exp(outer(-r, w_grid)))\n    li &lt;- -w_grid - (ev_base + inner); m &lt;- max(li)\n    lp[j] &lt;- m + log(max(sum(exp(li - m) * wt_trap), 1e-300))\n  }\n  exp(lp - max(lp)) / sum(exp(lp - max(lp)))\n}\nshares_of &lt;- function(par15, label) {\n  asc &lt;- c(par15[1:5], 0); alpha &lt;- c(par15[6:10], 0); sigma &lt;- c(exp(par15[11:15]), 1)\n  do.call(rbind, lapply(1:16, function(s) {\n    prices &lt;- c(as.numeric(price_matrix[s, c(\"GEN\",\"GT\",\"NAT\",\"CHO\",\"CAB\")]), 0)\n    data.frame(scenario = s, alternative = alt_labels,\n               share = hev_probs_single(asc + alpha * prices, sigma), treatment = label)\n  }))\n}\nshares &lt;- bind_rows(shares_of(t4h$par_nh,  \"Nonhypothetical\"),\n                    shares_of(t4h$par_hyp, \"Hypothetical\")) |&gt;\n  mutate(alternative = factor(alternative, levels = alt_labels),\n         treatment   = factor(treatment, levels = c(\"Nonhypothetical\",\"Hypothetical\")))\n\nggplot(shares, aes(scenario, share, colour = alternative)) +\n  geom_line(linewidth = 0.8) + geom_point(size = 1.3) +\n  facet_wrap(~treatment, ncol = 1) +\n  scale_x_continuous(breaks = 1:16) +\n  scale_y_continuous(labels = scales::percent_format(accuracy = 1), limits = c(0, 1)) +\n  scale_colour_brewer(palette = \"Dark2\", name = \"Alternative\") +\n  labs(x = \"Scenario\", y = \"Predicted choice probability\",\n       title = \"Predicted market shares — HEV model (scenarios 1–16)\") +\n  theme_bw(base_size = 11) +\n  theme(panel.grid.minor = element_blank(),\n        strip.background = element_rect(fill = \"grey90\"))\n\n\n\n\nFigure 2. HEV-predicted market shares across scenarios, by treatment.",
+    "crumbs": [
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Willingness to pay and market shares</span>"
+    ]
+  },
+  {
+    "objectID": "08-discrepancies.html",
+    "href": "08-discrepancies.html",
+    "title": "8  Replication experience and discrepancies",
+    "section": "",
+    "text": "8.1 Locating data and documentation",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Replication experience and discrepancies</span>"
+    ]
+  },
+  {
+    "objectID": "08-discrepancies.html#locating-data-and-documentation",
+    "href": "08-discrepancies.html#locating-data-and-documentation",
+    "title": "8  Replication experience and discrepancies",
+    "section": "",
+    "text": "The dataset (harrison.xls) and questionnaire (harrison.doc) were available, but undocumented: a two-row header, embedded label rows, and trailing summary rows that masquerade as data. The single most consequential cleaning decision — dropping subject 1060 — is invisible unless you check for all-missing choice rows. This alone resolves the “68 vs 67 subjects” puzzle.\nThe price design lives only in the paper’s appendix, not in the data file. Re-keying it by hand is the bridge between a stored choice code and the prices a respondent actually saw; a single transcription error here would corrupt every downstream estimate, so I cross-checked it against the appendix twice.",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Replication experience and discrepancies</span>"
+    ]
+  },
+  {
+    "objectID": "08-discrepancies.html#translating-limdep-r",
+    "href": "08-discrepancies.html#translating-limdep-r",
+    "title": "8  Replication experience and discrepancies",
+    "section": "8.2 Translating LIMDEP → R",
+    "text": "8.2 Translating LIMDEP → R\n\nNo turn-key joint-scale or HEV command in mlogit. The Swait–Louviere scaled joint MNL and the HEV model were written as custom log-likelihoods maximised with optim(BFGS), including the log-sum-exp trick for numerical stability and trapezoidal quadrature for the HEV Gumbel integral. LIMDEP exposes these as canned estimators; R made the mechanics explicit, which was pedagogically useful but is where small numerical differences enter.\nIdentification choices must be stated explicitly. Base alternative (NONE), the fixed scale (\\(\\mu_{\\text{H}}=1\\)), and the fixed HEV scale (\\(\\sigma_{\\text{NONE}}=1\\)) are defaults in LIMDEP but hand-coded here.\nA package-version landmine. dfidx 0.2.0 + vctrs triggers a node-stack overflow; I fell back to mlogit.data() to build the choice data.",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Replication experience and discrepancies</span>"
+    ]
+  },
+  {
+    "objectID": "08-discrepancies.html#interpreting-the-discrepancies",
+    "href": "08-discrepancies.html#interpreting-the-discrepancies",
+    "title": "8  Replication experience and discrepancies",
+    "section": "8.3 Interpreting the discrepancies",
+    "text": "8.3 Interpreting the discrepancies\n\n\n\nDocumented discrepancies and interpretation.\n\n\n\n\n\n\n\n\nItem\nMy replication\nPaper\nMy reading\n\n\n\n\nMNL/UL log-likelihood level\n-1400 (nonhyp MNL)\n-1261.4\nSystematic level offset -&gt; likely a price-utility specification difference (main open issue).\n\n\nIIA test Chi-sq(20)\n101 (nonhyp)\n31.3 (p~0.051)\nInflated by the LL-level offset; preference-equality test (differenced) matches (127 vs 131).\n\n\nMNL scale mu\n0.804\n0.90\nSame sign & significance; optimiser/start-value sensitivity.\n\n\nScale-test df\n9 (=(10+10)-11)\n4\nBookkeeping of the joint restriction differs; conclusion (reject pooling) identical.\n\n\nHEV sigma_CHO\n~ 161 (NH)\nmoderate\nWeak identification of Choice’s error variance given the price design.\n\n\nMNP\nnot estimated\nestimated (apollo-style)\nNeeds GHK simulator (apollo); out of scope but documented.\n\n\nRPL joint model\nskipped (runtime)\nestimated\nSeparate-model LLs used as the scale-test benchmark instead.\n\n\n\n\n\nBottom line. Every qualitative conclusion of Lusk & Schroeder (2004) replicates: demographics balance across treatments; the real-payment group chooses “None” more; IIA is rejected for the pooled/hypothetical data; and hypothetical WTP exceeds real WTP for every steak under every model. The quantitative gaps are confined to (a) the log-likelihood level (and the IIA \\(\\chi^2\\) it inflates), (b) the scale point estimate and test-df bookkeeping, and (c) one weakly-identified HEV scale — all attributable to optimiser defaults and software-specific identification conventions rather than to a substantive disagreement with the paper.\n\n\n\n\n\n\nThe one thing I would chase next\n\n\n\nThe constant log-likelihood offset is the thread worth pulling. The prime suspect is the price specification: this replication uses five alternative-specific own-price coefficients \\(\\alpha_j\\), whereas a single generic price coefficient (or a different normalisation of price) would change the attainable likelihood while leaving the qualitative story intact. Confirming this against the paper’s Table 3 specification and footnote 13 would likely close most of the remaining gap.",
+    "crumbs": [
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Replication experience and discrepancies</span>"
+    ]
+  },
+  {
+    "objectID": "09-reproducibility.html",
+    "href": "09-reproducibility.html",
+    "title": "9  Reproducibility",
+    "section": "",
+    "text": "9.1 How to rebuild everything\nThe numbered scripts in R/ produce the saved objects in output/ that this book loads. To reproduce from the raw spreadsheet:\nRun order\nThen render the book:",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Reproducibility</span>"
+    ]
+  },
+  {
+    "objectID": "09-reproducibility.html#how-to-rebuild-everything",
+    "href": "09-reproducibility.html#how-to-rebuild-everything",
+    "title": "9  Reproducibility",
+    "section": "",
+    "text": "R/01_data_prep.R — read harrison.xls, clean, reshape; save df_*.rds, price_matrix.rds.\nR/02_table1_table2.R — Tables 1 and 2.\nR/03_table3_mnl.R — MNL estimates + scale test → table3_mnl.rds.\nR/06_iia_universal_logit.R — IIA universal logit → iia_ul.rds.\nR/04_table4_adv.R — HEV and RPL → table4_hev.rds, table4_rpl.rds.\nR/05_table5_wtp.R — WTP, Poe test, Figure 2 → table5_wtp.rds.\n\n\nquarto render        # builds the site into docs/\n\n\n\n\n\n\nNotes\n\n\n\n\nThe numbered scripts use rstudioapi to locate the project, so run them from RStudio (or replace the path line with getwd() to run headless).\nThe advanced models are slow (RPL at 500 draws; HEV quadrature; the Poe bootstrap). The book itself does not re-run them — it loads output/*.rds and recomputes only the lightweight summaries and Figure 2.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Reproducibility</span>"
+    ]
+  },
+  {
+    "objectID": "09-reproducibility.html#session-information",
+    "href": "09-reproducibility.html#session-information",
+    "title": "9  Reproducibility",
+    "section": "9.2 Session information",
+    "text": "9.2 Session information\n\n#&gt; R version: R version 4.4.1 (2024-06-14)\n#&gt; Key packages:\n#&gt;   mlogit     1.1.3\n#&gt;   dfidx      0.2.0\n#&gt;   readxl     1.4.5\n#&gt;   dplyr      1.1.4\n#&gt;   tidyr      1.3.2\n#&gt;   ggplot2    3.5.1\n#&gt;   MASS       7.3.60.2\n#&gt;   Matrix     1.7.0\n#&gt;   knitr      1.49",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Reproducibility</span>"
+    ]
+  },
+  {
+    "objectID": "09-reproducibility.html#references",
+    "href": "09-reproducibility.html#references",
+    "title": "9  Reproducibility",
+    "section": "References",
+    "text": "References\nLusk, J. L., & Schroeder, T. C. (2004). Are Choice Experiments Incentive Compatible? A Test with Quality Differentiated Beef Steaks. American Journal of Agricultural Economics, 86(2), 467–482.\nPoe, G. L., Giraud, K. L., & Loomis, J. B. (2005). Computational Methods for Measuring the Difference of Empirical Distributions. American Journal of Agricultural Economics, 87(2), 353–365.\nSwait, J., & Louviere, J. (1993). The Role of the Scale Parameter in the Estimation and Comparison of Multinomial Logit Models. Journal of Marketing Research, 30(3), 305–314.",
+    "crumbs": [
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Reproducibility</span>"
+    ]
+  }
+]

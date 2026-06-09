@@ -1,0 +1,107 @@
+# Multinomial logit and the scale test {#sec-mnl}
+
+```{r}
+#| include: false
+source("_common.R")
+```
+
+::: {.callout-note}
+## How the model chapters work
+From here on, the **estimation code is shown but not re-evaluated** when the book
+builds (it is the code in `R/03`–`R/06`); the **saved model objects are loaded**
+from `output/` and the **results recomputed for display**. Each model follows the
+same template: *(i)* specification, *(ii)* estimation code, *(iii)* results,
+*(iv)* commentary.
+:::
+
+## Specification
+
+Utility of alternative $j$ in choice situation $i$:
+$$
+V_{ij} = \beta_j + \alpha_j P_{ij}, \qquad j \in \{\text{GEN, GT, NAT, CHO, CAB}\},
+\quad V_{i,\text{NONE}} \equiv 0 .
+$$
+There are **5 alternative-specific constants** $\beta_j$ and **5 own-price
+coefficients** $\alpha_j$ (10 taste parameters). The **joint model** stacks both
+treatments, holds taste parameters equal, and scales the nonhypothetical
+utilities by $\mu$:
+$$
+V^{\text{NH}}_{ij} = \mu\,(\beta_j + \alpha_j P_{ij}), \qquad
+V^{\text{H}}_{ij}  =      \beta_j + \alpha_j P_{ij},
+$$
+so $\mu$ is the relative error scale (precision) of the real-payment group. The
+**Swait–Louviere LR test** compares the joint model against the two separate
+models.
+
+## Estimation code (`R/03_table3_mnl.R`)
+
+```{r mnl-code, eval=FALSE}
+# Alternative-specific price variables: p_j = price × 1{alt = j}
+df0 <- df_mlogit |>
+  mutate(price_alt = tidyr::replace_na(price_alt, 0),
+         p_GEN = if_else(alt=="GEN", price_alt, 0),
+         p_GT  = if_else(alt=="GT",  price_alt, 0),
+         p_NAT = if_else(alt=="NAT", price_alt, 0),
+         p_CHO = if_else(alt=="CHO", price_alt, 0),
+         p_CAB = if_else(alt=="CAB", price_alt, 0))
+
+make_mdata <- function(d) mlogit.data(d, choice="chosen", shape="long",
+  alt.var="alt", chid.var="chid", id.var="subject", alt.levels=alts)
+
+f_mnl <- chosen ~ p_GEN + p_GT + p_NAT + p_CHO + p_CAB | 1   # 5 prices + 5 ASCs
+mnl_nh  <- mlogit(f_mnl, make_mdata(filter(df0, treatment=="nonhyp")), reflevel="NONE")
+mnl_hyp <- mlogit(f_mnl, make_mdata(filter(df0, treatment=="hyp")),    reflevel="NONE")
+
+# Joint model with scale mu: custom log-likelihood maximised by optim(BFGS).
+# theta = (beta[1:5], alpha[6:10], log_mu[11]); V_NH scaled by exp(log_mu).
+ll_joint_fn <- function(theta, df) {
+  beta  <- c(theta[1:5], 0); alpha <- c(theta[6:10], 0); mu <- exp(theta[11])
+  k <- match(as.character(df$alt), alts)
+  V <- beta[k] + alpha[k]*df$price_alt
+  V[df$treatment=="nonhyp"] <- mu * V[df$treatment=="nonhyp"]
+  df |> mutate(V=V) |> group_by(chid) |>
+    mutate(p = exp(V-max(V))/sum(exp(V-max(V)))) |> ungroup() |>
+    summarise(ll = sum(log(pmax(p[chosen], 1e-300)))) |> pull(ll)
+}
+opt <- optim(theta0, ll_joint_fn, df=df0, method="BFGS",
+             control=list(fnscale=-1, maxit=1e4, reltol=1e-12), hessian=TRUE)
+
+# Swait–Louviere LR scale test: chi2 = -2(LL_joint - LL_nh - LL_hyp)
+lr_stat <- -2 * (opt$value - logLik(mnl_nh) - logLik(mnl_hyp))
+```
+
+## Results
+
+```{r mnl-results}
+kable(t3$table3 |> mutate(Parameter = gk(Parameter)),
+      col.names = c("Parameter","NH Est","NH (SE)","HY Est","HY (SE)","JT Est","JT (SE)"),
+      caption = "Table 3. MNL estimates — Nonhyp | Hyp | Joint (with scale).")
+
+mnl_summary <- tibble(
+  Statistic = c("Log-likelihood", "Observations", "Scale (mu)", "SE(mu)",
+                "Scale-test Chi-sq", "df", "p-value"),
+  Nonhyp = c(fmt(t3$ll_nh,1), "1072", "—", "—", "—", "—", "—"),
+  Hyp    = c(fmt(t3$ll_hyp,1), "592", "—", "—", "—", "—", "—"),
+  Joint  = c(fmt(t3$ll_joint,1), "1664", fmt(t3$mu_hat,3), fmt(t3$se_mu,3),
+             fmt(t3$lr_stat,1), as.character(t3$df_test), formatC(t3$p_lr, format="e", digits=1)))
+kable(mnl_summary, caption = "Table 3 fit statistics.")
+```
+
+::: {.callout-warning}
+## Discrepancy — scale $\mu$ and test df
+My estimated scale is $\hat\mu = `r fmt(t3$mu_hat,3)`$ (SE $`r fmt(t3$se_mu,3)`$),
+versus the paper's $0.90$ (SE $0.06$). Both are statistically distinguishable
+from 1 and point the same way (the two treatments have *different* error scales),
+but the point estimates differ. My scale test gives
+$\chi^2 = `r fmt(t3$lr_stat,1)`$ on `r t3$df_test` df versus the paper's $106.8$
+on $4$ df. The $\chi^2$ magnitudes are close; the **df differ because of how the
+joint restriction is counted** (I restrict 10 taste parameters to be equal and
+free 1 scale: $df = (10+10) - 11 = 9$; the paper's "4" suggests different
+bookkeeping). The substantive conclusion — *reject pooling* — is unchanged.
+
+Note also that my model **log-likelihoods sit below the paper's**
+(nonhyp $`r fmt(t3$ll_nh,1)`$ vs $-1261.4$; hyp $`r fmt(t3$ll_hyp,1)`$ vs $-627.4$).
+This level offset recurs in the [IIA test](05-iia.qmd) and is the main open
+question of the replication — most plausibly a difference in how price enters
+utility. See [Discrepancies](08-discrepancies.qmd).
+:::
